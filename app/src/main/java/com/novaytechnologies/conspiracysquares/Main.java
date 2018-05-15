@@ -16,9 +16,10 @@ public class Main extends AppCompatActivity {
     static String sm_strName;
 
     static SharedPreferences sm_SH_Pref;
-
     static final String conspiracysquares_SHPREF = "com.novaytechnologies.conspiracysquares";
     static final String conspiracysquares_SHPREF_NAME = ".name";
+
+    static final String FIND_SERVER = "Find_Server";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class Main extends AppCompatActivity {
                             txt_error.setVisibility(View.GONE);
 
                             Intent newIntent = new Intent(Main.this, Game.class);
+                            newIntent.putExtra(FIND_SERVER, true);
                             startActivity(newIntent);
                         }
                         else txt_error.setVisibility(View.VISIBLE);
