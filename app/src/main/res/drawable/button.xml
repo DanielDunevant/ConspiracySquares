@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <layer-list>
-
-        </layer-list>
+        <shape android:shape="oval">
+            <stroke
+                android:width="@dimen/button_border"
+                android:color="@color/colorButtonGameBorder"/>
+            <gradient
+                android:type="radial"
+                android:startColor="@color/colorButtonGame"
+                android:centerColor="@color/colorButtonGamePress"
+                android:endColor="@color/colorButtonGameBorder"
+                android:centerX="0.60"
+                android:centerY="0.60"
+                android:gradientRadius="@dimen/button_grad"
+                android:angle="90"/>
+        </shape>
     </item>
     <item android:state_focused="true">
-        <layer-list>
-
-        </layer-list>
+        <shape android:shape="oval">
+            <stroke
+                android:width="@dimen/button_border"
+                android:color="@color/colorButtonGameBorder"/>
+            <gradient
+                android:type="radial"
+                android:startColor="@color/colorButtonGame"
+                android:centerColor="@color/colorButtonGamePress"
+                android:endColor="@color/colorButtonGameBorder"
+                android:centerX="0.60"
+                android:centerY="0.60"
+                android:gradientRadius="@dimen/button_grad"
+                android:angle="90"/>
+        </shape>
     </item>
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/colorButton" />
-            <stroke android:width="@dimen/button_border" android:color="@color/colorButtonShadeB" />
-            <gradient android:type="radial"
-                android:startColor="@color/colorButton"
-                android:centerColor="@color/colorButtonShadeA"
-                android:endColor="@color/colorButtonShadeB"
-                android:angle="45"/>
+        <shape android:shape="oval">
+            <stroke
+                android:width="@dimen/button_border"
+                android:color="@color/colorButtonGameBorder"/>
+            <gradient
+                android:type="radial"
+                android:startColor="@color/colorButtonGame"
+                android:centerColor="@color/colorButtonGame"
+                android:endColor="@color/colorButtonGameBorderGrad"
+                android:centerX="0.48"
+                android:centerY="0.42"
+                android:gradientRadius="@dimen/button_grad"
+                android:angle="90"/>
         </shape>
     </item>
 </selector>

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorBackground">#303F9F</color>
+    <color name="colorBackground">#EEEEFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FFFF00</color>
-    <color name="colorTitle">#FFFFFF</color>
+    <color name="colorAccent">#0000FF</color>
+    <color name="colorTitle">#000044</color>
+    <color name="colorInputBorder">#888888</color>
+    <color name="colorInputBack">#FFFFFF</color>
+    <color name="colorInputHighlight">#AAAAFF</color>
+    <color name="colorInput">#000066</color>
     <color name="colorButton">#FFFFFF</color>
-    <color name="colorButtonShadeA">#AAAAAA</color>
-    <color name="colorButtonShadeB">#666666</color>
+    <color name="colorButtonPress">#EEEEEE</color>
+    <color name="colorButtonBorder">#AAAAAA</color>
+    <color name="colorButtonGame">#FF0000</color>
+    <color name="colorButtonGamePress">#EE0000</color>
+    <color name="colorButtonGameBorder">#660000</color>
+    <color name="colorButtonGameBorderGrad">#BB0000</color>
     <color name="colorButtonText">#888888</color>
 </resources>

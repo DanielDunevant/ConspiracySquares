@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_padding"
-            android:paddingLeft="@dimen/activity_padding"
-            android:paddingRight="@dimen/activity_padding"
+            android:paddingBottom="@dimen/activity_paddingL"
+            android:paddingLeft="@dimen/activity_paddingL"
+            android:paddingRight="@dimen/activity_paddingL"
             android:weightSum="1">
 
             <TextView
@@ -40,7 +40,7 @@
                 android:id="@+id/ID_txt_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/title_margin"
+                android:layout_marginBottom="@dimen/input_padding"
                 android:text="@string/input_name_error"
                 android:textAlignment="center"
                 android:textColor="@color/colorTitle"
@@ -90,34 +90,48 @@
                     android:padding="@dimen/input_padding"
                     android:textColor="@color/colorInput"
                     android:textSize="@dimen/input_text"
-                    android:textColorHighlight="@color/colorInputHighlight"
                     android:text="@string/input_name_def"
+                    android:textColorHighlight="@color/colorInputHighlight"
                     android:background="@drawable/input"/>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/ID_btn_play"
+            <LinearLayout
+                android:id="@+id/ID_btns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/button_margin"
-                android:background="@drawable/button_rect"
-                android:padding="@dimen/button_padding"
-                android:text="@string/button_play"
-                android:textColor="@color/colorButtonText"
-                android:textSize="@dimen/button_text" />
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/button_margin"
+                android:paddingTop="@dimen/button_padding"
+                android:paddingBottom="@dimen/button_padding"
+                android:weightSum="2">
 
-            <Button
-                android:id="@+id/ID_btn_server"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/button_margin"
-                android:background="@drawable/button_rect"
-                android:padding="@dimen/button_padding"
-                android:text="@string/button_server"
-                android:textColor="@color/colorButtonText"
-                android:textSize="@dimen/button_text" />
+                <Button
+                    android:id="@+id/ID_btn_server"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="@dimen/button_spacing"
+                    android:background="@drawable/button_rect"
+                    android:padding="@dimen/button_padding"
+                    android:text="@string/button_server"
+                    android:textColor="@color/colorButtonText"
+                    android:textSize="@dimen/button_text" />
+
+                <Button
+                    android:id="@+id/ID_btn_play"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="@dimen/button_spacing"
+                    android:background="@drawable/button_rect"
+                    android:padding="@dimen/button_padding"
+                    android:text="@string/button_play"
+                    android:textColor="@color/colorButtonText"
+                    android:textSize="@dimen/button_text" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
