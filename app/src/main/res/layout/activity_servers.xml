@@ -1,12 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ID_activity_servers"
+    android:id="@+id/ID_activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context=".Servers"
+    tools:context=".Main"
     android:background="@color/colorBackground">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="41dp">
+        <!--layout of whole screen-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_padding"
+            android:paddingLeft="@dimen/activity_padding"
+            android:paddingRight="@dimen/activity_padding"
+            android:weightSum="1">
+
+
+            <!--Linear Layout for Search Search and Add Server-->
+            <LinearLayout
+                android:id="@+id/btn_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/button_margin"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal"
+                android:padding="@dimen/none"
+                android:weightSum="4"
+                >
+
+
+                <!--Server Search Box-->
+                <EditText
+                    android:id="@+id/server_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/none"
+                    android:layout_weight="3"
+                    android:background="@drawable/input"
+                    android:ems="12"
+                    android:inputType="text"
+                    android:nextFocusLeft="@id/btn_list"
+                    android:nextFocusUp="@id/btn_list"
+                    android:padding="@dimen/input_padding"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true"
+                    android:text="@string/input_server"
+                    android:textColor="@color/colorInput"
+                    android:textColorHighlight="@color/colorInputHighlight"
+                    android:textSize="@dimen/input_text"
+                    android:windowSoftInputMode="stateHidden" />
+                <!--Add Server Button-->
+                <Button
+                    android:id="@+id/ID_btn_server"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/none"
+                    android:layout_weight="1"
+                    android:background="@drawable/add_server_button"
+                    android:padding="@dimen/none" />
+
+            </LinearLayout>
+            <!--Imageview that creates Underline under server search and add-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="-20dp"
+                android:layout_gravity="top"
+                android:background="#555555"
+                android:orientation="horizontal"
+                android:padding="@dimen/none"></ImageView>
+            <!--Linear layout for the server information that will be printed-->
+            <LinearLayout
+                android:id="@+id/btn_list"
+                android:layout_width="match_parent"
+                android:layout_height="375dp"
+                android:layout_marginBottom="@dimen/button_margin"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal"
+                android:background="#AAAAAA"
+                android:layout_marginTop="10dp"
+                android:padding="@dimen/none"
+                android:weightSum="4">
+
+
+
+            </LinearLayout>
+            <!--Imageview that creates underline at bottom at page-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_gravity="top"
+                android:layout_marginTop="-13dp"
+                android:background="#555555"
+                android:orientation="horizontal"
+                android:padding="@dimen/none"></ImageView>
+
+            <Button
+                android:id="@+id/join_button"
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="This is the join button for the server listings"
+                android:text="Join"
+                tools:text="Join" />
+
+
+        </LinearLayout>
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
