@@ -6,21 +6,28 @@ import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Servers extends AppCompatActivity {
 
+    static final public int MAX_PLAYERS = 128;
+
     static HashMap<Integer, Integer> Servers;
     static ArrayList<String> ServerNames;
-    static ArrayList<Integer> ServerPlayers;
+    static ArrayList<String> ServerPlayers;
+    static ArrayList<Integer> ServerPlayersInt;
     RadioGroup ServerLayoutBtns;
 
     String strChosenServer;
@@ -80,8 +87,11 @@ public class Servers extends AppCompatActivity {
         Servers = new HashMap<>();
         ServerNames = new ArrayList<>();
         ServerPlayers = new ArrayList<>();
+        ServerPlayersInt = new ArrayList<>();
         ServerLayoutBtns = findViewById(R.id.ID_serverlist);
         ServerLayoutBtns.removeAllViews();
+        LinearLayout playerN = findViewById(R.id.ID_serverlist_players);
+        playerN.removeAllViews();
 
         Post GetServers = new Post();
         GetServers.SetRunnable(new Post.RunnableArgs() {
@@ -111,15 +121,36 @@ public class Servers extends AppCompatActivity {
                             LastResult = LastResult.substring(nLastIndex);
                         }
 
-                        ServerPlayers.add(nNumPlayers);
-
                         RadioButton addBtn = new RadioButton(ctx_servers);
-                        String strText = strGet + "  w/ " + nNumPlayers + " Player(s) Online";
-                        addBtn.setText(strText);
+                        addBtn.setText(strGet);
                         addBtn.setTextColor(getResources().getColor(R.color.colorInput));
+                        RadioGroup.LayoutParams Lparams = new RadioGroup.LayoutParams(
+                                RadioGroup.LayoutParams.WRAP_CONTENT,
+                                (int)getResources().getDimension(R.dimen.list_height));
+                        addBtn.setLayoutParams(Lparams);
                         ServerLayoutBtns.addView(addBtn);
                         Servers.put(addBtn.getId(), ServerNames.size()-1);
+
+                        String strPlyr = Integer.toString(nNumPlayers) + " / " + Integer.toString(MAX_PLAYERS);
+                        ServerPlayers.add(strPlyr);
+                        ServerPlayersInt.add(nNumPlayers);
                     }
+
+                    LinearLayout playerNums = findViewById(R.id.ID_serverlist_players);
+                    for (String strPlyrCnt : ServerPlayers)
+                    {
+                        TextView txtPlr = new TextView(ctx_servers);
+                        txtPlr.setText(strPlyrCnt);
+                        txtPlr.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelSize(R.dimen.button_text));
+                        txtPlr.setTextColor(getResources().getColor(R.color.colorInput));
+                        LinearLayout.LayoutParams Lparams = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                (int)getResources().getDimension(R.dimen.list_height));
+                        txtPlr.setLayoutParams(Lparams);
+                        txtPlr.setGravity(Gravity.CENTER_VERTICAL);
+                        playerNums.addView(txtPlr);
+                    }
+                    playerNums.invalidate();
                 }
             }
         });
@@ -133,6 +164,9 @@ public class Servers extends AppCompatActivity {
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+        LinearLayout playerNums = findViewById(R.id.ID_serverlist_players);
+        playerNums.setScrollContainer(false);
+
         final Context ctx_servers = this;
         Refresh(ctx_servers);
 
@@ -144,20 +178,24 @@ public class Servers extends AppCompatActivity {
                 if (selectedId != -1) {
                     int nServerIndex = Servers.get(selectedId);
                     String strServer = ServerNames.get(nServerIndex);
-                    int nPlayers = ServerPlayers.get(nServerIndex);
+                    String strPlayer = ServerPlayers.get(nServerIndex);
+                    int nPlayers = ServerPlayersInt.get(nServerIndex);
 
-                    //TEMP CODE BELOW
-                    ArrayList<String> params = new ArrayList<>();
-                    params.add("ReqPass");
-                    params.add("X");
-                    params.add("ServerName");
-                    params.add(strServer);
-                    String ParemsString = Post.GetParemsString(params);
+                    if (nPlayers < MAX_PLAYERS)
+                    {
+                        //TEMP CODE BELOW
+                        ArrayList<String> params = new ArrayList<>();
+                        params.add("ReqPass");
+                        params.add("X");
+                        params.add("ServerName");
+                        params.add(strServer);
+                        String ParemsString = Post.GetParemsString(params);
 
-                    Post newPost = new Post();
-                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
+                        Post newPost = new Post();
+                        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
 
-                    Refresh(ctx_servers);
+                        Refresh(ctx_servers);
+                    }
                 }
             }
         });

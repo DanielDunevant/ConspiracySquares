@@ -18,4 +18,7 @@
     <dimen name="button_grad">60dp</dimen>
     <dimen name="button_sq_rad">16dp</dimen>
     <dimen name="line_thickness">5dp</dimen>
+    <dimen name="line_thickness_div">2dp</dimen>
+    <dimen name="list_height">32dp</dimen>
+    <dimen name="scrollPadding">96dp</dimen>
 </resources>
