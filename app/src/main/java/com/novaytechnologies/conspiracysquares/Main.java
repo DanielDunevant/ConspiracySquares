@@ -1,3 +1,5 @@
+//Copyright (c) 2018 Novay Technologies
+
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;

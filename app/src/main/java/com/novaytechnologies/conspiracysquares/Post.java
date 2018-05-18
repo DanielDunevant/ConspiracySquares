@@ -1,5 +1,3 @@
-// Copyright (c) 2018 CleverGen.
-
 package com.novaytechnologies.conspiracysquares;
 
 import android.os.AsyncTask;
