@@ -14,6 +14,8 @@
     <dimen name="button_spacing">16dp</dimen>
     <dimen name="button_padding">4dp</dimen>
     <dimen name="button_size">80dp</dimen>
+    <dimen name="button_size_sm">60dp</dimen>
     <dimen name="button_grad">60dp</dimen>
     <dimen name="button_sq_rad">16dp</dimen>
+    <dimen name="line_thickness">5dp</dimen>
 </resources>

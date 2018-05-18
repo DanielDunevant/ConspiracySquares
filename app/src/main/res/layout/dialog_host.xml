@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ID_dialog_host"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="@dimen/button_margin"
+    android:background="@color/colorBackground2">
+
+    <TextView
+        android:text="@string/title_host"
+        android:id="@+id/ID_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorButtonText"
+        android:textSize="@dimen/title_text"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="@color/colorButton"
+        android:layout_margin="@dimen/none"
+        android:padding="@dimen/button_padding"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/dialog_main"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="@dimen/none"
+        android:layout_marginTop="@dimen/button_margin"
+        android:layout_below="@+id/ID_dialog_title"
+        android:weightSum="1"
+        android:background="@color/colorBackground2" >
+
+        <EditText
+            android:id="@+id/server_name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/button_padding"
+            android:background="@drawable/input"
+            android:ems="12"
+            android:hint="@string/input_server"
+            android:inputType="text"
+            android:nextFocusLeft="@id/dialog_main"
+            android:nextFocusUp="@id/dialog_main"
+            android:padding="@dimen/input_padding"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/colorInput"
+            android:textColorHighlight="@color/colorInputHighlight"
+            android:textSize="@dimen/input_text"
+            android:windowSoftInputMode="stateHidden" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/dialog_main_btns"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="@dimen/none"
+            android:layout_margin="@dimen/none"
+            android:layout_below="@+id/server_search"
+            android:weightSum="2"
+            android:background="@color/colorBackground2" >
+
+            <Button
+                android:id="@+id/ID_dialog_button_back"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/button_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_back"
+                android:layout_margin="@dimen/button_margin"
+                android:padding="@dimen/button_padding"
+                android:textColor="@color/colorButtonText"
+                android:background="@drawable/button_rect" />
+
+            <Button
+                android:id="@+id/ID_dialog_button_host"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/button_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/button_host"
+                android:layout_margin="@dimen/button_margin"
+                android:padding="@dimen/button_padding"
+                android:textColor="@color/colorButtonText"
+                android:background="@drawable/button_rect" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

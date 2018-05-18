@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorBackground">#EEEEFF</color>
+    <color name="colorBackground2">#DDDDFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#0000FF</color>
@@ -17,4 +18,5 @@
     <color name="colorButtonGameBorder">#660000</color>
     <color name="colorButtonGameBorderGrad">#BB0000</color>
     <color name="colorButtonText">#888888</color>
+    <color name="colorLine">#555555</color>
 </resources>
