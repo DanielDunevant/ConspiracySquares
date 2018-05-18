@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -55,52 +56,62 @@ class Post extends AsyncTask<String, String, String> {
         try {
             OutputStream out;
             InputStream in;
-            URL url = new URL(data[0]);
-            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
 
-            urlConnection.setReadTimeout(15000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);
-
-            urlConnection.connect();
-
-            out = urlConnection.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
-            writer.write(data[1]);
-            writer.flush();
-            writer.close();
-            out.close();
-
-            if (urlConnection.getResponseCode() != HttpsURLConnection.HTTP_OK)
+            URL urlTest = new URL("http://connectivitycheck.gstatic.com/generate_204");
+            HttpURLConnection urlConnectionTest = (HttpURLConnection) urlTest.openConnection();
+            int nStatusReach = urlConnectionTest.getResponseCode();
+            if (nStatusReach != 204)
             {
-                Log.e("HTTPS Exception", "https response code is: " + urlConnection.getResponseCode());
+                Log.e("HTTP Reach Exception", "http response code is: " + nStatusReach);
                 strResult = ErrorString;
             }
             else
             {
-                in = urlConnection.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                URL url = new URL(data[0]);
+                HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
 
-                String line;
-                StringBuilder postGet = new StringBuilder();
-                while ((line = reader.readLine()) != null) {
-                    postGet.append(line);
+                urlConnection.setReadTimeout(15000);
+                urlConnection.setConnectTimeout(15000);
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(true);
+
+                urlConnection.connect();
+
+                out = urlConnection.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+
+                writer.write(data[1]);
+                writer.flush();
+                writer.close();
+                out.close();
+
+                int nStatus = urlConnection.getResponseCode();
+                if (nStatus != HttpsURLConnection.HTTP_OK && nStatus != HttpsURLConnection.HTTP_NO_CONTENT) {
+                    Log.e("HTTP Connect Exception", "http response code is: " + nStatus);
+                    strResult = ErrorString;
+                } else {
+                    in = urlConnection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+
+                    String line;
+                    StringBuilder postGet = new StringBuilder();
+                    while ((line = reader.readLine()) != null) {
+                        postGet.append(line);
+                    }
+
+                    strResult = postGet.toString();
+                    if (strResult.isEmpty()) strResult = OkayString;
+
+                    in.close();
                 }
 
-                strResult = postGet.toString();
-                if (strResult.isEmpty()) strResult = OkayString;
-
-                in.close();
+                urlConnection.disconnect();
             }
-
-            urlConnection.disconnect();
         } catch (Exception e) {
             strResult = ErrorString;
-            Log.e("Exception", e.getMessage(), e);
+            Log.e("HTTP POST Exception", e.getMessage(), e);
         }
 
         return strResult;
