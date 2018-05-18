@@ -13,4 +13,6 @@
     <string name="button_join">Join Server</string>
     <string name="button_refresh">Refresh</string>
     <string name="title_host">Create Cloud Server</string>
+    <string name="txt_Servers">Servers</string>
+    <string name="txt_Players"># of Players</string>
 </resources>

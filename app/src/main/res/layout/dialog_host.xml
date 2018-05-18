@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ID_dialog_host"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_margin="@dimen/button_margin"
-    android:background="@color/colorBackground2">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/none"
+    android:background="@color/colorBackground2"
+    android:gravity="center"
+    android:padding="@dimen/none">
 
     <TextView
-        android:text="@string/title_host"
         android:id="@+id/ID_dialog_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/none"
+        android:background="@color/colorButton"
+        android:gravity="center"
+        android:padding="@dimen/button_padding"
+        android:text="@string/title_host"
         android:textColor="@color/colorButtonText"
         android:textSize="@dimen/title_text"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:background="@color/colorButton"
-        android:layout_margin="@dimen/none"
-        android:padding="@dimen/button_padding"/>
+        android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/dialog_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/dialog_main"
+        android:layout_below="@+id/ID_dialog_title"
+        android:layout_marginTop="@dimen/button_margin"
+        android:background="@color/colorBackground2"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:orientation="vertical"
         android:padding="@dimen/none"
-        android:layout_marginTop="@dimen/button_margin"
-        android:layout_below="@+id/ID_dialog_title"
-        android:weightSum="1"
-        android:background="@color/colorBackground2" >
+        android:weightSum="1">
 
         <EditText
             android:id="@+id/server_name_input"
@@ -54,43 +56,43 @@
             android:windowSoftInputMode="stateHidden" />
 
         <LinearLayout
+            android:id="@+id/dialog_main_btns"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:id="@+id/dialog_main_btns"
+            android:layout_below="@+id/server_search"
+            android:layout_margin="@dimen/none"
+            android:background="@color/colorBackground2"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:orientation="horizontal"
             android:padding="@dimen/none"
-            android:layout_margin="@dimen/none"
-            android:layout_below="@+id/server_search"
-            android:weightSum="2"
-            android:background="@color/colorBackground2" >
+            android:weightSum="2">
 
             <Button
                 android:id="@+id/ID_dialog_button_back"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/button_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/button_back"
+                android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/button_margin"
+                android:layout_weight="1"
+                android:background="@drawable/button_rect"
                 android:padding="@dimen/button_padding"
+                android:text="@string/button_back"
                 android:textColor="@color/colorButtonText"
-                android:background="@drawable/button_rect" />
+                android:textSize="@dimen/button_text" />
 
             <Button
                 android:id="@+id/ID_dialog_button_host"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/button_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/button_host"
+                android:layout_gravity="center_vertical"
                 android:layout_margin="@dimen/button_margin"
+                android:layout_weight="1"
+                android:background="@drawable/button_rect"
                 android:padding="@dimen/button_padding"
+                android:text="@string/button_host"
                 android:textColor="@color/colorButtonText"
-                android:background="@drawable/button_rect" />
+                android:textSize="@dimen/button_text" />
 
         </LinearLayout>
     </LinearLayout>

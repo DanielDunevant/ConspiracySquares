@@ -20,15 +20,40 @@
         android:padding="@dimen/none"
         android:weightSum="1">
 
-        <Button
-            android:id="@+id/ID_btn_create"
-            android:layout_width="@dimen/button_size_sm"
-            android:layout_height="0dp"
-            android:layout_gravity="end"
+        <LinearLayout
+            android:id="@+id/ID_layout_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/none"
-            android:layout_weight="1"
-            android:background="@drawable/add_server_button"
-            android:padding="@dimen/none" />
+            android:layout_gravity="right"
+            android:orientation="horizontal"
+            android:padding="@dimen/none"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/ID_txt_Host"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/none"
+                android:layout_gravity="center_vertical"
+                android:text="@string/title_host"
+                android:textColor="@color/colorInput"
+                android:textSize="@dimen/button_text"
+                android:gravity="end"
+                android:textAlignment="viewEnd"
+                android:paddingRight="@dimen/button_padding"
+                android:background="@android:color/transparent"/>
+
+            <Button
+                android:id="@+id/ID_btn_create"
+                android:layout_width="@dimen/button_size_sm"
+                android:layout_height="@dimen/button_size_sm"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layout_margin="@dimen/none"
+                android:background="@drawable/vec_plus"
+                android:padding="@dimen/none" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -39,20 +64,88 @@
             android:orientation="horizontal"
             android:padding="@dimen/none" />
 
-        <ScrollView
-            android:id="@+id/ID_scroll_servers"
+        <LinearLayout
+            android:id="@+id/ID_layout_txts"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:fillViewport="true">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/none"
+            android:orientation="horizontal"
+            android:padding="@dimen/none"
+            android:weightSum="4">
 
-            <RadioGroup
-                android:id="@+id/ID_serverlist"
-                android:orientation="vertical"
+            <TextView
+                android:id="@+id/ID_txt_Servers"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/none"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="@string/txt_Servers"
+                android:textAlignment="center"
+                android:textSize="@dimen/button_text"
+                android:textColor="@color/colorInput"
+                android:background="@android:color/transparent"/>
 
-        </ScrollView>
+            <TextView
+                android:id="@+id/ID_txt_Players"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/none"
+                android:layout_gravity="start"
+                android:layout_weight="3"
+                android:text="@string/txt_Players"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/button_text"
+                android:textColor="@color/colorInput"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ID_layout_scrolls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/none"
+            android:orientation="horizontal"
+            android:padding="@dimen/none"
+            android:weightSum="4">
+
+            <ScrollView
+                android:id="@+id/ID_scroll_servers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:layout_weight="1"
+                android:fillViewport="true">
+
+                <RadioGroup
+                    android:id="@+id/ID_serverlist"
+                    android:orientation="vertical"
+                    android:layout_gravity="start"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/button_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </ScrollView>
+            <ScrollView
+                android:id="@+id/ID_scroll_players"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:layout_weight="3"
+                android:fillViewport="true">
+
+                <ListView
+                    android:id="@+id/ID_serverlist_players"
+                    android:orientation="vertical"
+                    android:layout_gravity="start"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/button_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </ScrollView>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -92,19 +92,33 @@ public class Servers extends AppCompatActivity {
                 {
                     String strGet;
                     int nNumPlayers;
-                    LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 1);
-                    while (!LastResult.isEmpty() && !LastResult.equals(";")) {
-                        strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
+                    boolean bNext = true;
+                    if (!LastResult.contains("+")) bNext = false;
+                    while (bNext)
+                    {
+                        strGet = LastResult.substring(1, LastResult.indexOf('&', 1));
                         ServerNames.add(strGet);
-                        nNumPlayers = Integer.parseInt(LastResult.substring(LastResult.indexOf('&', 0) + 1, LastResult.indexOf('+', 0)));
+
+                        int nLastIndex = LastResult.indexOf('+', 1);
+                        if (nLastIndex < 0)
+                        {
+                            bNext = false;
+                            nNumPlayers = Integer.parseInt(LastResult.substring(LastResult.indexOf('&', 1) + 1, LastResult.indexOf(';', 1)));
+                        }
+                        else
+                        {
+                            nNumPlayers = Integer.parseInt(LastResult.substring(LastResult.indexOf('&', 1) + 1, nLastIndex));
+                            LastResult = LastResult.substring(nLastIndex);
+                        }
+
                         ServerPlayers.add(nNumPlayers);
-                        LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 1);
 
                         RadioButton addBtn = new RadioButton(ctx_servers);
                         String strText = strGet + "  w/ " + nNumPlayers + " Player(s) Online";
                         addBtn.setText(strText);
-                        Servers.put(addBtn.getId(), ServerNames.size()-1);
+                        addBtn.setTextColor(getResources().getColor(R.color.colorInput));
                         ServerLayoutBtns.addView(addBtn);
+                        Servers.put(addBtn.getId(), ServerNames.size()-1);
                     }
                 }
             }
@@ -127,20 +141,24 @@ public class Servers extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int selectedId = ServerLayoutBtns.getCheckedRadioButtonId();
-                int nServerIndex = Servers.get(selectedId);
-                String strServer = ServerNames.get(nServerIndex);
-                int nPlayers = ServerPlayers.get(nServerIndex);
+                if (selectedId != -1) {
+                    int nServerIndex = Servers.get(selectedId);
+                    String strServer = ServerNames.get(nServerIndex);
+                    int nPlayers = ServerPlayers.get(nServerIndex);
 
-                //TEMP CODE BELOW
-                ArrayList<String> params = new ArrayList<>();
-                params.add("ReqPass");
-                params.add("X");
-                params.add("ServerName");
-                params.add(strServer);
-                String ParemsString = Post.GetParemsString(params);
+                    //TEMP CODE BELOW
+                    ArrayList<String> params = new ArrayList<>();
+                    params.add("ReqPass");
+                    params.add("X");
+                    params.add("ServerName");
+                    params.add(strServer);
+                    String ParemsString = Post.GetParemsString(params);
 
-                Post newPost = new Post();
-                newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
+                    Post newPost = new Post();
+                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
+
+                    Refresh(ctx_servers);
+                }
             }
         });
 

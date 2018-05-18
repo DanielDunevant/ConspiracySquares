@@ -10,6 +10,7 @@
     <color name="colorInputBack">#FFFFFF</color>
     <color name="colorInputHighlight">#AAAAFF</color>
     <color name="colorInput">#000066</color>
+    <color name="colorAddPress">#FFFFFF</color>
     <color name="colorButton">#FFFFFF</color>
     <color name="colorButtonPress">#EEEEEE</color>
     <color name="colorButtonBorder">#AAAAAA</color>

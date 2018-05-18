@@ -26,6 +26,7 @@ class Post extends AsyncTask<String, String, String> {
     }
 
     private String ErrorString = "ERROR";
+    private String OkayString = "OKAY";
     private RunnableArgs PostFunc = null;
     private RunnableArgs PostFuncErr = null;
 
@@ -93,6 +94,7 @@ class Post extends AsyncTask<String, String, String> {
                 }
 
                 strResult = postGet.toString();
+                if (strResult.isEmpty()) strResult = OkayString;
 
                 in.close();
             }
