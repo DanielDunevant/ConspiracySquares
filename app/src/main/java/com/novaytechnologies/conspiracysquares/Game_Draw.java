@@ -15,17 +15,18 @@ import android.widget.FrameLayout;
 public class Game_Draw extends FrameLayout {
     Paint paint = new Paint();
 
+    boolean bStarted = false;
+
     int nWidth;
     int nHeight;
     int nWidth_Center;
     int nHeight_Center;
 
     int nBoxSize;
-
     int nMoveX = 0;
     int nMoveY = 0;
 
-    float fPlayerSpeed = 0f;
+    float fPlayerSpeed = 20f;
     float fPlayerPosX = 0f;
     float fPlayerPosY = 0f;
 
@@ -51,6 +52,12 @@ public class Game_Draw extends FrameLayout {
 
         nWidth_Center = widthMeasureSpec/2;
         nHeight_Center = heightMeasureSpec/2;
+        if (!bStarted)
+        {
+            fPlayerPosX = nWidth_Center;
+            fPlayerPosY = nHeight_Center;
+            bStarted = true;
+        }
 
         nBoxSize = (nWidth < nHeight) ? nWidth/20 : nHeight/20;
         nBoxSize = (nBoxSize > 4) ? nBoxSize : 5;
