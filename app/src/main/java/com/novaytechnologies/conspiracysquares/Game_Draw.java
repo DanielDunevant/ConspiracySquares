@@ -12,8 +12,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+
 public class Game_Draw extends FrameLayout {
-    Paint paint = new Paint();
+    Paint paintPlayer = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     boolean bStarted = false;
 
@@ -22,13 +24,23 @@ public class Game_Draw extends FrameLayout {
     int nWidth_Center;
     int nHeight_Center;
 
-    int nBoxSize;
-    int nMoveX = 0;
-    int nMoveY = 0;
+    float fBoxSize;
+    float fBoxMov;
+    float fMoveX = 0;
+    float fMoveY = 0;
+    float fPlayerSpeedX = 1;
+    float fPlayerSpeedY = 1;
+    float fPlayerTime = 0;
+    long lMoveStart;
+    long lMoveDelta;
 
     float fPlayerSpeed = 20f;
     float fPlayerPosX = 0f;
     float fPlayerPosY = 0f;
+    float fPlayerPosXstart = 0f;
+    float fPlayerPosYstart = 0f;
+    ArrayList<Float> fPlayersX = new ArrayList<>();
+    ArrayList<Float> fPlayersY = new ArrayList<>();
 
     public Game_Draw(Context ctx) {
         this(ctx, null);
@@ -47,31 +59,57 @@ public class Game_Draw extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        nWidth = widthMeasureSpec;
-        nHeight = heightMeasureSpec;
 
-        nWidth_Center = widthMeasureSpec/2;
-        nHeight_Center = heightMeasureSpec/2;
+        nWidth = MeasureSpec.getSize(widthMeasureSpec);
+        nHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+        nWidth_Center = (int)Math.round(nWidth/2.0);
+        nHeight_Center = (int)Math.round(nHeight/2.0);
         if (!bStarted)
         {
+            paintPlayer.setColor(Color.BLACK);
+            paintPlayer.setStyle(Paint.Style.FILL);
+
             fPlayerPosX = nWidth_Center;
             fPlayerPosY = nHeight_Center;
+            fMoveX = fPlayerPosX;
+            fMoveY = fPlayerPosY;
+            lMoveStart = System.currentTimeMillis();
+
             bStarted = true;
         }
 
-        nBoxSize = (nWidth < nHeight) ? nWidth/20 : nHeight/20;
-        nBoxSize = (nBoxSize > 4) ? nBoxSize : 5;
+        fBoxSize = (nWidth < nHeight) ? nWidth/20 : nHeight/20;
+        fBoxMov = 1.5f * fBoxSize;
 
-        fPlayerSpeed = nBoxSize * 20f;
+        fPlayerSpeed = fBoxSize / 50f;
+
+        setMeasuredDimension(nWidth, nHeight);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        nMoveX = (int)event.getX();
-        nMoveY = (int)event.getY();
-        if (event.getAction() == MotionEvent.ACTION_MOVE)
-            performClick();
+        if (event.getAction() == MotionEvent.ACTION_UP || lMoveStart < System.currentTimeMillis() - 150)
+        {
+            fMoveX = event.getX();
+            fMoveY = event.getY();
+            fPlayerPosXstart = fPlayerPosX;
+            fPlayerPosYstart = fPlayerPosY;
+
+            float fPlayerXdist = fMoveX - fPlayerPosX;
+            float fPlayerYdist = fMoveY - fPlayerPosY;
+            float fPlayerDist = (float) (Math.sqrt(Math.pow(fPlayerXdist, 2) + Math.pow(fPlayerYdist, 2)));
+
+            fPlayerTime = fPlayerDist / fPlayerSpeed;
+
+            fPlayerSpeedX = fPlayerXdist / fPlayerTime;
+            fPlayerSpeedY = fPlayerYdist / fPlayerTime;
+
+            lMoveStart = System.currentTimeMillis();
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN)
+                performClick();
+        }
         return true;
     }
 
@@ -79,30 +117,6 @@ public class Game_Draw extends FrameLayout {
     public boolean performClick()
     {
         super.performClick();
-        //if (nMoveX > (nWidth_Center + nBoxSize) || nMoveX < (nWidth_Center - nBoxSize)
-        //        || nMoveY > (nHeight_Center + nBoxSize) || nMoveY < (nHeight_Center - nBoxSize))
-        //{
-            ValueAnimator MoveBox_X = ValueAnimator.ofFloat(fPlayerPosX, (float)nMoveX);
-            ValueAnimator MoveBox_Y = ValueAnimator.ofFloat(fPlayerPosY, (float)nMoveY);
-
-            int nDuration = 1000 * (int)(Math.sqrt((fPlayerPosX-nMoveX)*(fPlayerPosX-nMoveX) + (fPlayerPosY-nMoveY)*(fPlayerPosY-nMoveY)) / fPlayerSpeed);
-            MoveBox_X.setDuration(nDuration);
-            MoveBox_Y.setDuration(nDuration);
-
-            MoveBox_X.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    fPlayerPosX = (float)animation.getAnimatedValue();
-                }
-            });
-            MoveBox_Y.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    fPlayerPosY = (float)animation.getAnimatedValue();
-                }
-            });
-
-            MoveBox_X.start();
-            MoveBox_Y.start();
-        //}
         return true;
     }
 
@@ -110,8 +124,21 @@ public class Game_Draw extends FrameLayout {
     {
         super.onDraw(canvas);
 
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(4);
-        canvas.drawRect(fPlayerPosX-nBoxSize, fPlayerPosY-nBoxSize, fPlayerPosX+nBoxSize, fPlayerPosY+nBoxSize, paint);
+        lMoveDelta = System.currentTimeMillis() - lMoveStart;
+
+        if (fPlayerTime > lMoveDelta)
+        {
+            fPlayerPosX = fPlayerPosXstart + fPlayerSpeedX * lMoveDelta;
+            fPlayerPosY = fPlayerPosYstart + fPlayerSpeedY * lMoveDelta;
+        }
+        else
+        {
+            fPlayerPosX = fMoveX;
+            fPlayerPosY = fMoveY;
+        }
+
+        canvas.drawRect(fPlayerPosX-fBoxSize, fPlayerPosY-fBoxSize, fPlayerPosX+fBoxSize, fPlayerPosY+fBoxSize, paintPlayer);
+
+        this.invalidate();
     }
 }
