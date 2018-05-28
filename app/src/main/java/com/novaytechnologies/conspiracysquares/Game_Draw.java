@@ -2,43 +2,46 @@
 
 package com.novaytechnologies.conspiracysquares;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game_Draw extends FrameLayout {
-    Paint paintPlayer = new Paint(Paint.ANTI_ALIAS_FLAG);
+    Drawable SQUARE;
+    ArrayList<Integer> ColorOtherPlayer = new ArrayList<>();
 
     boolean bStarted = false;
+
+    int nCurrentPlayers = 0;
 
     int nWidth;
     int nHeight;
     int nWidth_Center;
     int nHeight_Center;
-
-    float fBoxSize;
-    float fBoxMov;
-    float fMoveX = 0;
-    float fMoveY = 0;
-    float fPlayerSpeedX = 1;
-    float fPlayerSpeedY = 1;
-    float fPlayerTime = 0;
-    long lMoveStart;
+    long lMoveTick;
+    long lMoveLast;
     long lMoveDelta;
+    float fBoxSize;
 
-    float fPlayerSpeed = 20f;
-    float fPlayerPosX = 0f;
-    float fPlayerPosY = 0f;
-    float fPlayerPosXstart = 0f;
-    float fPlayerPosYstart = 0f;
+    int nPlayer_SQUARE_COLOR;
+    float fPlayer_PosX = 0f;
+    float fPlayer_PosY = 0f;
+    float fPlayer_MoveX = 0f;
+    float fPlayer_MoveY = 0f;
+    float fPlayer_Speed = 0f;
+    float fPlayer_SpeedX = 0f;
+    float fPlayer_SpeedY = 0f;
+    float fPlayer_Time = 0f;
+
     ArrayList<Float> fPlayersX = new ArrayList<>();
     ArrayList<Float> fPlayersY = new ArrayList<>();
 
@@ -67,22 +70,23 @@ public class Game_Draw extends FrameLayout {
         nHeight_Center = (int)Math.round(nHeight/2.0);
         if (!bStarted)
         {
-            paintPlayer.setColor(Color.BLACK);
-            paintPlayer.setStyle(Paint.Style.FILL);
+            SQUARE = this.getResources().getDrawable(R.drawable.vec_square);
+            Random randColor = new Random(System.currentTimeMillis());
+            nPlayer_SQUARE_COLOR = Color.rgb(randColor.nextInt(255), randColor.nextInt(255), randColor.nextInt(255));
+            SQUARE.setColorFilter(nPlayer_SQUARE_COLOR, PorterDuff.Mode.MULTIPLY);
 
-            fPlayerPosX = nWidth_Center;
-            fPlayerPosY = nHeight_Center;
-            fMoveX = fPlayerPosX;
-            fMoveY = fPlayerPosY;
-            lMoveStart = System.currentTimeMillis();
+            fPlayer_PosX = nWidth_Center;
+            fPlayer_PosY = nHeight_Center;
+            fPlayer_MoveX = fPlayer_PosX;
+            fPlayer_MoveY = fPlayer_PosY;
+            lMoveLast = System.currentTimeMillis();
 
             bStarted = true;
         }
 
-        fBoxSize = (nWidth < nHeight) ? nWidth/20 : nHeight/20;
-        fBoxMov = 1.5f * fBoxSize;
+        fBoxSize = (nWidth < nHeight) ? nWidth/20f : nHeight/20f;
 
-        fPlayerSpeed = fBoxSize / 50f;
+        fPlayer_Speed = fBoxSize / 50f;
 
         setMeasuredDimension(nWidth, nHeight);
     }
@@ -90,25 +94,27 @@ public class Game_Draw extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (event.getAction() == MotionEvent.ACTION_UP || lMoveStart < System.currentTimeMillis() - 150)
+        if (event.getAction() == MotionEvent.ACTION_DOWN || System.currentTimeMillis() - lMoveTick > 100L)
         {
-            fMoveX = event.getX();
-            fMoveY = event.getY();
-            fPlayerPosXstart = fPlayerPosX;
-            fPlayerPosYstart = fPlayerPosY;
+            fPlayer_MoveX = event.getX();
+            fPlayer_MoveY = event.getY();
 
-            float fPlayerXdist = fMoveX - fPlayerPosX;
-            float fPlayerYdist = fMoveY - fPlayerPosY;
+            float fPlayerXdist = fPlayer_MoveX - fPlayer_PosX;
+            float fPlayerYdist = fPlayer_MoveY - fPlayer_PosY;
             float fPlayerDist = (float) (Math.sqrt(Math.pow(fPlayerXdist, 2) + Math.pow(fPlayerYdist, 2)));
 
-            fPlayerTime = fPlayerDist / fPlayerSpeed;
+            fPlayer_Time = fPlayerDist / fPlayer_Speed;
 
-            fPlayerSpeedX = fPlayerXdist / fPlayerTime;
-            fPlayerSpeedY = fPlayerYdist / fPlayerTime;
+            fPlayer_SpeedX = fPlayerXdist / fPlayer_Time;
+            fPlayer_SpeedY = fPlayerYdist / fPlayer_Time;
 
-            lMoveStart = System.currentTimeMillis();
-            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_DOWN)
-                performClick();
+            lMoveLast = lMoveTick = System.currentTimeMillis();
+        }
+        if (event.getAction() == MotionEvent.ACTION_UP)
+        {
+            fPlayer_SpeedX = 0f;
+            fPlayer_SpeedY = 0f;
+            performClick();
         }
         return true;
     }
@@ -120,24 +126,24 @@ public class Game_Draw extends FrameLayout {
         return true;
     }
 
+    private void DrawPlayer(Canvas canvas, Drawable square, float fX, float fY)
+    {
+        square.setBounds((int)(fX - fBoxSize), (int)(fY - fBoxSize), (int)(fX + fBoxSize), (int)(fY + fBoxSize));
+        square.draw(canvas);
+    }
+
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
 
-        lMoveDelta = System.currentTimeMillis() - lMoveStart;
+        lMoveDelta = System.currentTimeMillis() - lMoveLast;
 
-        if (fPlayerTime > lMoveDelta)
-        {
-            fPlayerPosX = fPlayerPosXstart + fPlayerSpeedX * lMoveDelta;
-            fPlayerPosY = fPlayerPosYstart + fPlayerSpeedY * lMoveDelta;
-        }
-        else
-        {
-            fPlayerPosX = fMoveX;
-            fPlayerPosY = fMoveY;
-        }
+        fPlayer_PosX = fPlayer_PosX + fPlayer_SpeedX * lMoveDelta;
+        fPlayer_PosY = fPlayer_PosY + fPlayer_SpeedY * lMoveDelta;
 
-        canvas.drawRect(fPlayerPosX-fBoxSize, fPlayerPosY-fBoxSize, fPlayerPosX+fBoxSize, fPlayerPosY+fBoxSize, paintPlayer);
+        lMoveLast = System.currentTimeMillis();
+
+        DrawPlayer(canvas, SQUARE, fPlayer_PosX, fPlayer_PosY);
 
         this.invalidate();
     }

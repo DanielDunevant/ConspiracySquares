@@ -28,12 +28,13 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="5c5957" />
-                            <entry key="height" value="12" />
-                            <entry key="outputName" value="under_line" />
+                            <entry key="height" value="128" />
+                            <entry key="outputName" value="vec_square" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Danie" />
-                            <entry key="width" value="96" />
+                            <entry key="sourceFile" value="C:\Users\Jesse\Documents\Novay_Technologies\Square.svg" />
+                            <entry key="width" value="128" />
                           </map>
                         </option>
                       </PersistentState>
