@@ -9,11 +9,12 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 
-import java.io.File;
 import java.util.Random;
 
 class Game_Player
 {
+    static private final int FLAG_ALIVE = 0b1;
+
     static private Game_Player Self;
 
     static private Paint sm_txtPaint;
@@ -31,13 +32,20 @@ class Game_Player
     private int m_sync_nSQUARE_COLOR;
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
-
-    private boolean m_sync_bAlive = true;
+    private int m_sync_nFlags = -1;
 
     private float m_fDrawX = 0f;
     private float m_fDrawY = 0f;
     private float m_fSpeedX = 0f;
     private float m_fSpeedY = 0f;
+
+    private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
+
+    static float GetX() {return Self.m_sync_fPosX;}
+    static float GetY() {return Self.m_sync_fPosY;}
+    static int GetFlags() {return Self.m_sync_nFlags;}
+    static int GetColor() {return Self.m_sync_nSQUARE_COLOR;}
+    static String GetName() {return Self.m_sync_strName;}
 
     static void CreateSelf(Context ctx)
     {
@@ -80,47 +88,53 @@ class Game_Player
         }
     }
 
-    void Create(Context ctx, int nColor, String strName)
-    {
-        Game_Player newPlayer = new Game_Player();
-        newPlayer.m_sync_strName = strName;
-
-        newPlayer.m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
-        newPlayer.m_sync_nSQUARE_COLOR = nColor;
-        newPlayer.m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
-    }
-
-    void SetGlobalPos(float fX, float fY)
-    {
-        m_sync_fPosX = fX;
-        m_sync_fPosY = fY;
-    }
-
-    void Kill(Context ctx)
+    private void Kill(Context ctx)
     {
         m_SQUARE.clearColorFilter();
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.Square_Broken);
-        m_sync_bAlive = false;
+        m_sync_nFlags -= FLAG_ALIVE;
+    }
+
+    void UpdateName(String strName) {m_sync_strName = strName;}
+    void UpdateX(float fX) {m_sync_fPosX = fX;}
+    void UpdateY(float fY) {m_sync_fPosY = fY;}
+    void UpdateColor(int nColor, Context ctx)
+    {
+        m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
+        m_sync_nSQUARE_COLOR = nColor;
+        m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
+    }
+    void UpdateF(int nFlags, Context ctx)
+    {
+        int nPrevFlags = m_sync_nFlags;
+        m_sync_nFlags = nFlags;
+        if (nPrevFlags != nFlags)
+        {
+            if (!isAlive()) Kill(ctx);
+        }
     }
 
     void DrawPlayer(Canvas canvas, long lDelta)
     {
-        if (this.equals(Self))
+        if (m_sync_nFlags >= 0)
         {
-            if (m_sync_bAlive)
+            if (this.equals(Self))
             {
-                m_sync_fPosX = m_sync_fPosX + m_fSpeedX * lDelta;
-                m_sync_fPosY = m_sync_fPosY + m_fSpeedY * lDelta;
+                if (isAlive())
+                {
+                    m_sync_fPosX = m_sync_fPosX + m_fSpeedX * lDelta;
+                    m_sync_fPosY = m_sync_fPosY + m_fSpeedY * lDelta;
+                }
             }
-        }
-        else
-        {
-            m_fDrawX = Self.m_fDrawX - Self.m_sync_fPosX - m_sync_fPosX;
-            m_fDrawY = Self.m_fDrawY - Self.m_sync_fPosY - m_sync_fPosY;
-        }
+            else
+            {
+                m_fDrawX = Self.m_fDrawX - Self.m_sync_fPosX - m_sync_fPosX;
+                m_fDrawY = Self.m_fDrawY - Self.m_sync_fPosY - m_sync_fPosY;
+            }
 
-        m_SQUARE.setBounds((int)(m_fDrawX - sm_fBoxSize), (int)(m_fDrawY - sm_fBoxSize), (int)(m_fDrawX + sm_fBoxSize), (int)(m_fDrawY + sm_fBoxSize));
-        m_SQUARE.draw(canvas);
-        canvas.drawText(m_sync_strName, m_fDrawX, m_fDrawY, sm_txtPaint);
+            m_SQUARE.setBounds((int) (m_fDrawX - sm_fBoxSize), (int) (m_fDrawY - sm_fBoxSize), (int) (m_fDrawX + sm_fBoxSize), (int) (m_fDrawY + sm_fBoxSize));
+            m_SQUARE.draw(canvas);
+            canvas.drawText(m_sync_strName, m_fDrawX, m_fDrawY, sm_txtPaint);
+        }
     }
 }

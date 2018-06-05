@@ -69,14 +69,19 @@ public class Layout_Game_Draw extends FrameLayout {
         return true;
     }
 
+    void DrawGrid(Canvas canvas)
+    {
+        //TODO Grid Drawing
+    }
+
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
 
         lMoveDelta = System.currentTimeMillis() - lMoveLast;
 
-        Game_Main.SyncWithServer();
-        Game_Main.DrawGrid(canvas);
+        Game_Main.SyncWithServer(this.getContext(), false);
+        DrawGrid(canvas);
         for (Game_Player Player : Game_Main.sm_PlayersArray)
         {
             Player.DrawPlayer(canvas, lMoveTick);

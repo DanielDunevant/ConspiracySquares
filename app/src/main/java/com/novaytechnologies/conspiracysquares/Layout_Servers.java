@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 public class Layout_Servers extends AppCompatActivity {
 
-    static final public int MAX_PLAYERS = 128;
+    static final public int MAX_PLAYERS = 32;
 
     static HashMap<Integer, Integer> Servers;
     static ArrayList<String> ServerNames;
@@ -185,20 +185,6 @@ public class Layout_Servers extends AppCompatActivity {
 
                     if (nPlayers < MAX_PLAYERS)
                     {
-                        /*
-                        //TEMP CODE BELOW
-                        ArrayList<String> params = new ArrayList<>();
-                        params.add("ReqPass");
-                        params.add("X");
-                        params.add("ServerName");
-                        params.add(strServer);
-                        String ParemsString = Utility_Post.GetParemsString(params);
-
-                        Utility_Post newPost = new Utility_Post();
-                        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
-
-                        Refresh(ctx_servers);
-                        */
                         Intent newIntent = new Intent(Layout_Servers.this, Layout_Game.class);
                         newIntent.putExtra(Layout_Main.FIND_SERVER, false);
                         newIntent.putExtra(Layout_Main.SERVER, strServer);
