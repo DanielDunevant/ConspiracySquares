@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
-class Post extends AsyncTask<String, String, String> {
+class Utility_Post extends AsyncTask<String, String, String> {
 
     abstract static class RunnableArgs implements Runnable {
         private String[] Args;

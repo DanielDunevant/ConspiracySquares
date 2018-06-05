@@ -13,14 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main">
+        <activity android:name=".Layout_Main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Game" />
-        <activity android:name=".Servers" />
+        <activity android:name=".Layout_Game" />
+        <activity android:name=".Layout_Servers" />
     </application>
 
 </manifest>

@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class Main extends AppCompatActivity {
+public class Layout_Main extends AppCompatActivity {
 
     static String sm_strName;
 
@@ -22,6 +22,7 @@ public class Main extends AppCompatActivity {
     static final String conspiracysquares_SHPREF_NAME = ".name";
 
     static final String FIND_SERVER = "Find_Server";
+    static final String SERVER = "Server_Name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class Main extends AppCompatActivity {
                             sm_SH_Pref.edit().putString(conspiracysquares_SHPREF + conspiracysquares_SHPREF_NAME, sm_strName).apply();
                             txt_error.setVisibility(View.GONE);
 
-                            Intent newIntent = new Intent(Main.this, Game.class);
+                            Intent newIntent = new Intent(Layout_Main.this, Layout_Game.class);
                             newIntent.putExtra(FIND_SERVER, true);
                             startActivity(newIntent);
                         }
@@ -70,7 +71,7 @@ public class Main extends AppCompatActivity {
                             sm_SH_Pref.edit().putString(conspiracysquares_SHPREF + conspiracysquares_SHPREF_NAME, sm_strName).apply();
                             txt_error.setVisibility(View.GONE);
 
-                            Intent newIntent = new Intent(Main.this, Servers.class);
+                            Intent newIntent = new Intent(Layout_Main.this, Layout_Servers.class);
                             startActivity(newIntent);
                         }
                         else txt_error.setVisibility(View.VISIBLE);

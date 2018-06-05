@@ -5,6 +5,7 @@ package com.novaytechnologies.conspiracysquares;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Servers extends AppCompatActivity {
+public class Layout_Servers extends AppCompatActivity {
 
     static final public int MAX_PLAYERS = 128;
 
@@ -64,12 +65,12 @@ public class Servers extends AppCompatActivity {
                 params.add("X");
                 params.add("ServerName");
                 params.add(input_name.getText().toString());
-                String ParemsString = Post.GetParemsString(params);
+                String ParemsString = Utility_Post.GetParemsString(params);
 
-                Post newPost = new Post();
+                Utility_Post newPost = new Utility_Post();
                 newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
 
-                ((Servers)ctx).Refresh(ctx);
+                ((Layout_Servers)ctx).Refresh(ctx);
                 dialog_basic.dismiss();
             }
         });
@@ -95,8 +96,8 @@ public class Servers extends AppCompatActivity {
         LinearLayout playerN = findViewById(R.id.ID_serverlist_players);
         playerN.removeAllViews();
 
-        Post GetServers = new Post();
-        GetServers.SetRunnable(new Post.RunnableArgs() {
+        Utility_Post GetServers = new Utility_Post();
+        GetServers.SetRunnable(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
                 String LastResult = GetArgs()[0];
@@ -180,23 +181,28 @@ public class Servers extends AppCompatActivity {
                 if (selectedId != -1) {
                     int nServerIndex = Servers.get(selectedId);
                     String strServer = ServerNames.get(nServerIndex);
-                    String strPlayer = ServerPlayers.get(nServerIndex);
                     int nPlayers = ServerPlayersInt.get(nServerIndex);
 
                     if (nPlayers < MAX_PLAYERS)
                     {
+                        /*
                         //TEMP CODE BELOW
                         ArrayList<String> params = new ArrayList<>();
                         params.add("ReqPass");
                         params.add("X");
                         params.add("ServerName");
                         params.add(strServer);
-                        String ParemsString = Post.GetParemsString(params);
+                        String ParemsString = Utility_Post.GetParemsString(params);
 
-                        Post newPost = new Post();
+                        Utility_Post newPost = new Utility_Post();
                         newPost.execute("https://conspiracy-squares.appspot.com/Servlet_EndServer", ParemsString);
 
                         Refresh(ctx_servers);
+                        */
+                        Intent newIntent = new Intent(Layout_Servers.this, Layout_Game.class);
+                        newIntent.putExtra(Layout_Main.FIND_SERVER, false);
+                        newIntent.putExtra(Layout_Main.SERVER, strServer);
+                        startActivity(newIntent);
                     }
                 }
             }

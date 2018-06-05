@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context=".Game"
+    tools:context=".Layout_Game"
     android:background="@color/colorBackground">
 
-    <com.novaytechnologies.conspiracysquares.Game_Draw
+    <com.novaytechnologies.conspiracysquares.Layout_Game_Draw
         android:id="@+id/ID_game_draw"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
