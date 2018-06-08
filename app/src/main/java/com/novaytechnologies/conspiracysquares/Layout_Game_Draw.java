@@ -15,6 +15,9 @@ public class Layout_Game_Draw extends FrameLayout {
     int nWidth_Center;
     int nHeight_Center;
 
+    static int nMinSide;
+    static int nMaxSide;
+
     long lMoveTick;
     long lMoveLast;
     long lMoveDelta;
@@ -42,10 +45,13 @@ public class Layout_Game_Draw extends FrameLayout {
         nWidth_Center = (int)Math.round(nWidth/2.0);
         nHeight_Center = (int)Math.round(nHeight/2.0);
 
+        nMinSide = (nWidth < nHeight) ? nWidth : nHeight;
+        nMaxSide = (nWidth > nHeight) ? nWidth : nHeight;
+
         lMoveLast = System.currentTimeMillis();
 
-        Game_Player.UpdateAllSizes((nWidth < nHeight) ? nWidth/20f : nHeight/20f);
-        Game_Player.UpdateSelfCenter(nWidth_Center, nHeight_Center);
+        Game_Player.UpdateAllSizes(nMinSide * Game_Player.fSIZE_FRACTION);
+        Game_Camera.UpdateCenter(nWidth_Center, nHeight_Center);
 
         setMeasuredDimension(nWidth, nHeight);
     }

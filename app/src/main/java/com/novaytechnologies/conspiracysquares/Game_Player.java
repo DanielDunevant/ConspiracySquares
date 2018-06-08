@@ -13,9 +13,10 @@ import java.util.Random;
 
 class Game_Player
 {
-    static private final int FLAG_ALIVE = 0b1;
+    static public final float fSIZE_FRACTION = 0.05f;
+    static private final float fSPEED_PER_MILLI = 0.05f;
 
-    static private Game_Player Self;
+    static private final int FLAG_ALIVE = 0b1;
 
     static private Paint sm_txtPaint;
     static private float sm_fBoxSize = 2f;
@@ -23,63 +24,65 @@ class Game_Player
     static void UpdateAllSizes(float fSize)
     {
         sm_fBoxSize = fSize;
-        sm_fPlayer_Speed = fSize / 20f;
+        sm_fPlayer_Speed = fSize * fSPEED_PER_MILLI;
     }
 
     private Drawable m_SQUARE;
 
     private String m_sync_strName;
-    private int m_sync_nSQUARE_COLOR;
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
     private int m_sync_nFlags = -1;
 
-    private float m_fDrawX = 0f;
-    private float m_fDrawY = 0f;
     private float m_fSpeedX = 0f;
     private float m_fSpeedY = 0f;
 
+    static private int sm_nID = 0;
+    static int GetSelfID() {return sm_nID;}
+    static void SetSelfID(int nID) {sm_nID = nID;}
+    static private Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
+
     private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
 
-    static float GetX() {return Self.m_sync_fPosX;}
-    static float GetY() {return Self.m_sync_fPosY;}
-    static int GetFlags() {return Self.m_sync_nFlags;}
-    static int GetColor() {return Self.m_sync_nSQUARE_COLOR;}
-    static String GetName() {return Self.m_sync_strName;}
+    static float GetX() {return GetSelf().m_sync_fPosX;}
+    static float GetY() {return GetSelf().m_sync_fPosY;}
+    static int GetFlags() {return GetSelf().m_sync_nFlags;}
+
+    static private int sm_nSelfColor;
+    static int GetNewSelfColor()
+    {
+        Random randColor = new Random(System.currentTimeMillis());
+        sm_nSelfColor = Color.rgb(randColor.nextInt(255), randColor.nextInt(255), randColor.nextInt(255));
+        return sm_nSelfColor;
+    }
 
     static void CreateSelf(Context ctx)
     {
-        Self = new Game_Player();
+        Game_Player Self = GetSelf();
 
         Self.m_sync_strName = Layout_Main.sm_strName;
         sm_txtPaint = new Paint();
         sm_txtPaint.setColor(Color.rgb(0, 0, 0));
 
         Self.m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
-        Random randColor = new Random(System.currentTimeMillis());
-        Self.m_sync_nSQUARE_COLOR = Color.rgb(randColor.nextInt(255), randColor.nextInt(255), randColor.nextInt(255));
-        Self.m_SQUARE.setColorFilter(Self.m_sync_nSQUARE_COLOR, PorterDuff.Mode.MULTIPLY);
-    }
-
-    static void UpdateSelfCenter(float fCenterX, float fCenterY)
-    {
-        Self.m_fDrawX = fCenterX;
-        Self.m_fDrawY = fCenterY;
+        Self.m_SQUARE.setColorFilter(sm_nSelfColor, PorterDuff.Mode.MULTIPLY);
     }
 
     static void MoveSelfToLocal(float fScreenX, float fScreenY)
     {
-        if (fScreenX > Self.m_fDrawX + sm_fBoxSize || fScreenX < Self.m_fDrawX - sm_fBoxSize ||
-            fScreenY > Self.m_fDrawY + sm_fBoxSize || fScreenY < Self.m_fDrawY - sm_fBoxSize)
+        Game_Player Self = GetSelf();
+
+        if (fScreenX > Game_Camera.GetDrawX() + sm_fBoxSize || fScreenX < Game_Camera.GetDrawX() - sm_fBoxSize ||
+            fScreenY > Game_Camera.GetDrawY() + sm_fBoxSize || fScreenY < Game_Camera.GetDrawY() - sm_fBoxSize)
         {
-            float fPlayerXdist = fScreenX - Self.m_fDrawX;
-            float fPlayerYdist = fScreenY - Self.m_fDrawY;
+            float fPlayerXdist = fScreenX - Game_Camera.GetDrawX();
+            float fPlayerYdist = fScreenY - Game_Camera.GetDrawY();
             float fPlayerDist = (float) (Math.sqrt(Math.pow(fPlayerXdist, 2) + Math.pow(fPlayerYdist, 2)));
 
             float fPlayer_Time = fPlayerDist / sm_fPlayer_Speed;
 
-            Self.m_fSpeedX = fPlayerXdist / fPlayer_Time;
-            Self.m_fSpeedY = fPlayerYdist / fPlayer_Time;
+            Self.m_fSpeedX = 100 * (fPlayerXdist / fPlayer_Time) / Layout_Game_Draw.nMaxSide;
+            Self.m_fSpeedY = 100 * (fPlayerYdist / fPlayer_Time) / Layout_Game_Draw.nMaxSide;
         }
         else
         {
@@ -101,7 +104,6 @@ class Game_Player
     void UpdateColor(int nColor, Context ctx)
     {
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
-        m_sync_nSQUARE_COLOR = nColor;
         m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
     }
     void UpdateF(int nFlags, Context ctx)
@@ -116,25 +118,35 @@ class Game_Player
 
     void DrawPlayer(Canvas canvas, long lDelta)
     {
+        Game_Player Self = GetSelf();
         if (m_sync_nFlags >= 0)
         {
+            float fDrawX;
+            float fDrawY;
+
             if (this.equals(Self))
             {
+                fDrawX = Game_Camera.GetDrawX();
+                fDrawY = Game_Camera.GetDrawY();
+
                 if (isAlive())
                 {
                     m_sync_fPosX = m_sync_fPosX + m_fSpeedX * lDelta;
                     m_sync_fPosY = m_sync_fPosY + m_fSpeedY * lDelta;
+                    Game_Camera.UpdatePosition(m_sync_fPosX, m_sync_fPosY);
                 }
+                else Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
             }
             else
             {
-                m_fDrawX = Self.m_fDrawX - Self.m_sync_fPosX - m_sync_fPosX;
-                m_fDrawY = Self.m_fDrawY - Self.m_sync_fPosY - m_sync_fPosY;
+                fDrawX = Game_Camera.GetRelativeX(m_sync_fPosX);
+                fDrawY = Game_Camera.GetRelativeY(m_sync_fPosY);
             }
 
-            m_SQUARE.setBounds((int) (m_fDrawX - sm_fBoxSize), (int) (m_fDrawY - sm_fBoxSize), (int) (m_fDrawX + sm_fBoxSize), (int) (m_fDrawY + sm_fBoxSize));
+            m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
             m_SQUARE.draw(canvas);
-            canvas.drawText(m_sync_strName, m_fDrawX, m_fDrawY, sm_txtPaint);
+            canvas.drawText(m_sync_strName, fDrawX, fDrawY, sm_txtPaint);
         }
+        else if (this.equals(Self)) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
     }
 }

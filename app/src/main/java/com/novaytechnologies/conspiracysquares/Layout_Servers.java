@@ -60,17 +60,21 @@ public class Layout_Servers extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TEMP CODE BELOW
-                ArrayList<String> params = new ArrayList<>();
-                params.add("ReqPass");
-                params.add("X");
-                params.add("ServerName");
-                params.add(input_name.getText().toString());
-                String ParemsString = Utility_Post.GetParemsString(params);
+                String strSVRname = input_name.getText().toString();
+                if (!strSVRname.isEmpty())
+                {
+                    ArrayList<String> params = new ArrayList<>();
+                    params.add("ReqPass");
+                    params.add("X");
+                    params.add("ServerName");
+                    params.add(strSVRname);
+                    String ParemsString = Utility_Post.GetParemsString(params);
 
-                Utility_Post newPost = new Utility_Post();
-                newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
+                    Utility_Post newPost = new Utility_Post();
+                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
 
-                ((Layout_Servers)ctx).Refresh(ctx);
+                    ((Layout_Servers) ctx).Refresh(ctx);
+                }
                 dialog_basic.dismiss();
             }
         });

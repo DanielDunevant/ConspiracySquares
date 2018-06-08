@@ -14,8 +14,6 @@ class Game_Main
     static String sm_strServerName;
     static ArrayList<Game_Player> sm_PlayersArray = new ArrayList<>();
 
-    static private int sm_nID = 0;
-
     static private void PopulateFromServer(final Context ctx)
     {
         ArrayList<String> params = new ArrayList<>();
@@ -29,9 +27,9 @@ class Game_Main
         params.add("0");
 
         params.add("Player_Color");
-        params.add(Integer.toString(Game_Player.GetColor()));
+        params.add(Integer.toString(Game_Player.GetNewSelfColor()));
         params.add("Player_Name");
-        params.add(Game_Player.GetName());
+        params.add(Layout_Main.sm_strName);
         String ParemsString = Utility_Post.GetParemsString(params);
 
         Utility_Post newPost = new Utility_Post();
@@ -42,7 +40,8 @@ class Game_Main
                 if (LastResult != null && LastResult.indexOf(';', 0) != -1)
                 {
                     String strGet = LastResult.substring(LastResult.indexOf('=', 0) + 1, LastResult.indexOf('+', 0));
-                    sm_nID = Integer.parseInt(strGet);
+                    Game_Player.SetSelfID(Integer.parseInt(strGet));
+                    Game_Player.CreateSelf(ctx);
                     SyncWithServer(ctx, true);
                 }
             }
@@ -73,7 +72,7 @@ class Game_Main
         params.add("ServerJoined");
         params.add("LEFT");
         params.add("ID");
-        params.add(Integer.toString(sm_nID));
+        params.add(Integer.toString(Game_Player.GetSelfID()));
         String ParemsString = Utility_Post.GetParemsString(params);
 
         Utility_Post newPost = new Utility_Post();
@@ -84,7 +83,6 @@ class Game_Main
     {
         if (!sm_bStarted)
         {
-            Game_Player.CreateSelf(ctx);
             for (int nPlayer = 0; nPlayer < Layout_Servers.MAX_PLAYERS; nPlayer++)
             {
                 sm_PlayersArray.add(new Game_Player());
@@ -114,7 +112,7 @@ class Game_Main
             params.add("ServerJoined");
             params.add("SYNC");
             params.add("ID");
-            params.add(Integer.toString(sm_nID));
+            params.add(Integer.toString(Game_Player.GetSelfID()));
 
             params.add("Player_X");
             params.add(Float.toString(Game_Player.GetX()));
@@ -131,6 +129,8 @@ class Game_Main
                     String LastResult = GetArgs()[0];
                     if (LastResult != null && LastResult.indexOf(';', 0) != -1)
                     {
+                        int nSelfID = Game_Player.GetSelfID();
+
                         String strGet;
                         LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
 
@@ -146,7 +146,7 @@ class Game_Main
                                 bGetNext = false;
                             }
                             else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != sm_nID) sm_PlayersArray.get(nPlayerIndex).UpdateX(Float.parseFloat(strGet));
+                            if (nPlayerIndex != nSelfID) sm_PlayersArray.get(nPlayerIndex).UpdateX(Float.parseFloat(strGet));
                             nPlayerIndex++;
                         }
 
@@ -162,7 +162,7 @@ class Game_Main
                                 bGetNext = false;
                             }
                             else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != sm_nID) sm_PlayersArray.get(nPlayerIndex).UpdateY(Float.parseFloat(strGet));
+                            if (nPlayerIndex != nSelfID) sm_PlayersArray.get(nPlayerIndex).UpdateY(Float.parseFloat(strGet));
                             nPlayerIndex++;
                         }
 
@@ -178,7 +178,7 @@ class Game_Main
                                 bGetNext = false;
                             }
                             else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != sm_nID) sm_PlayersArray.get(nPlayerIndex).UpdateF(Integer.parseInt(strGet), ctx);
+                            if (nPlayerIndex != nSelfID) sm_PlayersArray.get(nPlayerIndex).UpdateF(Integer.parseInt(strGet), ctx);
                             nPlayerIndex++;
                         }
 
@@ -196,7 +196,7 @@ class Game_Main
                                     bGetNext = false;
                                 }
                                 else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                                if (nPlayerIndex != sm_nID) sm_PlayersArray.get(nPlayerIndex).UpdateColor(Integer.parseInt(strGet), ctx);
+                                if (nPlayerIndex != nSelfID) sm_PlayersArray.get(nPlayerIndex).UpdateColor(Integer.parseInt(strGet), ctx);
                                 nPlayerIndex++;
                             }
 
@@ -212,7 +212,7 @@ class Game_Main
                                     bGetNext = false;
                                 }
                                 else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                                if (nPlayerIndex != sm_nID) sm_PlayersArray.get(nPlayerIndex).UpdateName(strGet);
+                                if (nPlayerIndex != nSelfID) sm_PlayersArray.get(nPlayerIndex).UpdateName(strGet);
                                 nPlayerIndex++;
                             }
                         }
