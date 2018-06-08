@@ -96,6 +96,32 @@ public class Layout_Game_Draw extends FrameLayout {
                     Game_Camera.GetRelativeY(1000),
                     mGridPaint);
         }
+      
+        /*PSEUDOCODE
+        * for(int i = 0 ; i <map.y;i+gridWidthHeight)
+        *   for(int j = 0; j <map.x;j+gridWidthHeight)
+        *       If(i+gridWidthHeight ==map.y)
+        *           Draw Rightward line of length gridWidthHeight;
+        *       Else{
+        *           If(j+gridWidthHeight == map.x)
+        *               Draw Upward line of length gridWidthHeight;
+        *           Else{
+        *               Draw Upward line of length gridWidthHeight;
+        *               Draw Rightward line of length gridWidthHeight;}
+        *           }
+        *
+        * END PSEUDO
+        *
+        *           Some Explanation
+        *
+        *            about gridWidthHeight ~ this var has to be an int result of divisibility of the map's
+        *            total width and height. Otherwise the  logic below  doesn't  work.
+        *
+        *            About the increments of the For statements (i+gridWidthHeight) ~  these would work if they were  post adders
+        *            but they are  in-line adders. It may be best to use 2 while statements and add after execution of  commands
+        *            listed below. I'll leave that  up to you though.
+        *
+        * */
     }
 
     public void onDraw(Canvas canvas)
