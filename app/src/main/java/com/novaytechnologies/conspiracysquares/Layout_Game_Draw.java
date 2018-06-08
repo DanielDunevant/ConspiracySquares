@@ -4,6 +4,7 @@ package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -17,6 +18,9 @@ public class Layout_Game_Draw extends FrameLayout {
 
     static int nMinSide;
     static int nMaxSide;
+
+    static int nGridThickness = 1;
+    static Paint mGridPaint = new Paint(R.color.colorLine);
 
     long lMoveTick;
     long lMoveLast;
@@ -48,7 +52,9 @@ public class Layout_Game_Draw extends FrameLayout {
         nMinSide = (nWidth < nHeight) ? nWidth : nHeight;
         nMaxSide = (nWidth > nHeight) ? nWidth : nHeight;
 
-        lMoveLast = System.currentTimeMillis();
+        nGridThickness = (int) Math.ceil(nMinSide * 0.01);
+
+        lMoveLast = lMoveTick = System.currentTimeMillis();
 
         Game_Player.UpdateAllSizes(nMinSide * Game_Player.fSIZE_FRACTION);
         Game_Camera.UpdateCenter(nWidth_Center, nHeight_Center);
@@ -77,6 +83,20 @@ public class Layout_Game_Draw extends FrameLayout {
 
     void DrawGrid(Canvas canvas)
     {
+        for (int nGridLine = -1000; nGridLine <= 1000; nGridLine++)
+        {
+            canvas.drawLine(Game_Camera.GetRelativeX(-1000),
+                    Game_Camera.GetRelativeY(nGridLine - nGridThickness),
+                    Game_Camera.GetRelativeX(1000),
+                    Game_Camera.GetRelativeY(nGridLine + nGridThickness),
+                    mGridPaint);
+            canvas.drawLine(Game_Camera.GetRelativeX(nGridLine - nGridThickness),
+                    Game_Camera.GetRelativeY(-1000),
+                    Game_Camera.GetRelativeX(nGridLine + nGridThickness),
+                    Game_Camera.GetRelativeY(1000),
+                    mGridPaint);
+        }
+      
         /*PSEUDOCODE
         * for(int i = 0 ; i <map.y;i+gridWidthHeight)
         *   for(int j = 0; j <map.x;j+gridWidthHeight)
@@ -114,7 +134,7 @@ public class Layout_Game_Draw extends FrameLayout {
         DrawGrid(canvas);
         for (Game_Player Player : Game_Main.sm_PlayersArray)
         {
-            Player.DrawPlayer(canvas, lMoveTick);
+            Player.DrawPlayer(canvas, lMoveDelta);
         }
 
         lMoveLast = System.currentTimeMillis();

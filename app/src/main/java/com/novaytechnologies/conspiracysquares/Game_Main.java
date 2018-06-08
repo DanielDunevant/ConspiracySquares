@@ -14,6 +14,30 @@ class Game_Main
     static String sm_strServerName;
     static ArrayList<Game_Player> sm_PlayersArray = new ArrayList<>();
 
+    static void StartGame(Context ctx)
+    {
+        if (!sm_bStarted)
+        {
+            for (int nPlayer = 0; nPlayer < Layout_Servers.MAX_PLAYERS; nPlayer++)
+            {
+                sm_PlayersArray.add(new Game_Player());
+            }
+            PopulateFromServer(ctx);
+            sm_bStarted = true;
+        }
+    }
+
+    static void EndGame()
+    {
+        if (sm_bStarted)
+        {
+            LeaveServer();
+            sm_PlayersArray.clear();
+            sm_bSyncInProgress = false;
+            sm_bStarted = false;
+        }
+    }
+
     static private void PopulateFromServer(final Context ctx)
     {
         ArrayList<String> params = new ArrayList<>();
@@ -77,27 +101,6 @@ class Game_Main
 
         Utility_Post newPost = new Utility_Post();
         newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
-    }
-
-    static void StartGame(Context ctx)
-    {
-        if (!sm_bStarted)
-        {
-            for (int nPlayer = 0; nPlayer < Layout_Servers.MAX_PLAYERS; nPlayer++)
-            {
-                sm_PlayersArray.add(new Game_Player());
-            }
-            PopulateFromServer(ctx);
-            sm_bStarted = true;
-        }
-    }
-
-    static void EndGame()
-    {
-        LeaveServer();
-        sm_PlayersArray.clear();
-        sm_bSyncInProgress = false;
-        sm_bStarted = false;
     }
 
     static void SyncWithServer(final Context ctx, boolean bStart)
