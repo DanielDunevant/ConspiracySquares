@@ -21,8 +21,15 @@ public class Layout_Main extends AppCompatActivity {
     static final String conspiracysquares_SHPREF = "com.novaytechnologies.conspiracysquares";
     static final String conspiracysquares_SHPREF_NAME = ".name";
 
-    static final String FIND_SERVER = "Find_Server";
-    static final String SERVER = "Server_Name";
+    static final String FIND_SERVER = "com.novaytechnologies.conspiracysquares.Find_Server";
+    static final String SERVER = "com.novaytechnologies.conspiracysquares.Server_Name";
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Game_Main.EndGame();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

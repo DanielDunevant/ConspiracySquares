@@ -59,8 +59,7 @@ public class Layout_Servers extends AppCompatActivity {
         dialog_btn_host.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TEMP CODE BELOW
-                String strSVRname = input_name.getText().toString();
+                final String strSVRname = input_name.getText().toString();
                 if (!strSVRname.isEmpty())
                 {
                     ArrayList<String> params = new ArrayList<>();
@@ -71,6 +70,15 @@ public class Layout_Servers extends AppCompatActivity {
                     String ParemsString = Utility_Post.GetParemsString(params);
 
                     Utility_Post newPost = new Utility_Post();
+                    newPost.SetRunnable(new Utility_Post.RunnableArgs() {
+                        @Override
+                        public void run() {
+                            Intent newIntent = new Intent(ctx, Layout_Game.class);
+                            newIntent.putExtra(Layout_Main.FIND_SERVER, false);
+                            newIntent.putExtra(Layout_Main.SERVER, strSVRname);
+                            ctx.startActivity(newIntent);
+                        }
+                    });
                     newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
 
                     ((Layout_Servers) ctx).Refresh(ctx);
@@ -162,6 +170,13 @@ public class Layout_Servers extends AppCompatActivity {
             }
         });
         GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", "");
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Game_Main.EndGame();
     }
 
     @Override
