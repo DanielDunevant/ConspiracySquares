@@ -83,7 +83,7 @@ public class Layout_Game_Draw extends FrameLayout {
 
     void DrawGrid(Canvas canvas)
     {
-        for (int nGridLine = -1000; nGridLine <= 1000; nGridLine++)
+        for (int nGridLine = -1000; nGridLine <= 1000; nGridLine += 20)
         {
             canvas.drawLine(Game_Camera.GetRelativeX(-1000),
                     Game_Camera.GetRelativeY(nGridLine - nGridThickness),
