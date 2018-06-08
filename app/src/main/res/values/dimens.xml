@@ -21,4 +21,7 @@
     <dimen name="line_thickness_div">2dp</dimen>
     <dimen name="list_height">32dp</dimen>
     <dimen name="scrollPadding">96dp</dimen>
+    <dimen name="credits_margin">16dp</dimen>
+    <dimen name="credits_space">16dp</dimen>
+    <dimen name="credits_text">12sp</dimen>
 </resources>

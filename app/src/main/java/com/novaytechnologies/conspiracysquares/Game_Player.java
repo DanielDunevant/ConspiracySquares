@@ -94,7 +94,7 @@ class Game_Player
     private void Kill(Context ctx)
     {
         m_SQUARE.clearColorFilter();
-        m_SQUARE = ctx.getResources().getDrawable(R.drawable.Square_Broken);
+        m_SQUARE = ctx.getResources().getDrawable(R.drawable.square_broken);
         m_sync_nFlags -= FLAG_ALIVE;
     }
 

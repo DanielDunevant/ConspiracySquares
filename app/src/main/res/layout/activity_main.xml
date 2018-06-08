@@ -118,6 +118,105 @@
                 android:text="@string/button_server"
                 android:textColor="@color/colorButtonText"
                 android:textSize="@dimen/button_text" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/ID_Credits"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/title_margin"
+                    android:text="@string/credits"
+                    android:textAlignment="center"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="@dimen/title_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Design"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_below="@id/ID_Credits"
+                    android:gravity="left"
+                    android:text="@string/credits_design"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Design_Dev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_marginLeft="@dimen/credits_space"
+                    android:layout_below="@id/ID_Credits"
+                    android:layout_toRightOf="@id/ID_Credits_Design"
+                    android:text="@string/credits_design_dev"
+                    android:textColor="@color/colorButtonText"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Dev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_below="@id/ID_Credits_Design"
+                    android:gravity="left"
+                    android:text="@string/credits_app"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Dev_Dev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_marginLeft="@dimen/credits_space"
+                    android:layout_below="@id/ID_Credits_Design"
+                    android:layout_toRightOf="@id/ID_Credits_Dev"
+                    android:text="@string/credits_app_dev"
+                    android:textColor="@color/colorButtonText"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Music"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_below="@id/ID_Credits_Dev"
+                    android:gravity="left"
+                    android:text="@string/credits_music"
+                    android:textColor="@color/colorTitle"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@+id/ID_Credits_Music_Dev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/credits_margin"
+                    android:layout_marginLeft="@dimen/credits_space"
+                    android:layout_below="@id/ID_Credits_Dev"
+                    android:layout_toRightOf="@id/ID_Credits_Music"
+                    android:text="@string/credits_music_dev"
+                    android:textColor="@color/colorButtonText"
+                    android:textSize="@dimen/credits_text"
+                    android:textStyle="normal|bold"
+                    android:background="@android:color/transparent"/>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 

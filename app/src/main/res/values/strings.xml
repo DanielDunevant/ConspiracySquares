@@ -15,4 +15,11 @@
     <string name="title_host">Create Cloud Server</string>
     <string name="txt_Servers">Servers</string>
     <string name="txt_Players">Players</string>
+    <string name="credits">Credits</string>
+    <string name="credits_design">Gameplay Design and Art:</string>
+    <string name="credits_design_dev">Michael Persin, Chainlink Productions</string>
+    <string name="credits_app">Application Development:</string>
+    <string name="credits_app_dev">Novay Technologies LLC</string>
+    <string name="credits_music">Soundtrack Composer:</string>
+    <string name="credits_music_dev">Nicaris Daniels-Porter</string>
 </resources>
