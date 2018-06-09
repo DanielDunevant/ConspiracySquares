@@ -10,21 +10,26 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+// The Game Drawing Layout.
 public class Layout_Game_Draw extends FrameLayout {
+    // Layout dimension information, in pixels.
     int nWidth;
     int nHeight;
     int nWidth_Center;
     int nHeight_Center;
 
+    // The dimensions of the smaller and larger lengths of the screen, in pixels.
     static int nMinSide;
     static int nMaxSide;
 
-    static int nGridThickness = 1;
+    // Half the grid's thickness, in pixels, and the grid's paint object.
+    static int nGridThicknessHalf = 1;
     static Paint mGridPaint = new Paint(R.color.colorLine);
 
-    long lMoveTick;
-    long lMoveLast;
-    long lMoveDelta;
+    // Timing information.
+    long lMoveTick;   // Used to create a slight input delay.
+    long lDrawLast;   // Used to give the time of the last draw.
+    long lDrawDelta;  // Used to give the time passed since the last draw.
 
     public Layout_Game_Draw(Context ctx) {
         this(ctx, null);
@@ -52,9 +57,9 @@ public class Layout_Game_Draw extends FrameLayout {
         nMinSide = (nWidth < nHeight) ? nWidth : nHeight;
         nMaxSide = (nWidth > nHeight) ? nWidth : nHeight;
 
-        nGridThickness = (int) Math.ceil(nMinSide * 0.01);
+        nGridThicknessHalf = (int) Math.ceil(nMaxSide * 0.01);
 
-        lMoveLast = lMoveTick = System.currentTimeMillis();
+        lDrawLast = lMoveTick = System.currentTimeMillis();
 
         Game_Player.UpdateAllSizes(nMinSide * Game_Player.fSIZE_FRACTION);
         Game_Camera.UpdateCenter(nWidth_Center, nHeight_Center);
@@ -65,10 +70,10 @@ public class Layout_Game_Draw extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (event.getAction() == MotionEvent.ACTION_DOWN || System.currentTimeMillis() - lMoveTick > 50L)
+        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP || System.currentTimeMillis() - lMoveTick > 50L)
         {
             Game_Player.MoveSelfToLocal(event.getX(), event.getY());
-            lMoveLast = lMoveTick = System.currentTimeMillis();
+            lDrawLast = lMoveTick = System.currentTimeMillis();
         }
         performClick();
         return true;
@@ -83,61 +88,49 @@ public class Layout_Game_Draw extends FrameLayout {
 
     void DrawGrid(Canvas canvas)
     {
-        for (int nGridLine = -1000; nGridLine <= 1000; nGridLine += 20)
+        float fGridStartX = (float) Math.floor(Game_Camera.GetGlobalX() - 52);
+        int nGridStartX = (int) fGridStartX - Math.abs(Math.round(fGridStartX) % 20);
+        float fGridEndX = (float) Math.ceil(Game_Camera.GetGlobalX() + 72);
+        int nGridEndX = (int) fGridEndX - Math.abs(Math.round(fGridEndX) % 20);
+
+        for (int nGridLine = nGridStartX; nGridLine <= nGridEndX; nGridLine += 20)
         {
-            canvas.drawLine(Game_Camera.GetRelativeX(-1000),
-                    Game_Camera.GetRelativeY(nGridLine - nGridThickness),
-                    Game_Camera.GetRelativeX(1000),
-                    Game_Camera.GetRelativeY(nGridLine + nGridThickness),
-                    mGridPaint);
-            canvas.drawLine(Game_Camera.GetRelativeX(nGridLine - nGridThickness),
-                    Game_Camera.GetRelativeY(-1000),
-                    Game_Camera.GetRelativeX(nGridLine + nGridThickness),
-                    Game_Camera.GetRelativeY(1000),
+            canvas.drawLine(Game_Camera.GetRelativeX(nGridStartX),
+                    Game_Camera.GetRelativeY(nGridLine - nGridThicknessHalf),
+                    Game_Camera.GetRelativeX(nGridEndX),
+                    Game_Camera.GetRelativeY(nGridLine + nGridThicknessHalf),
                     mGridPaint);
         }
-      
-        /*PSEUDOCODE
-        * for(int i = 0 ; i <map.y;i+gridWidthHeight)
-        *   for(int j = 0; j <map.x;j+gridWidthHeight)
-        *       If(i+gridWidthHeight ==map.y)
-        *           Draw Rightward line of length gridWidthHeight;
-        *       Else{
-        *           If(j+gridWidthHeight == map.x)
-        *               Draw Upward line of length gridWidthHeight;
-        *           Else{
-        *               Draw Upward line of length gridWidthHeight;
-        *               Draw Rightward line of length gridWidthHeight;}
-        *           }
-        *
-        * END PSEUDO
-        *
-        *           Some Explanation
-        *
-        *            about gridWidthHeight ~ this var has to be an int result of divisibility of the map's
-        *            total width and height. Otherwise the  logic below  doesn't  work.
-        *
-        *            About the increments of the For statements (i+gridWidthHeight) ~  these would work if they were  post adders
-        *            but they are  in-line adders. It may be best to use 2 while statements and add after execution of  commands
-        *            listed below. I'll leave that  up to you though.
-        *
-        * */
+
+        float fGridStartY = (float) Math.floor(Game_Camera.GetGlobalY() - 52);
+        int nGridStartY = (int) fGridStartY - Math.abs(Math.round(fGridStartY) % 20);
+        float fGridEndY = (float) Math.ceil(Game_Camera.GetGlobalY() + 72);
+        int nGridEndY = (int) fGridEndY - Math.abs(Math.round(fGridEndY) % 20);
+
+        for (int nGridLine = nGridStartY; nGridLine <= nGridEndY; nGridLine += 20)
+        {
+            canvas.drawLine(Game_Camera.GetRelativeX(nGridLine - nGridThicknessHalf),
+                    Game_Camera.GetRelativeY(nGridStartY),
+                    Game_Camera.GetRelativeX(nGridLine + nGridThicknessHalf),
+                    Game_Camera.GetRelativeY(nGridEndY),
+                    mGridPaint);
+        }
     }
 
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
 
-        lMoveDelta = System.currentTimeMillis() - lMoveLast;
+        lDrawDelta = System.currentTimeMillis() - lDrawLast;
 
         Game_Main.SyncWithServer(this.getContext(), false);
         DrawGrid(canvas);
         for (Game_Player Player : Game_Main.sm_PlayersArray)
         {
-            Player.DrawPlayer(canvas, lMoveDelta);
+            Player.DrawPlayer(canvas, lDrawDelta);
         }
 
-        lMoveLast = System.currentTimeMillis();
+        lDrawLast = System.currentTimeMillis();
 
         this.invalidate();
     }

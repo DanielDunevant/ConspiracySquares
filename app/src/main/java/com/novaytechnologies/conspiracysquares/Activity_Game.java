@@ -11,9 +11,15 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Layout_Game extends AppCompatActivity {
+// The Game Activity.
+public class Activity_Game extends AppCompatActivity {
 
-    static private final String strSTARTED = "com.novaytechnologies.conspiracysquares.STARTED";
+    // Instance State for this Activity.
+    static private final String STARTED = "com.novaytechnologies.conspiracysquares.Started";
+
+    // Intent Extras for this Activity.
+    static final String FIND_SERVER = "com.novaytechnologies.conspiracysquares.Find_Server";
+    static final String SERVER = "com.novaytechnologies.conspiracysquares.Server_Name";
 
     private void FindServer(final Context ctx)
     {
@@ -47,7 +53,7 @@ public class Layout_Game extends AppCompatActivity {
                             LastResult = LastResult.substring(nLastIndex);
                         }
 
-                        if (nNumPlayers < Layout_Servers.MAX_PLAYERS)
+                        if (nNumPlayers < Activity_Servers.MAX_PLAYERS)
                         {
                             Game_Main.sm_strServerName = strGet;
                             bNext = false;
@@ -100,15 +106,15 @@ public class Layout_Game extends AppCompatActivity {
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-        if (savedInstanceState == null || !savedInstanceState.getBoolean(strSTARTED))
+        if (savedInstanceState == null || !savedInstanceState.getBoolean(STARTED))
         {
             Intent LoadI = getIntent();
-            boolean bFindServer = LoadI.getBooleanExtra(Layout_Main.FIND_SERVER, true);
+            boolean bFindServer = LoadI.getBooleanExtra(FIND_SERVER, true);
 
             if (bFindServer)
                 FindServer(this);
             else {
-                Game_Main.sm_strServerName = LoadI.getStringExtra(Layout_Main.SERVER);
+                Game_Main.sm_strServerName = LoadI.getStringExtra(SERVER);
                 Game_Main.StartGame(this);
             }
         }
@@ -118,6 +124,6 @@ public class Layout_Game extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle data)
     {
         super.onSaveInstanceState(data);
-        data.putBoolean(strSTARTED, true);
+        data.putBoolean(STARTED, true);
     }
 }

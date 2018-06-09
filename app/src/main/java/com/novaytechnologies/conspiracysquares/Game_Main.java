@@ -18,7 +18,7 @@ class Game_Main
     {
         if (!sm_bStarted)
         {
-            for (int nPlayer = 0; nPlayer < Layout_Servers.MAX_PLAYERS; nPlayer++)
+            for (int nPlayer = 0; nPlayer < Activity_Servers.MAX_PLAYERS; nPlayer++)
             {
                 sm_PlayersArray.add(new Game_Player());
             }
@@ -53,7 +53,7 @@ class Game_Main
         params.add("Player_Color");
         params.add(Integer.toString(Game_Player.GetNewSelfColor()));
         params.add("Player_Name");
-        params.add(Layout_Main.sm_strName);
+        params.add(Utility_SharedPrefs.get().loadName(ctx));
         String ParemsString = Utility_Post.GetParemsString(params);
 
         Utility_Post newPost = new Utility_Post();

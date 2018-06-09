@@ -60,7 +60,7 @@ class Game_Player
     {
         Game_Player Self = GetSelf();
 
-        Self.m_sync_strName = Layout_Main.sm_strName;
+        Self.m_sync_strName = Utility_SharedPrefs.get().loadName(ctx);
         sm_txtPaint = new Paint();
         sm_txtPaint.setColor(Color.rgb(0, 0, 0));
 

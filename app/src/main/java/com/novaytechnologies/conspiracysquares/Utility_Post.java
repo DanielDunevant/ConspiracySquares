@@ -1,23 +1,26 @@
 package com.novaytechnologies.conspiracysquares;
 
-import android.os.AsyncTask;
-import android.util.Log;
+        import android.os.AsyncTask;
+        import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+        import java.io.BufferedReader;
+        import java.io.BufferedWriter;
+        import java.io.InputStream;
+        import java.io.InputStreamReader;
+        import java.io.OutputStream;
+        import java.io.OutputStreamWriter;
+        import java.net.HttpURLConnection;
+        import java.net.URL;
+        import java.net.URLEncoder;
+        import java.util.ArrayList;
 
-import javax.net.ssl.HttpsURLConnection;
+        import javax.net.ssl.HttpsURLConnection;
 
+
+// Manages tasks related to sending information to a webserver via POST.
 class Utility_Post extends AsyncTask<String, String, String> {
 
+    // A subclass that allows arguments to be sent to the POST result function.
     abstract static class RunnableArgs implements Runnable {
         private String[] Args;
         void SetArgs(String[] ArgArray) {Args = ArgArray;}
@@ -29,6 +32,16 @@ class Utility_Post extends AsyncTask<String, String, String> {
     private RunnableArgs PostFunc = null;
     private RunnableArgs PostFuncErr = null;
 
+    /*
+        DESCRIPTION:
+            Turns an ArrayList of key-value string pairs into a parameter string that can be sent
+            to a webserver via the POST method.
+        PRE-CONDITION:
+            strParems should be an even length array of strings, with every even-indexed string
+            set to the parameter name, and every string inserted next set to the previous parameter's value.
+        POST-CONDITION:
+            A string formatted such that a webserver could easily parse it via POST.
+    */
     static String GetParemsString(ArrayList<String> strParems)
     {
         try {
@@ -49,6 +62,18 @@ class Utility_Post extends AsyncTask<String, String, String> {
         }
     }
 
+    /*
+        DESCRIPTION:
+            Contacts the given webserver, sends it a parameter string, then has a function process the result.
+        PRE-CONDITION:
+            data[0] should contain the web address of the server to contact via POST.
+            data[1] should contain a properly formatted string of parameters.
+            Both are set when the POST is sent via Utility_Post_OBJECT.execute(data[0], data[1]);
+        POST-CONDITION:
+            The webserver is contacted with the given parameters via POST.
+            If the transaction succeeds, then the function given in SetRunnable() will be run
+            to process the result. Otherwise, function given in SetRunnableError() will be run.
+    */
     protected String doInBackground(String... data)
     {
         String strResult;
@@ -117,6 +142,7 @@ class Utility_Post extends AsyncTask<String, String, String> {
         return strResult;
     }
 
+    // Chooses which result function to run based on the success or failure of the POST.
     protected void onPostExecute(String result) {
         if (result != null && !result.isEmpty())
         {
@@ -142,6 +168,11 @@ class Utility_Post extends AsyncTask<String, String, String> {
         else Log.e("Post_Exception", "Post Failed!");
     }
 
+    /*
+        SetRunnable sets the function to run after a normal result is returned from the webserver via POST.
+        SetRunnableError sets the function to run after an error is returned from the webserver via POST.
+        Both require a new Utility_Post.RunnableArgs(); as the parameter with the run() function Overrided.
+    */
     void SetRunnable(RunnableArgs func) {PostFunc = func;}
     void SetRunnableError(RunnableArgs func) {PostFuncErr = func;}
 }
