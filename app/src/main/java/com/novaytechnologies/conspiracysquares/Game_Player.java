@@ -13,7 +13,7 @@ import java.util.Random;
 
 class Game_Player
 {
-    static public final float fSIZE_FRACTION = 0.05f;
+    static public final float fSIZE_FRACTION = 0.07f;
     static private final float fDIST_PER_MILLI = 0.01f;
 
     static private final int FLAG_ALIVE = 0b1;
@@ -91,8 +91,8 @@ class Game_Player
 
             float fPlayer_Time = fPlayerDist / sm_fPlayer_Speed;
 
-            Self.m_fSpeedX = 100 * (fPlayerXdist / fPlayer_Time) / Layout_Game_Draw.nMaxSide;
-            Self.m_fSpeedY = 100 * (fPlayerYdist / fPlayer_Time) / Layout_Game_Draw.nMaxSide;
+            Self.m_fSpeedX = 100f * (fPlayerXdist / fPlayer_Time) / (float) Layout_Game_Draw.nMaxSide;
+            Self.m_fSpeedY = 100f * (fPlayerYdist / fPlayer_Time) / (float) Layout_Game_Draw.nMaxSide;
         }
         else
         {

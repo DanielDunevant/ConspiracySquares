@@ -22,8 +22,7 @@ public class Layout_Game_Draw extends FrameLayout {
     static int nMinSide;
     static int nMaxSide;
 
-    // Half the grid's thickness, in pixels, and the grid's paint object.
-    static int nGridThicknessHalf = 1;
+    // The grid's paint object.
     static Paint mGridPaint = new Paint(R.color.colorLine);
 
     // Timing information.
@@ -57,8 +56,6 @@ public class Layout_Game_Draw extends FrameLayout {
         nMinSide = (nWidth < nHeight) ? nWidth : nHeight;
         nMaxSide = (nWidth > nHeight) ? nWidth : nHeight;
 
-        nGridThicknessHalf = (int) Math.ceil(nMaxSide * 0.01);
-
         lDrawLast = lMoveTick = System.currentTimeMillis();
 
         Game_Player.UpdateAllSizes(nMinSide * Game_Player.fSIZE_FRACTION);
@@ -89,30 +86,34 @@ public class Layout_Game_Draw extends FrameLayout {
 
     void DrawGrid(Canvas canvas)
     {
-        float fGridStartX = Game_Camera.GetGlobalX() - 52;
-        fGridStartX = fGridStartX - (float) Math.abs(Math.round(fGridStartX) % 20);
-        float fGridEndX = Game_Camera.GetGlobalX() + 72;
-        fGridEndX = fGridEndX - (float) Math.abs(Math.round(fGridEndX) % 20);
+        float fPos;
 
-        for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 20f)
+        float fGridStartX = Game_Camera.GetGlobalX() - 52;
+        fGridStartX = fGridStartX - (float) Math.abs(Math.round(fGridStartX) % 10);
+        float fGridEndX = Game_Camera.GetGlobalX() + 62;
+        fGridEndX = fGridEndX - (float) Math.abs(Math.round(fGridEndX) % 10);
+
+        for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 10f)
         {
+            fPos = Game_Camera.GetRelativeY(fGridLine);
             canvas.drawLine(0,
-                    Game_Camera.GetRelativeY(fGridLine - nGridThicknessHalf),
+                    fPos,
                     nWidth,
-                    Game_Camera.GetRelativeY(fGridLine + nGridThicknessHalf),
+                    fPos,
                     mGridPaint);
         }
 
         float fGridStartY = Game_Camera.GetGlobalY() - 52;
-        fGridStartY = fGridStartY - (float) Math.abs(Math.round(fGridStartY) % 20);
-        float fGridEndY = Game_Camera.GetGlobalY() + 72;
-        fGridEndY = fGridEndY - (float) Math.abs(Math.round(fGridEndY) % 20);
+        fGridStartY = fGridStartY - (float) Math.abs(Math.round(fGridStartY) % 10);
+        float fGridEndY = Game_Camera.GetGlobalY() + 62;
+        fGridEndY = fGridEndY - (float) Math.abs(Math.round(fGridEndY) % 10);
 
-        for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 20f)
+        for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 10f)
         {
-            canvas.drawLine(Game_Camera.GetRelativeX(fGridLine - nGridThicknessHalf),
+            fPos = Game_Camera.GetRelativeX(fGridLine);
+            canvas.drawLine(fPos,
                     0,
-                    Game_Camera.GetRelativeX(fGridLine + nGridThicknessHalf),
+                    fPos,
                     nHeight,
                     mGridPaint);
         }
