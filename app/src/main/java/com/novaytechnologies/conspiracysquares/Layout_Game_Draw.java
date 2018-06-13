@@ -89,9 +89,9 @@ public class Layout_Game_Draw extends FrameLayout {
         float fPos;
 
         float fGridStartX = Game_Camera.GetGlobalX() - 52;
-        fGridStartX = fGridStartX - (float) Math.abs(Math.round(fGridStartX) % 10);
+        fGridStartX = fGridStartX - (float) (Math.abs(Math.round(fGridStartX)) % 10);
         float fGridEndX = Game_Camera.GetGlobalX() + 62;
-        fGridEndX = fGridEndX - (float) Math.abs(Math.round(fGridEndX) % 10);
+        fGridEndX = fGridEndX - (float) (Math.abs(Math.round(fGridEndX)) % 10);
 
         for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 10f)
         {
@@ -104,9 +104,9 @@ public class Layout_Game_Draw extends FrameLayout {
         }
 
         float fGridStartY = Game_Camera.GetGlobalY() - 52;
-        fGridStartY = fGridStartY - (float) Math.abs(Math.round(fGridStartY) % 10);
+        fGridStartY = fGridStartY - (float) (Math.abs(Math.round(fGridStartY)) % 10);
         float fGridEndY = Game_Camera.GetGlobalY() + 62;
-        fGridEndY = fGridEndY - (float) Math.abs(Math.round(fGridEndY) % 10);
+        fGridEndY = fGridEndY - (float) (Math.abs(Math.round(fGridEndY)) % 10);
 
         for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 10f)
         {
