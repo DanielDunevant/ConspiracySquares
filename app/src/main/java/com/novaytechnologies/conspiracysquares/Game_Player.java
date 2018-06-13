@@ -14,9 +14,12 @@ import java.util.Random;
 class Game_Player
 {
     static public final float fSIZE_FRACTION = 0.05f;
-    static private final float fSPEED_PER_MILLI = 0.05f;
+    static private final float fDIST_PER_MILLI = 0.01f;
 
     static private final int FLAG_ALIVE = 0b1;
+
+    private Game_Player() {}
+    Game_Player(int nID) {m_nID = nID;}
 
     static private Paint sm_txtPaint;
     static private float sm_fBoxSize = 2f;
@@ -24,11 +27,12 @@ class Game_Player
     static void UpdateAllSizes(float fSize)
     {
         sm_fBoxSize = fSize;
-        sm_fPlayer_Speed = fSize * fSPEED_PER_MILLI;
+        sm_fPlayer_Speed = fSize * fDIST_PER_MILLI;
     }
 
     private Drawable m_SQUARE;
 
+    private int m_nID;
     private String m_sync_strName;
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
@@ -42,6 +46,7 @@ class Game_Player
     static void SetSelfID(int nID) {sm_nID = nID;}
     static private Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
 
+    private boolean isSelf() {return m_nID == sm_nID;}
     private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
 
     static float GetX() {return GetSelf().m_sync_fPosX;}
@@ -59,6 +64,8 @@ class Game_Player
     static void CreateSelf(Context ctx)
     {
         Game_Player Self = GetSelf();
+
+        Self.m_sync_nFlags = 0b1;
 
         Self.m_sync_strName = Utility_SharedPrefs.get().loadName(ctx);
         sm_txtPaint = new Paint();
@@ -95,7 +102,6 @@ class Game_Player
     {
         m_SQUARE.clearColorFilter();
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.square_broken);
-        m_sync_nFlags -= FLAG_ALIVE;
     }
 
     void UpdateName(String strName) {m_sync_strName = strName;}
@@ -116,37 +122,38 @@ class Game_Player
         }
     }
 
-    void DrawPlayer(Canvas canvas, long lDelta)
-    {
-        Game_Player Self = GetSelf();
-        if (m_sync_nFlags >= 0)
+    void DrawPlayer(Canvas canvas, long lDelta) {
+        if (Game_Main.isStarted())
         {
-            float fDrawX;
-            float fDrawY;
+            Game_Player Self = GetSelf();
 
-            if (this.equals(Self))
+            if (m_sync_nFlags >= 0)
             {
-                fDrawX = Game_Camera.GetDrawX();
-                fDrawY = Game_Camera.GetDrawY();
+                float fDrawX;
+                float fDrawY;
 
-                if (isAlive())
+                if (isSelf() && isAlive())
                 {
+                    fDrawX = Game_Camera.GetDrawX();
+                    fDrawY = Game_Camera.GetDrawY();
+
                     m_sync_fPosX = m_sync_fPosX + m_fSpeedX * lDelta;
                     m_sync_fPosY = m_sync_fPosY + m_fSpeedY * lDelta;
                     Game_Camera.UpdatePosition(m_sync_fPosX, m_sync_fPosY);
                 }
-                else Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
-            }
-            else
-            {
-                fDrawX = Game_Camera.GetRelativeX(m_sync_fPosX);
-                fDrawY = Game_Camera.GetRelativeY(m_sync_fPosY);
-            }
+                else
+                {
+                    if (isSelf()) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
+                    fDrawX = Game_Camera.GetRelativeX(m_sync_fPosX);
+                    fDrawY = Game_Camera.GetRelativeY(m_sync_fPosY);
+                }
 
-            m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
-            m_SQUARE.draw(canvas);
-            canvas.drawText(m_sync_strName, fDrawX, fDrawY, sm_txtPaint);
+                m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
+                m_SQUARE.draw(canvas);
+
+                canvas.drawText(m_sync_strName, fDrawX, fDrawY, sm_txtPaint);
+            }
+            else if (isSelf()) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
         }
-        else if (this.equals(Self)) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
     }
 }

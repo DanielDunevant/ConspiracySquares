@@ -14,13 +14,15 @@ class Game_Main
     static String sm_strServerName;
     static ArrayList<Game_Player> sm_PlayersArray = new ArrayList<>();
 
+    static boolean isStarted() {return sm_bStarted;}
+
     static void StartGame(Context ctx)
     {
         if (!sm_bStarted)
         {
-            for (int nPlayer = 0; nPlayer < Activity_Servers.MAX_PLAYERS; nPlayer++)
+            for (int nPlayer = 0; nPlayer < Utility_ServerList.MAX_PLAYERS; nPlayer++)
             {
-                sm_PlayersArray.add(new Game_Player());
+                sm_PlayersArray.add(new Game_Player(nPlayer));
             }
             PopulateFromServer(ctx);
             sm_bStarted = true;
@@ -105,7 +107,7 @@ class Game_Main
 
     static void SyncWithServer(final Context ctx, boolean bStart)
     {
-        if (!sm_bSyncInProgress || bStart)
+        if (sm_bStarted && (!sm_bSyncInProgress || bStart))
         {
             ArrayList<String> params = new ArrayList<>();
             params.add("ReqPass");

@@ -1,7 +1,10 @@
+//Copyright (c) 2018 Novay Technologies
+
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class Utility_SharedPrefs
 {
@@ -19,7 +22,7 @@ public class Utility_SharedPrefs
 
     // Loads the application's shared preferences.
     void loadSharedPrefs(Context ctx)
-    {sm_SH_Pref = ctx.getSharedPreferences(conspiracysquares_SHPREF, Context.MODE_PRIVATE);}
+    {sm_SH_Pref = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());}
 
     // Loads the saved player's name.
     String loadName(Context ctx)

@@ -11,6 +11,8 @@ public class Game_Camera
 
     static float GetDrawX() {return sm_fDrawX;}
     static float GetDrawY() {return sm_fDrawY;}
+    static float GetGlobalX() {return sm_fPosX;}
+    static float GetGlobalY() {return sm_fPosY;}
 
     static void UpdateCenter(int nCenterX, int nCenterY)
     {

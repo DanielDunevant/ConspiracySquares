@@ -70,7 +70,7 @@ public class Layout_Game_Draw extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP || System.currentTimeMillis() - lMoveTick > 50L)
+        if (Game_Main.isStarted() && (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP || System.currentTimeMillis() - lMoveTick > 50L))
         {
             Game_Player.MoveSelfToLocal(event.getX(), event.getY());
             lDrawLast = lMoveTick = System.currentTimeMillis();
@@ -88,31 +88,31 @@ public class Layout_Game_Draw extends FrameLayout {
 
     void DrawGrid(Canvas canvas)
     {
-        float fGridStartX = (float) Math.floor(Game_Camera.GetGlobalX() - 52);
-        int nGridStartX = (int) fGridStartX - Math.abs(Math.round(fGridStartX) % 20);
-        float fGridEndX = (float) Math.ceil(Game_Camera.GetGlobalX() + 72);
-        int nGridEndX = (int) fGridEndX - Math.abs(Math.round(fGridEndX) % 20);
+        float fGridStartX = Game_Camera.GetGlobalX() - 52;
+        fGridStartX = fGridStartX - (float) Math.abs(Math.round(fGridStartX) % 20);
+        float fGridEndX = Game_Camera.GetGlobalX() + 72;
+        fGridEndX = fGridEndX - (float) Math.abs(Math.round(fGridEndX) % 20);
 
-        for (int nGridLine = nGridStartX; nGridLine <= nGridEndX; nGridLine += 20)
+        for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 20f)
         {
-            canvas.drawLine(Game_Camera.GetRelativeX(nGridStartX),
-                    Game_Camera.GetRelativeY(nGridLine - nGridThicknessHalf),
-                    Game_Camera.GetRelativeX(nGridEndX),
-                    Game_Camera.GetRelativeY(nGridLine + nGridThicknessHalf),
+            canvas.drawLine(0,
+                    Game_Camera.GetRelativeY(fGridLine - nGridThicknessHalf),
+                    nWidth,
+                    Game_Camera.GetRelativeY(fGridLine + nGridThicknessHalf),
                     mGridPaint);
         }
 
-        float fGridStartY = (float) Math.floor(Game_Camera.GetGlobalY() - 52);
-        int nGridStartY = (int) fGridStartY - Math.abs(Math.round(fGridStartY) % 20);
-        float fGridEndY = (float) Math.ceil(Game_Camera.GetGlobalY() + 72);
-        int nGridEndY = (int) fGridEndY - Math.abs(Math.round(fGridEndY) % 20);
+        float fGridStartY = Game_Camera.GetGlobalY() - 52;
+        fGridStartY = fGridStartY - (float) Math.abs(Math.round(fGridStartY) % 20);
+        float fGridEndY = Game_Camera.GetGlobalY() + 72;
+        fGridEndY = fGridEndY - (float) Math.abs(Math.round(fGridEndY) % 20);
 
-        for (int nGridLine = nGridStartY; nGridLine <= nGridEndY; nGridLine += 20)
+        for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 20f)
         {
-            canvas.drawLine(Game_Camera.GetRelativeX(nGridLine - nGridThicknessHalf),
-                    Game_Camera.GetRelativeY(nGridStartY),
-                    Game_Camera.GetRelativeX(nGridLine + nGridThicknessHalf),
-                    Game_Camera.GetRelativeY(nGridEndY),
+            canvas.drawLine(Game_Camera.GetRelativeX(fGridLine - nGridThicknessHalf),
+                    0,
+                    Game_Camera.GetRelativeX(fGridLine + nGridThicknessHalf),
+                    nHeight,
                     mGridPaint);
         }
     }
@@ -120,6 +120,7 @@ public class Layout_Game_Draw extends FrameLayout {
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
+        canvas.drawColor(getResources().getColor(R.color.colorBackground));
 
         lDrawDelta = System.currentTimeMillis() - lDrawLast;
 

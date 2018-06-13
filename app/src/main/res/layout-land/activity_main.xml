@@ -144,7 +144,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/title_margin"
                     android:text="@string/credits"
-                    android:textAlignment="left"
                     android:textColor="@color/colorTitle"
                     android:textSize="@dimen/title_text"
                     android:textStyle="normal|bold"

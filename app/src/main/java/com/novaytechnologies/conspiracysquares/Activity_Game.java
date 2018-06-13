@@ -21,6 +21,14 @@ public class Activity_Game extends AppCompatActivity {
     static final String FIND_SERVER = "com.novaytechnologies.conspiracysquares.Find_Server";
     static final String SERVER = "com.novaytechnologies.conspiracysquares.Server_Name";
 
+    /*
+        DESCRIPTION:
+            Finds a non-full server, or creates a new one if none exist, then joins said server.
+        PRE-CONDITION:
+            The FIND_SERVER Intent Extra must be false.
+        POST-CONDITION:
+            The server will be joined and Game_Main.StartGame(ctx) will thus run.
+    */
     private void FindServer(final Context ctx)
     {
         Utility_Post GetServers = new Utility_Post();
@@ -28,67 +36,49 @@ public class Activity_Game extends AppCompatActivity {
             @Override
             public void run() {
                 String LastResult = GetArgs()[0];
-                if (LastResult != null && LastResult.indexOf(';', 0) != -1)
+                ArrayList<String> Servers = Utility_ServerList.get().populateList(LastResult);
+
+                int nPlayers;
+                int nServers = Servers.size();
+                boolean bJoined = false;
+                for (int nServer = 0; nServer < nServers; nServer++)
                 {
-                    HashSet<String> ServerNames = new HashSet<>();
-                    String strGet;
-                    int nNumPlayers;
-                    int nServerCount = 0;
-                    boolean bJoined = false;
-                    boolean bNext = true;
-                    if (!LastResult.contains("+")) bNext = false;
-                    while (bNext)
+                    nPlayers = Utility_ServerList.get().getPlayers(nServer);
+                    if (nPlayers < Utility_ServerList.MAX_PLAYERS)
                     {
-                        strGet = LastResult.substring(1, LastResult.indexOf('&', 1));
-                        ServerNames.add(strGet);
-                        int nLastIndex = LastResult.indexOf('+', 1);
-                        if (nLastIndex < 0)
-                        {
-                            bNext = false;
-                            nNumPlayers = Integer.parseInt(LastResult.substring(LastResult.indexOf('&', 1) + 1, LastResult.indexOf(';', 1)));
-                        }
-                        else
-                        {
-                            nNumPlayers = Integer.parseInt(LastResult.substring(LastResult.indexOf('&', 1) + 1, nLastIndex));
-                            LastResult = LastResult.substring(nLastIndex);
-                        }
-
-                        if (nNumPlayers < Activity_Servers.MAX_PLAYERS)
-                        {
-                            Game_Main.sm_strServerName = strGet;
-                            bNext = false;
-                            bJoined = true;
-                        }
-                        nServerCount++;
+                        Game_Main.sm_strServerName = Utility_ServerList.get().getServerString(nServer);
+                        bJoined = true;
+                        nServer = nServers;
                     }
-                    if (!bJoined)
-                    {
-                        String strMakeServer = "Server_" + Integer.toString(++nServerCount);
-                        while (ServerNames.contains(strMakeServer))
-                        {
-                            strMakeServer = "Server_" + Integer.toString(++nServerCount);
-                        }
-                        final String strNewServer = strMakeServer;
-
-                        ArrayList<String> params = new ArrayList<>();
-                        params.add("ReqPass");
-                        params.add("X");
-                        params.add("ServerName");
-                        params.add(strNewServer);
-                        String ParemsString = Utility_Post.GetParemsString(params);
-
-                        Utility_Post newPost = new Utility_Post();
-                        newPost.SetRunnable(new Utility_Post.RunnableArgs() {
-                            @Override
-                            public void run() {
-                                Game_Main.sm_strServerName = strNewServer;
-                                Game_Main.StartGame(ctx);
-                            }
-                        });
-                        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
-                    }
-                    else Game_Main.StartGame(ctx);
                 }
+
+                if (!bJoined)
+                {
+                    String strMakeServer = "Server_" + Integer.toString(++nServers);
+                    while (Utility_ServerList.get().contains(strMakeServer))
+                    {
+                        strMakeServer = "Server_" + Integer.toString(++nServers);
+                    }
+                    final String strNewServer = strMakeServer;
+
+                    ArrayList<String> params = new ArrayList<>();
+                    params.add("ReqPass");
+                    params.add("X");
+                    params.add("ServerName");
+                    params.add(strNewServer);
+                    String ParemsString = Utility_Post.GetParemsString(params);
+
+                    Utility_Post newPost = new Utility_Post();
+                    newPost.SetRunnable(new Utility_Post.RunnableArgs() {
+                        @Override
+                        public void run() {
+                            Game_Main.sm_strServerName = strNewServer;
+                            Game_Main.StartGame(ctx);
+                        }
+                    });
+                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
+                }
+                else Game_Main.StartGame(ctx);
             }
         });
         GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", "");
@@ -112,10 +102,10 @@ public class Activity_Game extends AppCompatActivity {
             boolean bFindServer = LoadI.getBooleanExtra(FIND_SERVER, true);
 
             if (bFindServer)
-                FindServer(this);
+                FindServer(this.getApplicationContext());
             else {
                 Game_Main.sm_strServerName = LoadI.getStringExtra(SERVER);
-                Game_Main.StartGame(this);
+                Game_Main.StartGame(this.getApplicationContext());
             }
         }
     }
