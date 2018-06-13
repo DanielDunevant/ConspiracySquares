@@ -21,10 +21,10 @@ public class Utility_ServerList
     {
         ServerNames = new ArrayList<>();
         ServerPlayers = new ArrayList<>();
+        ArrayList<String> ServerPlayersString = new ArrayList<>();
 
         if (strParseString != null && strParseString.indexOf(';', 0) != -1)
         {
-            ArrayList<String> ServerPlayersString = new ArrayList<>();
             String strGet;
             String strNumPlayers;
             boolean bNext = true;
@@ -51,10 +51,8 @@ public class Utility_ServerList
                 String strPlyr = strNumPlayers + " / " + Integer.toString(Utility_ServerList.MAX_PLAYERS);
                 ServerPlayersString.add(strPlyr);
             }
-
-            return ServerPlayersString;
         }
-        else return null;
+        return ServerPlayersString;
     }
 
     String getServerString(int nIndex) {

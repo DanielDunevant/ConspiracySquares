@@ -23,6 +23,12 @@ public class Activity_Main extends AppCompatActivity {
         super.onResume();
         Game_Main.EndGame();
     }
+    @Override
+    protected void onDestroy()
+    {
+        Game_Main.EndGame();
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

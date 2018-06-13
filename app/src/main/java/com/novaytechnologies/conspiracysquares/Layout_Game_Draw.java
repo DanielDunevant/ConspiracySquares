@@ -70,7 +70,8 @@ public class Layout_Game_Draw extends FrameLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (Game_Main.isStarted() && (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP || System.currentTimeMillis() - lMoveTick > 50L))
+        if (Game_Main.isStarted() && (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP ||
+                (event.getAction() == MotionEvent.ACTION_MOVE && System.currentTimeMillis() - lMoveTick > 50L)))
         {
             Game_Player.MoveSelfToLocal(event.getX(), event.getY());
             lDrawLast = lMoveTick = System.currentTimeMillis();

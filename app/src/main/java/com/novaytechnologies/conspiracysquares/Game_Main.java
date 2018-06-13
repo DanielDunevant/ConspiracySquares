@@ -14,6 +14,9 @@ class Game_Main
     static String sm_strServerName;
     static ArrayList<Game_Player> sm_PlayersArray = new ArrayList<>();
 
+    static private Utility_Post newPost;
+    static private Utility_Post syncPost;
+
     static boolean isStarted() {return sm_bStarted;}
 
     static void StartGame(Context ctx)
@@ -33,6 +36,8 @@ class Game_Main
     {
         if (sm_bStarted)
         {
+            newPost.cancel(true);
+            syncPost.cancel(true);
             LeaveServer();
             sm_PlayersArray.clear();
             sm_bSyncInProgress = false;
@@ -58,7 +63,7 @@ class Game_Main
         params.add(Utility_SharedPrefs.get().loadName(ctx));
         String ParemsString = Utility_Post.GetParemsString(params);
 
-        Utility_Post newPost = new Utility_Post();
+        newPost = new Utility_Post();
         newPost.SetRunnable(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
@@ -85,11 +90,6 @@ class Game_Main
 
     static private void LeaveServer()
     {
-        while (sm_bSyncInProgress)
-        {
-            try {Thread.sleep(500);}
-            catch (Exception ex) {ex.printStackTrace();}
-        }
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
         params.add("X");
@@ -101,8 +101,8 @@ class Game_Main
         params.add(Integer.toString(Game_Player.GetSelfID()));
         String ParemsString = Utility_Post.GetParemsString(params);
 
-        Utility_Post newPost = new Utility_Post();
-        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
+        Utility_Post endPost = new Utility_Post();
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
     }
 
     static void SyncWithServer(final Context ctx, boolean bStart)
@@ -127,8 +127,8 @@ class Game_Main
             params.add(Integer.toString(Game_Player.GetFlags()));
             String ParemsString = Utility_Post.GetParemsString(params);
 
-            Utility_Post newPost = new Utility_Post();
-            newPost.SetRunnable(new Utility_Post.RunnableArgs() {
+            syncPost = new Utility_Post();
+            syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
                     String LastResult = GetArgs()[0];
@@ -225,7 +225,7 @@ class Game_Main
                     sm_bSyncInProgress = false;
                 }
             });
-            newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
+            syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
                     sm_bSyncInProgress = false;
@@ -233,7 +233,7 @@ class Game_Main
             });
 
             sm_bSyncInProgress = true;
-            newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
+            syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
         }
     }
 }

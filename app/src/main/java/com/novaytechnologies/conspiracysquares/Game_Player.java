@@ -33,7 +33,7 @@ class Game_Player
     private Drawable m_SQUARE;
 
     private int m_nID;
-    private String m_sync_strName;
+    private String m_sync_strName = "";
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
     private int m_sync_nFlags = -1;
@@ -46,6 +46,7 @@ class Game_Player
     static void SetSelfID(int nID) {sm_nID = nID;}
     static private Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
 
+    private boolean m_bLoaded = false;
     private boolean isSelf() {return m_nID == sm_nID;}
     private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
 
@@ -73,6 +74,8 @@ class Game_Player
 
         Self.m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
         Self.m_SQUARE.setColorFilter(sm_nSelfColor, PorterDuff.Mode.MULTIPLY);
+
+        Self.m_bLoaded = true;
     }
 
     static void MoveSelfToLocal(float fScreenX, float fScreenY)
@@ -100,7 +103,7 @@ class Game_Player
 
     private void Kill(Context ctx)
     {
-        m_SQUARE.clearColorFilter();
+        if (m_SQUARE != null) m_SQUARE.clearColorFilter();
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.square_broken);
     }
 
@@ -111,6 +114,7 @@ class Game_Player
     {
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
         m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
+        m_bLoaded = true;
     }
     void UpdateF(int nFlags, Context ctx)
     {
@@ -123,10 +127,8 @@ class Game_Player
     }
 
     void DrawPlayer(Canvas canvas, long lDelta) {
-        if (Game_Main.isStarted())
+        if (m_bLoaded)
         {
-            Game_Player Self = GetSelf();
-
             if (m_sync_nFlags >= 0)
             {
                 float fDrawX;
@@ -151,7 +153,7 @@ class Game_Player
                 m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
                 m_SQUARE.draw(canvas);
 
-                canvas.drawText(m_sync_strName, fDrawX, fDrawY, sm_txtPaint);
+                canvas.drawText(m_sync_strName, fDrawX - sm_fBoxSize, fDrawY, sm_txtPaint);
             }
             else if (isSelf()) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
         }
