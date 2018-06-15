@@ -70,7 +70,9 @@ class Game_Player
 
         Self.m_sync_strName = Utility_SharedPrefs.get().loadName(ctx);
         sm_txtPaint = new Paint();
-        sm_txtPaint.setColor(Color.rgb(0, 0, 0));
+        sm_txtPaint.setShadowLayer(8f, 0, 0, Color.rgb(0, 0, 0));
+        sm_txtPaint.setColor(Color.rgb(255, 255, 255));
+        sm_txtPaint.setTextAlign(Paint.Align.CENTER);
 
         Self.m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_square);
         Self.m_SQUARE.setColorFilter(sm_nSelfColor, PorterDuff.Mode.MULTIPLY);
@@ -87,12 +89,12 @@ class Game_Player
         {
             float fPlayerXdist = fScreenX - Game_Camera.GetDrawX();
             float fPlayerYdist = fScreenY - Game_Camera.GetDrawY();
-            float fPlayerDist = (float) (Math.sqrt(Math.pow(fPlayerXdist, 2) + Math.pow(fPlayerYdist, 2)));
+            float fPlayerDist = (float) (Math.sqrt(Math.pow(fPlayerXdist, 2f) + Math.pow(fPlayerYdist, 2f)));
 
             float fPlayer_Time = fPlayerDist / sm_fPlayer_Speed;
 
-            Self.m_fSpeedX = 100f * (fPlayerXdist / fPlayer_Time) / (float) Layout_Game_Draw.nMaxSide;
-            Self.m_fSpeedY = 100f * (fPlayerYdist / fPlayer_Time) / (float) Layout_Game_Draw.nMaxSide;
+            Self.m_fSpeedX = (fPlayerXdist / fPlayer_Time) / Layout_Game_Draw.sm_fScaleFactor;
+            Self.m_fSpeedY = (fPlayerYdist / fPlayer_Time) / Layout_Game_Draw.sm_fScaleFactor;
         }
         else
         {
@@ -153,7 +155,7 @@ class Game_Player
                 m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
                 m_SQUARE.draw(canvas);
 
-                canvas.drawText(m_sync_strName, fDrawX - sm_fBoxSize, fDrawY, sm_txtPaint);
+                canvas.drawText(m_sync_strName, fDrawX, fDrawY, sm_txtPaint);
             }
             else if (isSelf()) Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
         }

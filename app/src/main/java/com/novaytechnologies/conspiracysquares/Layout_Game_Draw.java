@@ -22,6 +22,9 @@ public class Layout_Game_Draw extends FrameLayout {
     static int nMinSide;
     static int nMaxSide;
 
+    // The local to global coordinate scaling factor
+    static float sm_fScaleFactor = 1f;
+
     // The grid's paint object.
     static Paint mGridPaint = new Paint(R.color.colorLine);
 
@@ -56,6 +59,8 @@ public class Layout_Game_Draw extends FrameLayout {
         nMinSide = (nWidth < nHeight) ? nWidth : nHeight;
         nMaxSide = (nWidth > nHeight) ? nWidth : nHeight;
 
+        sm_fScaleFactor = Layout_Game_Draw.nMaxSide / 100f;
+
         lDrawLast = lMoveTick = System.currentTimeMillis();
 
         Game_Player.UpdateAllSizes(nMinSide * Game_Player.fSIZE_FRACTION);
@@ -88,33 +93,33 @@ public class Layout_Game_Draw extends FrameLayout {
     {
         float fPos;
 
-        float fGridStartX = Game_Camera.GetGlobalX() - 52;
-        fGridStartX = fGridStartX - (float) (Math.abs(Math.round(fGridStartX)) % 10);
-        float fGridEndX = Game_Camera.GetGlobalX() + 62;
-        fGridEndX = fGridEndX - (float) (Math.abs(Math.round(fGridEndX)) % 10);
+        float fGridStartX = Game_Camera.GetGlobalX() - 70;
+        fGridStartX -= fGridStartX % 10;
+        float fGridEndX = Game_Camera.GetGlobalX() + 70;
+        fGridEndX -= fGridEndX % 10;
 
         for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 10f)
-        {
-            fPos = Game_Camera.GetRelativeY(fGridLine);
-            canvas.drawLine(0,
-                    fPos,
-                    nWidth,
-                    fPos,
-                    mGridPaint);
-        }
-
-        float fGridStartY = Game_Camera.GetGlobalY() - 52;
-        fGridStartY = fGridStartY - (float) (Math.abs(Math.round(fGridStartY)) % 10);
-        float fGridEndY = Game_Camera.GetGlobalY() + 62;
-        fGridEndY = fGridEndY - (float) (Math.abs(Math.round(fGridEndY)) % 10);
-
-        for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 10f)
         {
             fPos = Game_Camera.GetRelativeX(fGridLine);
             canvas.drawLine(fPos,
                     0,
                     fPos,
                     nHeight,
+                    mGridPaint);
+        }
+
+        float fGridStartY = Game_Camera.GetGlobalY() - 70;
+        fGridStartY -= fGridStartY % 10;
+        float fGridEndY = Game_Camera.GetGlobalY() + 70;
+        fGridEndY -= fGridEndY % 10;
+
+        for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 10f)
+        {
+            fPos = Game_Camera.GetRelativeY(fGridLine);
+            canvas.drawLine(0,
+                    fPos,
+                    nWidth,
+                    fPos,
                     mGridPaint);
         }
     }

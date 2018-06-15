@@ -34,11 +34,11 @@ public class Game_Camera
 
     static float GetRelativeX(float fOtherX)
     {
-        return sm_fDrawX - ((sm_fPosX - fOtherX) * Layout_Game_Draw.nMaxSide / 100f);
+        return sm_fDrawX - ((sm_fPosX - fOtherX) * Layout_Game_Draw.sm_fScaleFactor);
     }
 
     static float GetRelativeY(float fOtherY)
     {
-        return sm_fDrawY - ((sm_fPosY - fOtherY) * Layout_Game_Draw.nMaxSide / 100f);
+        return sm_fDrawY - ((sm_fPosY - fOtherY) * Layout_Game_Draw.sm_fScaleFactor);
     }
 }
