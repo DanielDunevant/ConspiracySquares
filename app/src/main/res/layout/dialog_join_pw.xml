@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ID_dialog_host"
+    android:id="@+id/ID_dialog_join"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/none"
@@ -16,7 +16,7 @@
         android:background="@color/colorButton"
         android:gravity="center"
         android:padding="@dimen/button_padding"
-        android:text="@string/title_host"
+        android:text="@string/title_join"
         android:textColor="@color/colorButtonText"
         android:textSize="@dimen/title_text"
         android:textStyle="bold" />
@@ -35,27 +35,6 @@
         android:weightSum="1">
 
         <EditText
-            android:id="@+id/server_name_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="@dimen/button_padding"
-            android:background="@drawable/menu_input"
-            android:ems="12"
-            android:hint="@string/input_server"
-            android:inputType="text"
-            android:nextFocusLeft="@id/dialog_main"
-            android:nextFocusUp="@id/dialog_main"
-            android:padding="@dimen/input_padding"
-            android:selectAllOnFocus="true"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/colorInput"
-            android:textColorHighlight="@color/colorInputHighlight"
-            android:textSize="@dimen/input_text"
-            android:windowSoftInputMode="stateHidden" />
-
-        <EditText
             android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +42,7 @@
             android:layout_margin="@dimen/button_padding"
             android:background="@drawable/menu_input"
             android:ems="12"
-            android:hint="@string/input_password"
+            android:hint="@string/input_password_join"
             android:inputType="textVisiblePassword"
             android:nextFocusLeft="@id/dialog_main"
             android:nextFocusUp="@id/dialog_main"
@@ -105,7 +84,7 @@
                 android:textSize="@dimen/button_text" />
 
             <Button
-                android:id="@+id/ID_dialog_button_host"
+                android:id="@+id/ID_dialog_button_join"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -113,7 +92,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/menu_button"
                 android:padding="@dimen/button_padding"
-                android:text="@string/button_host"
+                android:text="@string/button_join"
                 android:textColor="@color/colorButtonText"
                 android:textSize="@dimen/button_text" />
 

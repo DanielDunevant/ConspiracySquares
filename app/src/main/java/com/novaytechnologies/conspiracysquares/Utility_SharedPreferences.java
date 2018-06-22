@@ -6,17 +6,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class Utility_SharedPrefs
+public class Utility_SharedPreferences
 {
+    static final public int MAX_PLAYERS = 32;
+    static final String sm_strAppDomain = "com.novaytechnologies.conspiracysquares";
+
     static private SharedPreferences sm_SH_Pref;
-    static private final String conspiracysquares_SHPREF = "com.novaytechnologies.conspiracysquares";
+    static private final String conspiracysquares_SHPREF = sm_strAppDomain + ".shpref";
     static private final String conspiracysquares_SHPREF_NAME = ".name";
 
-    private Utility_SharedPrefs() {}
-    static private Utility_SharedPrefs SharedPrefsSingleton;
-    static Utility_SharedPrefs get()
+    // Singleton Code
+    private Utility_SharedPreferences() {}
+    static private Utility_SharedPreferences SharedPrefsSingleton;
+    static Utility_SharedPreferences get()
     {
-        if (SharedPrefsSingleton == null) SharedPrefsSingleton = new Utility_SharedPrefs();
+        if (SharedPrefsSingleton == null) SharedPrefsSingleton = new Utility_SharedPreferences();
         return SharedPrefsSingleton;
     }
 

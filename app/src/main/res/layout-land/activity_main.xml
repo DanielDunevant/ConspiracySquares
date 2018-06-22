@@ -28,7 +28,8 @@
                 android:id="@+id/ID_txt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/title_margin"
+                android:layout_marginTop="@dimen/none"
+                android:layout_marginBottom="@dimen/title_margin"
                 android:text="@string/text_title"
                 android:textAlignment="center"
                 android:textColor="@color/colorTitle"
@@ -70,7 +71,10 @@
                     android:textColor="@color/colorInput"
                     android:textSize="@dimen/input_text"
                     android:textStyle="normal|bold"
+                    android:paddingLeft="@dimen/none"
+                    android:paddingStart="@dimen/none"
                     android:paddingRight="@dimen/input_padding"
+                    android:paddingEnd="@dimen/input_padding"
                     android:layout_gravity="center_vertical"
                     android:background="@android:color/transparent"/>
 
@@ -91,8 +95,9 @@
                     android:textColor="@color/colorInput"
                     android:textSize="@dimen/input_text"
                     android:text="@string/input_name_def"
+                    android:hint="@string/input_name_def"
                     android:textColorHighlight="@color/colorInputHighlight"
-                    android:background="@drawable/input"/>
+                    android:background="@drawable/menu_input"/>
             </LinearLayout>
 
             <LinearLayout
@@ -112,9 +117,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_gravity="left"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="@dimen/button_spacing"
                     android:layout_marginRight="@dimen/button_spacing"
-                    android:background="@drawable/button_rect"
+                    android:background="@drawable/menu_button"
                     android:padding="@dimen/button_padding"
                     android:text="@string/button_server"
                     android:textColor="@color/colorButtonText"
@@ -125,37 +131,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:layout_marginLeft="@dimen/button_spacing"
-                    android:background="@drawable/button_rect"
+                    android:layout_marginStart="@dimen/button_spacing"
+                    android:background="@drawable/menu_button"
                     android:padding="@dimen/button_padding"
                     android:text="@string/button_play"
                     android:textColor="@color/colorButtonText"
                     android:textSize="@dimen/button_text" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/ID_Credits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/credits_margin"
+                android:text="@string/credits"
+                android:textColor="@color/colorTitle"
+                android:textSize="@dimen/title_text"
+                android:textStyle="normal|bold"
+                android:background="@android:color/transparent"/>
 
-                <TextView
-                    android:id="@+id/ID_Credits"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/title_margin"
-                    android:text="@string/credits"
-                    android:textColor="@color/colorTitle"
-                    android:textSize="@dimen/title_text"
-                    android:textStyle="normal|bold"
-                    android:background="@android:color/transparent"/>
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:rowCount="3"
+                android:columnCount="2">
 
                 <TextView
                     android:id="@+id/ID_Credits_Design"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_below="@id/ID_Credits"
-                    android:gravity="left"
                     android:text="@string/credits_design"
                     android:textColor="@color/colorTitle"
                     android:textSize="@dimen/credits_text"
@@ -167,10 +174,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_marginLeft="@dimen/credits_space"
-                    android:layout_below="@id/ID_Credits"
-                    android:layout_toRightOf="@id/ID_Credits_Design"
-                    android:text="@string/credits_design_dev"
+                    android:paddingRight="@dimen/none"
+                    android:paddingEnd="@dimen/none"
+                    android:paddingLeft="@dimen/credits_space"
+                    android:paddingStart="@dimen/credits_space"
+                    android:text="@string/credits_design_dev_wide"
                     android:textColor="@color/colorButtonText"
                     android:textSize="@dimen/credits_text"
                     android:textStyle="normal|bold"
@@ -181,8 +189,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_below="@id/ID_Credits_Design"
-                    android:gravity="left"
                     android:text="@string/credits_app"
                     android:textColor="@color/colorTitle"
                     android:textSize="@dimen/credits_text"
@@ -194,10 +200,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_marginLeft="@dimen/credits_space"
-                    android:layout_below="@id/ID_Credits_Design"
-                    android:layout_toRightOf="@id/ID_Credits_Dev"
-                    android:text="@string/credits_app_dev"
+                    android:paddingRight="@dimen/none"
+                    android:paddingEnd="@dimen/none"
+                    android:paddingLeft="@dimen/credits_space"
+                    android:paddingStart="@dimen/credits_space"
+                    android:text="@string/credits_app_dev_wide"
                     android:textColor="@color/colorButtonText"
                     android:textSize="@dimen/credits_text"
                     android:textStyle="normal|bold"
@@ -208,8 +215,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_below="@id/ID_Credits_Dev"
-                    android:gravity="left"
                     android:text="@string/credits_music"
                     android:textColor="@color/colorTitle"
                     android:textSize="@dimen/credits_text"
@@ -221,15 +226,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/credits_margin"
-                    android:layout_marginLeft="@dimen/credits_space"
-                    android:layout_below="@id/ID_Credits_Dev"
-                    android:layout_toRightOf="@id/ID_Credits_Music"
+                    android:paddingRight="@dimen/none"
+                    android:paddingEnd="@dimen/none"
+                    android:paddingLeft="@dimen/credits_space"
+                    android:paddingStart="@dimen/credits_space"
                     android:text="@string/credits_music_dev"
                     android:textColor="@color/colorButtonText"
                     android:textSize="@dimen/credits_text"
                     android:textStyle="normal|bold"
                     android:background="@android:color/transparent"/>
-            </RelativeLayout>
+            </GridLayout>
         </LinearLayout>
     </ScrollView>
 

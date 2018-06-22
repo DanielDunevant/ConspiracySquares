@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ID_activity_servers"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/none"
+    android:background="@color/colorBackground"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context=".Activity_Servers"
-    android:background="@color/colorBackground">
+    tools:context=".Activity_Servers">
 
     <LinearLayout
         android:id="@+id/ID_layout_servers"
-        app:layout_constraintBottom_toTopOf="@id/ID_layout_bar"
-        app:layout_constraintTop_toTopOf="@id/ID_activity_servers"
-        app:layout_constraintLeft_toLeftOf="@id/ID_activity_servers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="@dimen/none"
         android:orientation="vertical"
         android:padding="@dimen/none"
-        android:layout_margin="@dimen/none"
-        android:weightSum="1">
+        android:weightSum="1"
+        app:layout_constraintBottom_toTopOf="@id/ID_layout_bar"
+        app:layout_constraintLeft_toLeftOf="@id/ID_activity_servers"
+        app:layout_constraintTop_toTopOf="@id/ID_activity_servers">
 
         <LinearLayout
             android:id="@+id/ID_layout_host"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/none"
             android:layout_gravity="end"
+            android:layout_margin="@dimen/none"
             android:orientation="horizontal"
             android:padding="@dimen/none"
             android:weightSum="1">
@@ -37,24 +37,24 @@
                 android:id="@+id/ID_txt_Host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/none"
                 android:layout_gravity="center_vertical"
-                android:text="@string/title_host"
-                android:textColor="@color/colorInput"
-                android:textSize="@dimen/button_text"
+                android:layout_margin="@dimen/none"
+                android:background="@android:color/transparent"
                 android:gravity="end"
+                android:padding="@dimen/button_padding"
+                android:text="@string/title_host"
                 android:textAlignment="viewEnd"
-                android:paddingRight="@dimen/button_padding"
-                android:background="@android:color/transparent"/>
+                android:textColor="@color/colorInput"
+                android:textSize="@dimen/button_text" />
 
             <Button
                 android:id="@+id/ID_btn_create"
                 android:layout_width="@dimen/button_size_sm"
                 android:layout_height="@dimen/button_size_sm"
                 android:layout_gravity="end"
-                android:gravity="end"
                 android:layout_margin="@dimen/none"
                 android:background="@drawable/vec_plus"
+                android:gravity="end"
                 android:padding="@dimen/none" />
         </LinearLayout>
 
@@ -81,27 +81,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/none"
-                android:layout_gravity="start"
                 android:layout_weight="1"
+                android:gravity="start"
+                android:background="@android:color/transparent"
+                android:padding="@dimen/button_padding"
                 android:text="@string/txt_Servers"
-                android:textAlignment="textStart"
-                android:textSize="@dimen/button_text"
+                android:textAlignment="gravity"
                 android:textColor="@color/colorInput"
-                android:paddingLeft="@dimen/button_padding"
-                android:background="@android:color/transparent"/>
+                android:textSize="@dimen/button_text" />
 
             <TextView
                 android:id="@+id/ID_txt_Players"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/none"
                 android:layout_gravity="start"
+                android:layout_margin="@dimen/none"
                 android:layout_weight="3"
+                android:padding="@dimen/button_padding"
+                android:background="@android:color/transparent"
                 android:text="@string/txt_Players"
-                android:textAlignment="textStart"
-                android:textSize="@dimen/button_text"
+                android:textAlignment="gravity"
                 android:textColor="@color/colorInput"
-                android:background="@android:color/transparent"/>
+                android:textSize="@dimen/button_text" />
         </LinearLayout>
 
         <ScrollView
@@ -109,86 +110,86 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="@dimen/none"
-            android:padding="@dimen/none"
+            android:layout_weight="1"
             android:fadingEdge="none"
             android:fillViewport="true"
-            android:layout_weight="1">
+            android:padding="@dimen/none">
 
             <LinearLayout
                 android:id="@+id/ID_layout_scrolls"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/none"
-                android:paddingBottom="@dimen/scrollPadding"
-                android:orientation="horizontal"
                 android:gravity="top"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/scrollPadding"
                 android:weightSum="4">
 
                 <RadioGroup
                     android:id="@+id/ID_serverlist"
-                    android:orientation="vertical"
-                    android:gravity="top|start"
-                    android:textAlignment="textStart"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/button_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="top|start"
+                    android:orientation="vertical"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/button_text" />
 
                 <LinearLayout
                     android:id="@+id/ID_serverlist_players"
-                    android:orientation="vertical"
-                    android:gravity="top|start"
-                    android:textAlignment="textStart"
-                    android:layout_weight="3"
-                    android:textSize="@dimen/button_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="top|start"
+                    android:orientation="vertical"
+                    android:textAlignment="textStart"
+                    android:textSize="@dimen/button_text" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ID_layout_btns"
-        app:layout_constraintBottom_toBottomOf="@id/ID_activity_servers"
-        app:layout_constraintLeft_toLeftOf="@id/ID_activity_servers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/none"
         android:orientation="horizontal"
         android:padding="@dimen/none"
-        android:weightSum="2">
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="@id/ID_activity_servers"
+        app:layout_constraintLeft_toLeftOf="@id/ID_activity_servers">
 
         <Button
             android:id="@+id/ID_btn_refresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_margin"
             android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/button_margin"
             android:layout_weight="1"
+            android:background="@drawable/menu_button"
             android:text="@string/button_refresh"
-            android:textColor="@color/colorButtonText"
-            android:background="@drawable/button_rect"/>
+            android:textColor="@color/colorButtonText" />
 
         <Button
             android:id="@+id/ID_btn_join"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_margin"
             android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/button_margin"
             android:layout_weight="1"
+            android:background="@drawable/menu_button"
             android:text="@string/button_join"
-            android:textColor="@color/colorButtonText"
-            android:background="@drawable/button_rect"/>
+            android:textColor="@color/colorButtonText" />
     </LinearLayout>
 
     <View
         android:id="@+id/ID_layout_bar"
-        app:layout_constraintBottom_toTopOf="@id/ID_layout_btns"
-        app:layout_constraintLeft_toLeftOf="@id/ID_layout_btns"
         android:layout_width="match_parent"
         android:layout_height="@dimen/line_thickness"
-        android:background="@color/colorLine"
         android:layout_margin="@dimen/none"
-        android:padding="@dimen/none" />
+        android:background="@color/colorLine"
+        android:padding="@dimen/none"
+        app:layout_constraintBottom_toTopOf="@id/ID_layout_btns"
+        app:layout_constraintLeft_toLeftOf="@id/ID_layout_btns" />
 
 </android.support.constraint.ConstraintLayout>

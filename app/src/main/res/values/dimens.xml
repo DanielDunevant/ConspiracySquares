@@ -10,7 +10,7 @@
     <dimen name="input_padding">12dp</dimen>
     <dimen name="input_text">18sp</dimen>
     <dimen name="button_text">16sp</dimen>
-    <dimen name="button_margin">22dp</dimen>
+    <dimen name="button_margin">16dp</dimen>
     <dimen name="button_spacing">16dp</dimen>
     <dimen name="button_padding">4dp</dimen>
     <dimen name="button_size">80dp</dimen>

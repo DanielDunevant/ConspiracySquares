@@ -13,10 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-// The Initial Activity.
+// The Initial Main Menu Activity.
 public class Activity_Main extends AppCompatActivity {
 
-    // Ends the game if the game is still running.
+    // Ends the game just in case it is still running for some unexpected reason.
     @Override
     protected void onResume()
     {
@@ -35,18 +35,19 @@ public class Activity_Main extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Utility_SharedPrefs.get().loadSharedPrefs(this);
+        Utility_SharedPreferences.get().loadSharedPrefs(this);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         final TextView txt_error = findViewById(R.id.ID_txt_error);
         final EditText input_name = findViewById(R.id.ID_input_name);
 
-        input_name.setText(Utility_SharedPrefs.get().loadName(this));
+        // Save and Load player name to the Shared Preferences
+        input_name.setText(Utility_SharedPreferences.get().loadName(this));
         input_name.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 1) Utility_SharedPrefs.get().saveName(charSequence.toString());
+                if (charSequence.length() > 1) Utility_SharedPreferences.get().saveName(charSequence.toString());
             }
             @Override public void afterTextChanged(Editable editable) {}
         });
@@ -59,7 +60,7 @@ public class Activity_Main extends AppCompatActivity {
                     public void onClick(View v) {
                         String strGet = input_name.getText().toString();
                         if (!strGet.isEmpty()) {
-                            Utility_SharedPrefs.get().saveName(strGet);
+                            Utility_SharedPreferences.get().saveName(strGet);
                             txt_error.setVisibility(View.GONE);
 
                             Intent newIntent = new Intent(Activity_Main.this, Activity_Game.class);
@@ -79,7 +80,7 @@ public class Activity_Main extends AppCompatActivity {
                     public void onClick(View v) {
                         String strGet = input_name.getText().toString();
                         if (!strGet.isEmpty()) {
-                            Utility_SharedPrefs.get().saveName(strGet);
+                            Utility_SharedPreferences.get().saveName(strGet);
                             txt_error.setVisibility(View.GONE);
 
                             Intent newIntent = new Intent(Activity_Main.this, Activity_Servers.class);
