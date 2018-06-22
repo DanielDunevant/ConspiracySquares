@@ -30,4 +30,5 @@
     <string name="credits_app_dev_wide">Daniel Dunevant &amp; Jesse Primiani, From: Novay Technologies LLC</string>
     <string name="credits_music">Soundtrack Composer:</string>
     <string name="credits_music_dev">Nicaris Daniels-Porter</string>
+    <string name="blank" />
 </resources>
