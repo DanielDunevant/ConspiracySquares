@@ -13,8 +13,8 @@ import java.util.Random;
 
 class Game_Player
 {
-    static private final float fSIZE_FRACTION = 0.05f; // The size of the player, given in the fraction of the game layout's max size
-    static private final float fDIST_PER_MILLI = 0.02f; // The speed of the player, given in player size per millisecond
+    static private final float fSIZE_FRACTION = 0.04f; // The size of the player, given in the fraction of the game layout's max size
+    static private final float fDIST_PER_MILLI = 0.01f; // The speed of the player, given in player size per millisecond
 
     // If m_sync_nFlags == -1, then the player is a spectator and will not be drawn
     static private final int FLAG_ALIVE = 0b1; // Flag to determine whether the player is dead
@@ -46,8 +46,8 @@ class Game_Player
     private int m_sync_nFlags = -1;
 
     // The X and Y coordinates of the player's movement direction with speed sm_fPlayer_Speed
-    private float m_fSpeedX = 0f;
-    private float m_fSpeedY = 0f;
+    private float m_sync_fSpeedX = 0f;
+    private float m_sync_fSpeedY = 0f;
 
     // Stores and Gets the index of the SELF player object, stored in Game_Main.sm_PlayersArray
     static private int sm_nID = 0;
@@ -110,20 +110,22 @@ class Game_Player
 
             // Split the constant speed into 2 components of a constant-speed velocity vector, using the above calculations
             // These speed components are then converted from local to global coordinates via division
-            Self.m_fSpeedX = (fPlayerXdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
-            Self.m_fSpeedY = (fPlayerYdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
+            Self.m_sync_fSpeedX = (fPlayerXdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
+            Self.m_sync_fSpeedY = (fPlayerYdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
         }
         else
         {
             // Stop if the center of the screen is touched
-            Self.m_fSpeedX = 0f;
-            Self.m_fSpeedY = 0f;
+            Self.m_sync_fSpeedX = 0f;
+            Self.m_sync_fSpeedY = 0f;
         }
     }
 
     // Sets the player drawable to the dead player drawable
     private void Kill(Context ctx)
     {
+        m_sync_fSpeedX = 0f;
+        m_sync_fSpeedY = 0f;
         if (m_SQUARE != null) m_SQUARE.clearColorFilter();
         m_SQUARE = ctx.getResources().getDrawable(R.drawable.player_dead);
     }
@@ -144,7 +146,7 @@ class Game_Player
     {
         int nPrevFlags = m_sync_nFlags;
         m_sync_nFlags = nFlags;
-        if (nPrevFlags != nFlags)
+        if (nPrevFlags != nFlags && nFlags >= 0)
         {
             if (!isAlive()) Kill(ctx);
         }
@@ -158,25 +160,22 @@ class Game_Player
 
         if (m_bDrawableLoaded && m_sync_nFlags >= 0)
         {
+            m_sync_fPosX += m_sync_fSpeedX * lDelta;
+            m_sync_fPosY += m_sync_fSpeedY * lDelta;
+
             if (isSelf() && isAlive())
             {
                 fDrawX = Game_Camera.GetDrawX();
                 fDrawY = Game_Camera.GetDrawY();
 
-                m_sync_fPosX += m_fSpeedX * lDelta;
-                m_sync_fPosY += m_fSpeedY * lDelta;
-
                 Game_Camera.UpdatePosition(m_sync_fPosX, m_sync_fPosY);
             }
             else
             {
-                if (isSelf())
-                {
-                    Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
-                }
-
                 fDrawX = Game_Camera.GetRelativeX(m_sync_fPosX);
                 fDrawY = Game_Camera.GetRelativeY(m_sync_fPosY);
+
+                if (isSelf()) Game_Camera.Move(m_sync_fSpeedX, m_sync_fSpeedY, lDelta);
             }
 
             m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
@@ -186,10 +185,11 @@ class Game_Player
         }
         else if (isSelf() && Game_Main.isStarted())
         {
-            Game_Camera.Move(m_fSpeedX, m_fSpeedY, lDelta);
+            Game_Camera.Move(m_sync_fSpeedX, m_sync_fSpeedY, lDelta);
             fDrawX = Game_Camera.GetDrawX();
             fDrawY = Game_Camera.GetDrawY();
             sm_SPECTATE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
+            sm_SPECTATE.draw(canvas);
         }
     }
 }

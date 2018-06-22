@@ -33,7 +33,7 @@ public class Activity_Game extends AppCompatActivity {
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
-                Server_Error.Connect_Error(ctx);
+                Dialog_Popup.Connect_Error(ctx);
             }
         });
         GetServers.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -81,7 +81,7 @@ public class Activity_Game extends AppCompatActivity {
                     newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                         @Override
                         public void run() {
-                            Server_Error.Connect_Error(ctx);
+                            Dialog_Popup.Connect_Error(ctx);
                         }
                     });
                     newPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -118,11 +118,11 @@ public class Activity_Game extends AppCompatActivity {
             boolean bFindServer = LoadI.getBooleanExtra(FIND_SERVER, true);
 
             if (bFindServer)
-                FindServer(this.getApplicationContext());
+                FindServer(this);
             else {
                 Game_Main.sm_strServerName = LoadI.getStringExtra(SERVER);
                 Game_Main.sm_strServerPass = LoadI.getStringExtra(SERVER_PASS);
-                Game_Main.StartGame(this.getApplicationContext());
+                Game_Main.StartGame(this);
             }
         }
     }

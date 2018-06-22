@@ -58,13 +58,13 @@ public class Server_Sync
         newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
-                Server_Error.Connect_Error(ctx);
+                Dialog_Popup.Connect_Error(ctx);
                 Game_Main.EndGame();
             }
         });
 
         sm_bSyncInProgress = true;
-        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
+        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
     }
 
     // Leaves the currently connected server.
@@ -84,7 +84,7 @@ public class Server_Sync
         String ParemsString = Utility_Post.GetParemsString(params);
 
         Utility_Post endPost = new Utility_Post();
-        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
     }
 
     /*
@@ -224,7 +224,7 @@ public class Server_Sync
             });
 
             sm_bSyncInProgress = true;
-            syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServer", ParemsString);
+            syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
         }
     }
 }

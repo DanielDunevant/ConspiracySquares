@@ -21,7 +21,7 @@ class Game_Main
     static boolean isStarted() {return sm_bStarted;}
 
     // Game initialization
-    static void StartGame(Context ctx)
+    static void StartGame(final Context ctx)
     {
         if (!sm_bStarted)
         {
@@ -40,8 +40,8 @@ class Game_Main
     {
         if (sm_bStarted)
         {
-            Server_Sync.newPost.cancel(true);
-            Server_Sync.syncPost.cancel(true);
+            if (Server_Sync.newPost != null) Server_Sync.newPost.cancel(true);
+            if (Server_Sync.syncPost != null) Server_Sync.syncPost.cancel(true);
             Server_Sync.LeaveServer();
             Server_Sync.sm_bSyncInProgress = false;
             sm_PlayersArray.clear();

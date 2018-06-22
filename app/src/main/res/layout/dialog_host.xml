@@ -69,7 +69,7 @@
             android:nextFocusUp="@id/dialog_main"
             android:drawableLeft="@drawable/vec_lock"
             android:drawableStart="@drawable/vec_lock"
-            android:drawablePadding="@dimen/input_padding"
+            android:drawablePadding="@dimen/input_padding_lock"
             android:padding="@dimen/input_padding"
             android:selectAllOnFocus="true"
             android:singleLine="true"

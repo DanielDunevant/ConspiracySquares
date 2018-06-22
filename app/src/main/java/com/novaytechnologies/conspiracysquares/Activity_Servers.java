@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ public class Activity_Servers extends AppCompatActivity {
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
-                Server_Error.Connect_Error(ctx_servers);
+                Dialog_Popup.Connect_Error(ctx_servers);
             }
         });
         GetServers.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -157,7 +156,7 @@ public class Activity_Servers extends AppCompatActivity {
 
                     if (nPlayers < Utility_SharedPreferences.MAX_PLAYERS)
                     {
-                        if (bPrivate) Server_Dialogs.Show_Dialog_Join(ctx_servers, strServer);
+                        if (bPrivate) Dialog_Server.Show_Dialog_Join(ctx_servers, strServer);
                         else
                         {
                             Intent newIntent = new Intent(Activity_Servers.this, Activity_Game.class);
@@ -167,13 +166,7 @@ public class Activity_Servers extends AppCompatActivity {
                             startActivity(newIntent);
                         }
                     }
-                    else
-                    {
-                        Toast ServerFullToast = new Toast(ctx_servers);
-                        ServerFullToast.setGravity(Gravity.CENTER,0,0);
-                        ServerFullToast.setText(R.string.toast_server_full);
-                        ServerFullToast.show();
-                    }
+                    else Dialog_Popup.Server_Full(ctx_servers);
                 }
             }
         });
@@ -182,7 +175,7 @@ public class Activity_Servers extends AppCompatActivity {
         btn_host.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Server_Dialogs.Show_Dialog_Host(ctx_servers);
+                Dialog_Server.Show_Dialog_Host(ctx_servers);
             }
         });
 

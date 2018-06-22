@@ -3,16 +3,14 @@ package com.novaytechnologies.conspiracysquares;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class Server_Dialogs {
+public class Dialog_Server {
 
     /*
         DESCRIPTION:
@@ -61,7 +59,7 @@ public class Server_Dialogs {
                     newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                         @Override
                         public void run() {
-                            Server_Error.Connect_Error(ctx);
+                            Dialog_Popup.Connect_Error(ctx);
                         }
                     });
                     newPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -104,7 +102,7 @@ public class Server_Dialogs {
         final Dialog dialog_join;
         dialog_join = new Dialog(ctx);
         dialog_join.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog_join.setContentView(R.layout.dialog_host);
+        dialog_join.setContentView(R.layout.dialog_join_pw);
 
         Button dialog_btn_back = dialog_join.findViewById(R.id.ID_dialog_button_back);
         dialog_btn_back.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +134,7 @@ public class Server_Dialogs {
                     newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                         @Override
                         public void run() {
-                            Server_Error.Connect_Error(ctx);
+                            Dialog_Popup.Connect_Error(ctx);
                         }
                     });
                     newPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -153,13 +151,7 @@ public class Server_Dialogs {
                                     newIntent.putExtra(Activity_Game.SERVER_PASS, strSVRpassword);
                                     ctx.startActivity(newIntent);
                                 }
-                                else
-                                {
-                                    Toast WrongPasswordToast = new Toast(ctx);
-                                    WrongPasswordToast.setGravity(Gravity.CENTER,0,0);
-                                    WrongPasswordToast.setText(R.string.toast_wrong_password);
-                                    WrongPasswordToast.show();
-                                }
+                                else Dialog_Popup.Wrong_Password(ctx);
                             }
                         }
                     });

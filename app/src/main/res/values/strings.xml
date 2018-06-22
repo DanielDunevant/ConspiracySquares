@@ -6,7 +6,7 @@
     <string name="input_name_def">Unnamed</string>
     <string name="input_name_error">Please enter a name!</string>
     <string name="input_server">Enter Server Name</string>
-    <string name="input_password">Enter Password; Leave blank for public</string>
+    <string name="input_password">Password; Leave blank for public</string>
     <string name="input_password_join">Enter Server Password</string>
     <string name="toast_wrong_password">Wrong Password!</string>
     <string name="toast_server_full">This Server is Full!</string>
@@ -19,6 +19,7 @@
     <string name="button_refresh">Refresh</string>
     <string name="title_host">Create Cloud Server</string>
     <string name="title_join">Join Server</string>
+    <string name="title_popup">Warning!</string>
     <string name="txt_Servers">Servers</string>
     <string name="txt_Players">Players</string>
     <string name="credits">Credits</string>
