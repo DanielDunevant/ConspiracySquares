@@ -42,6 +42,8 @@ public class Activity_Servers extends AppCompatActivity {
         m_ServerButtonMap = new HashMap<>();
 
         m_ServerLayoutBtns = findViewById(R.id.ID_serverlist);
+        m_ServerLayoutBtns.clearCheck();
+        m_ServerLayoutBtns.clearFocus();
         m_ServerLayoutBtns.removeAllViews();
 
         LinearLayout playerCounts = findViewById(R.id.ID_serverlist_players);

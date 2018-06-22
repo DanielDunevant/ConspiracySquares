@@ -175,7 +175,14 @@ class Game_Player
                 fDrawX = Game_Camera.GetRelativeX(m_sync_fPosX);
                 fDrawY = Game_Camera.GetRelativeY(m_sync_fPosY);
 
-                if (isSelf()) Game_Camera.Move(m_sync_fSpeedX, m_sync_fSpeedY, lDelta);
+                if (isSelf())
+                {
+                    Game_Camera.Move(m_sync_fSpeedX, m_sync_fSpeedY, lDelta);
+                    float fDrawXcam = Game_Camera.GetDrawX();
+                    float fDrawYcam = Game_Camera.GetDrawY();
+                    sm_SPECTATE.setBounds((int) (fDrawXcam - sm_fBoxSize), (int) (fDrawYcam - sm_fBoxSize), (int) (fDrawXcam + sm_fBoxSize), (int) (fDrawYcam + sm_fBoxSize));
+                    sm_SPECTATE.draw(canvas);
+                }
             }
 
             m_SQUARE.setBounds((int) (fDrawX - sm_fBoxSize), (int) (fDrawY - sm_fBoxSize), (int) (fDrawX + sm_fBoxSize), (int) (fDrawY + sm_fBoxSize));
