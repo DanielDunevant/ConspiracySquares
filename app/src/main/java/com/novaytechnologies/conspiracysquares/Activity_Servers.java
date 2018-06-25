@@ -49,6 +49,11 @@ public class Activity_Servers extends AppCompatActivity {
         LinearLayout playerCounts = findViewById(R.id.ID_serverlist_players);
         playerCounts.removeAllViews();
 
+        ArrayList<String> params = new ArrayList<>();
+        params.add("ReqPass");
+        params.add("X");
+        String ParemsString = Utility_Post.GetParemsString(params);
+
         Utility_Post GetServers = new Utility_Post();
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
@@ -119,7 +124,7 @@ public class Activity_Servers extends AppCompatActivity {
                 playerNums.invalidate(); // Refresh the server list
             }
         });
-        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", "");
+        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", ParemsString);
     }
 
     // Ends the game just in case it is still running for some unexpected reason.

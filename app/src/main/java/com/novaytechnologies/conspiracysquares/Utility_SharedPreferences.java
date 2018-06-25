@@ -5,6 +5,11 @@ package com.novaytechnologies.conspiracysquares;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 public class Utility_SharedPreferences
 {
@@ -35,4 +40,27 @@ public class Utility_SharedPreferences
     // Saves the player's name.
     void saveName(String strName)
     {sm_SH_Pref.edit().putString(conspiracysquares_SHPREF + conspiracysquares_SHPREF_NAME, strName).apply();}
+
+    static String getIP()
+    {
+        try
+        {
+            for (Enumeration<NetworkInterface> Interfaces = NetworkInterface.getNetworkInterfaces(); Interfaces.hasMoreElements();)
+            {
+                NetworkInterface NetInterface = Interfaces.nextElement();
+                for (Enumeration<InetAddress> enumIPaddress = NetInterface.getInetAddresses(); enumIPaddress.hasMoreElements();)
+                {
+                    InetAddress IPaddress = enumIPaddress.nextElement();
+                    if (!IPaddress.isLoopbackAddress()) {return IPaddress.getHostAddress();}
+                }
+            }
+            Log.e("IP_Exception", "No Valid IP Address Found!");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Log.e("IP_Exception", "IP Determination Failed", ex);
+            return null;
+        }
+    }
 }

@@ -3,11 +3,12 @@ package com.novaytechnologies.conspiracysquares;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Server_Sync
 {
-    static Utility_Post newPost;
-    static Utility_Post syncPost;
+    static Utility_Post sm_newPost;
+    static Utility_Post sm_syncPost;
 
     static boolean sm_bSyncInProgress = false;
 
@@ -23,6 +24,9 @@ public class Server_Sync
     */
     static void PopulateFromServer(final Context ctx)
     {
+        Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
+        Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
+
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
         params.add("X");
@@ -32,30 +36,39 @@ public class Server_Sync
         params.add(Game_Main.sm_strServerPass);
         params.add("ServerJoined");
         params.add("TRUE");
-        params.add("ID");
-        params.add("0");
-
-        params.add("Player_Color");
-        params.add(Integer.toString(Game_Player.GetNewSelfColor()));
-        params.add("Player_Name");
-        params.add(Utility_SharedPreferences.get().loadName(ctx));
+        params.add("IP");
+        params.add(Game_Main.sm_strIP);
         String ParemsString = Utility_Post.GetParemsString(params);
 
-        newPost = new Utility_Post();
-        newPost.SetRunnable(new Utility_Post.RunnableArgs() {
+        sm_newPost = new Utility_Post();
+        sm_newPost.SetRunnable(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
                 String LastResult = GetArgs()[0];
-                if (LastResult != null && LastResult.indexOf(';', 0) != -1)
+                if (LastResult != null)
                 {
-                    String strGet = LastResult.substring(LastResult.indexOf('=', 0) + 1, LastResult.indexOf('+', 0));
-                    Game_Player.SetSelfID(Integer.parseInt(strGet));
-                    Game_Player.CreateSelf(ctx);
-                    SyncWithServer(ctx, true);
+                    int nGetIDindex = LastResult.indexOf('=', 0);
+                    if (nGetIDindex != -1)
+                    {
+                        String strGet = LastResult.substring(nGetIDindex + 1);
+                        Game_Player.SetSelfID(Integer.parseInt(strGet));
+                        Game_Player.GetNewSelfColor();
+                        Game_Player.CreateSelf(ctx);
+                        Server_P2P_ThreadManager.SpawnServerThread();
+                        SyncWithServer(ctx, true);
+                    }
+                    else {
+                        Dialog_Popup.Connect_Error(ctx);
+                        Game_Main.EndGame();
+                    }
+                }
+                else {
+                    Dialog_Popup.Connect_Error(ctx);
+                    Game_Main.EndGame();
                 }
             }
         });
-        newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
+        sm_newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
                 Dialog_Popup.Connect_Error(ctx);
@@ -64,11 +77,11 @@ public class Server_Sync
         });
 
         sm_bSyncInProgress = true;
-        newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+        sm_newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
     }
 
     // Leaves the currently connected server.
-    static void LeaveServer()
+    static void LeaveServer(String strIPtoDisconnect)
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
@@ -79,8 +92,8 @@ public class Server_Sync
         params.add(Game_Main.sm_strServerPass);
         params.add("ServerJoined");
         params.add("LEFT");
-        params.add("ID");
-        params.add(Integer.toString(Game_Player.GetSelfID()));
+        params.add("IP");
+        params.add(strIPtoDisconnect);
         String ParemsString = Utility_Post.GetParemsString(params);
 
         Utility_Post endPost = new Utility_Post();
@@ -91,9 +104,68 @@ public class Server_Sync
         DESCRIPTION:
             Performs synchronization tasks with the server.
         POST-CONDITION:
-            Updates all player information on success.
+            Updates all player IPs on success.
             Retries synchronization on failure.
     */
+    static private void DoSync()
+    {
+        ArrayList<String> params = new ArrayList<>();
+        params.add("ReqPass");
+        params.add("X");
+        params.add("ServerName");
+        params.add(Game_Main.sm_strServerName);
+        params.add("ServerPassword");
+        params.add(Game_Main.sm_strServerPass);
+        params.add("ServerJoined");
+        params.add("SYNC");
+        params.add("IP");
+        params.add(Game_Main.sm_strIP);
+        String ParemsString = Utility_Post.GetParemsString(params);
+
+        sm_syncPost = new Utility_Post();
+        sm_syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
+            @Override
+            public void run() {
+                String LastResult = GetArgs()[0];
+                if (LastResult != null)
+                {
+                    String strGet;
+                    int nEndIndex;
+                    int nNextIndex = LastResult.indexOf('+', 0);
+                    Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
+                    while (nNextIndex != -1)
+                    {
+                        nEndIndex = LastResult.indexOf('+', 2);
+                        if (nEndIndex != -1)
+                        {
+                            strGet = LastResult.substring(nNextIndex + 1, nEndIndex);
+                            LastResult = LastResult.substring(nEndIndex);
+                            nNextIndex = LastResult.indexOf('+', 0);
+                        }
+                        else
+                        {
+                            strGet = LastResult.substring(nNextIndex + 1);
+                            nNextIndex = -1;
+                        }
+                        Server_P2P_ThreadManager.sm_PlayerIPs.add(strGet);
+                    }
+                    Server_P2P_ThreadManager.SpawnPlayerThreads();
+                }
+                sm_bSyncInProgress = false;
+            }
+        });
+        sm_syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
+            @Override
+            public void run() {
+                sm_bSyncInProgress = false;
+            }
+        });
+
+        sm_bSyncInProgress = true;
+        sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+    }
+
+    // Check for any new players before updating
     static void SyncWithServer(final Context ctx, boolean bStart)
     {
         if (Game_Main.isStarted() && (!sm_bSyncInProgress || bStart))
@@ -105,118 +177,25 @@ public class Server_Sync
             params.add(Game_Main.sm_strServerName);
             params.add("ServerPassword");
             params.add(Game_Main.sm_strServerPass);
-            params.add("ServerJoined");
-            params.add("SYNC");
-            params.add("ID");
-            params.add(Integer.toString(Game_Player.GetSelfID()));
-
-            params.add("Player_X");
-            params.add(Float.toString(Game_Player.GetX()));
-            params.add("Player_Y");
-            params.add(Float.toString(Game_Player.GetY()));
-            params.add("Player_Flags");
-            params.add(Integer.toString(Game_Player.GetFlags()));
+            params.add("IP");
+            params.add(Game_Main.sm_strIP);
             String ParemsString = Utility_Post.GetParemsString(params);
 
-            syncPost = new Utility_Post();
-            syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
+            sm_syncPost = new Utility_Post();
+            sm_syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
                     String LastResult = GetArgs()[0];
-                    if (LastResult != null && LastResult.indexOf(';', 0) != -1)
+                    if (LastResult != null && !LastResult.contains("PASSWORD_WRONG"))
                     {
-                        int nSelfID = Game_Player.GetSelfID();
-
-                        String strGet;
-                        LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-
-                        int nPlayerIndex = 0;
-                        boolean bGetNext = true;
-                        while (bGetNext)
-                        {
-                            strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
-                            if (strGet.contains("+"))
-                            {
-                                strGet = LastResult.substring(0, LastResult.indexOf('+', 0));
-                                LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-                                bGetNext = false;
-                            }
-                            else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != nSelfID) Game_Main.sm_PlayersArray.get(nPlayerIndex).UpdateX(Float.parseFloat(strGet));
-                            nPlayerIndex++;
-                        }
-
-                        nPlayerIndex = 0;
-                        bGetNext = true;
-                        while (bGetNext)
-                        {
-                            strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
-                            if (strGet.contains("+"))
-                            {
-                                strGet = LastResult.substring(0, LastResult.indexOf('+', 0));
-                                LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-                                bGetNext = false;
-                            }
-                            else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != nSelfID) Game_Main.sm_PlayersArray.get(nPlayerIndex).UpdateY(Float.parseFloat(strGet));
-                            nPlayerIndex++;
-                        }
-
-                        nPlayerIndex = 0;
-                        bGetNext = true;
-                        while (bGetNext)
-                        {
-                            strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
-                            if (strGet.contains("+"))
-                            {
-                                strGet = LastResult.substring(0, LastResult.indexOf('+', 0));
-                                LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-                                bGetNext = false;
-                            }
-                            else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                            if (nPlayerIndex != nSelfID) Game_Main.sm_PlayersArray.get(nPlayerIndex).UpdateF(Integer.parseInt(strGet), ctx);
-                            nPlayerIndex++;
-                        }
-
-                        if (LastResult.length() > 4)
-                        {
-                            nPlayerIndex = 0;
-                            bGetNext = true;
-                            while (bGetNext)
-                            {
-                                strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
-                                if (strGet.contains("+"))
-                                {
-                                    strGet = LastResult.substring(0, LastResult.indexOf('+', 0));
-                                    LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-                                    bGetNext = false;
-                                }
-                                else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                                if (nPlayerIndex != nSelfID) Game_Main.sm_PlayersArray.get(nPlayerIndex).UpdateColor(Integer.parseInt(strGet), ctx);
-                                nPlayerIndex++;
-                            }
-
-                            nPlayerIndex = 0;
-                            bGetNext = true;
-                            while (bGetNext)
-                            {
-                                strGet = LastResult.substring(0, LastResult.indexOf('&', 0));
-                                if (strGet.contains("+"))
-                                {
-                                    strGet = LastResult.substring(0, LastResult.indexOf('+', 0));
-                                    LastResult = LastResult.substring(LastResult.indexOf('+', 0) + 2);
-                                    bGetNext = false;
-                                }
-                                else LastResult = LastResult.substring(LastResult.indexOf('&', 0) + 1);
-                                if (nPlayerIndex != nSelfID) Game_Main.sm_PlayersArray.get(nPlayerIndex).UpdateName(strGet);
-                                nPlayerIndex++;
-                            }
-                        }
+                        boolean bNewIPinfo = Boolean.getBoolean(LastResult);
+                        if (bNewIPinfo) DoSync();
+                        else sm_bSyncInProgress = false;
                     }
-                    sm_bSyncInProgress = false;
+                    else sm_bSyncInProgress = false;
                 }
             });
-            syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
+            sm_syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
                     sm_bSyncInProgress = false;
@@ -224,7 +203,7 @@ public class Server_Sync
             });
 
             sm_bSyncInProgress = true;
-            syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+            sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_CheckJoined", ParemsString);
         }
     }
 }

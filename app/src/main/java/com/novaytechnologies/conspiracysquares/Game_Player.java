@@ -35,12 +35,14 @@ class Game_Player
     // The spectating drawable
     static Drawable sm_SPECTATE;
 
-    // The player drawable
+    // The player drawable and Context
+    Context m_ctx;
     private Drawable m_SQUARE;
 
     // All synchronized player information
     private int m_nID;
     private String m_sync_strName = "";
+    private int m_sync_nSelfColor = 0;
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
     private int m_sync_nFlags = -1;
@@ -51,32 +53,35 @@ class Game_Player
 
     // Stores and Gets the index of the SELF player object, stored in Game_Main.sm_PlayersArray
     static private int sm_nID = 0;
-    static int GetSelfID() {return sm_nID;}
     static void SetSelfID(int nID) {sm_nID = nID;}
-    static private Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
+    static Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
 
     // Player state information
     private boolean m_bDrawableLoaded = false;
     private boolean isSelf() {return m_nID == sm_nID;}
     private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
 
-    static float GetX() {return GetSelf().m_sync_fPosX;}
-    static float GetY() {return GetSelf().m_sync_fPosY;}
-    static int GetFlags() {return GetSelf().m_sync_nFlags;}
+    int GetID() {return m_nID;}
+    String GetName() {return m_sync_strName;}
+    int GetColor() {return m_sync_nSelfColor;}
+    float GetX() {return m_sync_fPosX;}
+    float GetY() {return m_sync_fPosY;}
+    float GetSpeedX() {return m_sync_fSpeedX;}
+    float GetSpeedY() {return m_sync_fSpeedY;}
+    int GetFlags() {return m_sync_nFlags;}
 
-    // SELF color and random color chooser function
-    static private int sm_nSelfColor;
-    static int GetNewSelfColor()
+    // Random color chooser function
+    static void GetNewSelfColor()
     {
         Random randColor = new Random(System.currentTimeMillis());
-        sm_nSelfColor = Color.rgb(randColor.nextInt(255), randColor.nextInt(255), randColor.nextInt(255));
-        return sm_nSelfColor;
+        GetSelf().m_sync_nSelfColor = Color.rgb(randColor.nextInt(255), randColor.nextInt(255), randColor.nextInt(255));
     }
 
     // The function to create the locally controlled player, SELF.
     static void CreateSelf(Context ctx)
     {
         Game_Player Self = GetSelf();
+        Self.m_ctx = ctx;
 
         Self.m_sync_nFlags = 0b1;
 
@@ -87,7 +92,7 @@ class Game_Player
         sm_txtPaint.setTextAlign(Paint.Align.CENTER);
 
         Self.m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_player);
-        Self.m_SQUARE.setColorFilter(sm_nSelfColor, PorterDuff.Mode.MULTIPLY);
+        Self.m_SQUARE.setColorFilter(Self.m_sync_nSelfColor, PorterDuff.Mode.MULTIPLY);
 
         Self.m_bDrawableLoaded = true;
     }
@@ -122,33 +127,38 @@ class Game_Player
     }
 
     // Sets the player drawable to the dead player drawable
-    private void Kill(Context ctx)
+    private void Kill()
     {
         m_sync_fSpeedX = 0f;
         m_sync_fSpeedY = 0f;
         if (m_SQUARE != null) m_SQUARE.clearColorFilter();
-        m_SQUARE = ctx.getResources().getDrawable(R.drawable.player_dead);
+        m_SQUARE = m_ctx.getResources().getDrawable(R.drawable.player_dead);
     }
 
     // Update synchronized player data
     void UpdateName(String strName) {m_sync_strName = strName;}
     void UpdateX(float fX) {m_sync_fPosX = fX;}
     void UpdateY(float fY) {m_sync_fPosY = fY;}
-    void UpdateColor(int nColor, Context ctx)
+    void UpdateSpdX(float fX) {m_sync_fSpeedX = fX;}
+    void UpdateSpdY(float fY) {m_sync_fSpeedY = fY;}
+    void UpdateColor(int nColor)
     {
-        m_SQUARE = ctx.getResources().getDrawable(R.drawable.vec_player);
-        m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
-        m_bDrawableLoaded = true;
+        if (isAlive())
+        {
+            m_SQUARE = m_ctx.getResources().getDrawable(R.drawable.vec_player);
+            m_SQUARE.setColorFilter(nColor, PorterDuff.Mode.MULTIPLY);
+            m_bDrawableLoaded = true;
+        }
     }
 
     // Updates the player's flag information, and run the relevant functions when any flag changes
-    void UpdateF(int nFlags, Context ctx)
+    void UpdateF(int nFlags)
     {
         int nPrevFlags = m_sync_nFlags;
         m_sync_nFlags = nFlags;
         if (nPrevFlags != nFlags && nFlags >= 0)
         {
-            if (!isAlive()) Kill(ctx);
+            if (!isAlive()) Kill();
         }
     }
 
