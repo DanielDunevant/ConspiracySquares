@@ -25,20 +25,23 @@ public class Server_P2P_ThreadManager
     {
         for (String strIP : sm_PlayerIPs)
         {
-            if (!sm_Player_Threads.containsKey(strIP) || sm_Player_Threads.get(strIP) == null)
+            if (!strIP.equals(Game_Main.sm_strIP))
             {
-                Server_P2P_Send newSender = new Server_P2P_Send();
-                newSender.setIP(strIP);
-                Thread newThread = new Thread(newSender);
-                newThread.start();
-                sm_Player_Threads.put(strIP, newThread);
-            }
-            else
-            {
-                Thread getThread = sm_Player_Threads.get(strIP);
-                if (getThread.isInterrupted() || !getThread.isAlive())
+                if (!sm_Player_Threads.containsKey(strIP) || sm_Player_Threads.get(strIP) == null)
                 {
-                    getThread.start();
+                    Server_P2P_Send newSender = new Server_P2P_Send();
+                    newSender.setIP(strIP);
+                    Thread newThread = new Thread(newSender);
+                    newThread.start();
+                    sm_Player_Threads.put(strIP, newThread);
+                }
+                else
+                {
+                    Thread getThread = sm_Player_Threads.get(strIP);
+                    if (getThread.isInterrupted() || !getThread.isAlive())
+                    {
+                        getThread.start();
+                    }
                 }
             }
         }
