@@ -5,6 +5,7 @@ package com.novaytechnologies.conspiracysquares;
 import android.content.Context;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class Game_Main
 {
@@ -45,6 +46,9 @@ class Game_Main
                     sm_PlayersArray.add(newPlayer);
                 }
                 Game_Player.sm_SPECTATE = ctx.getResources().getDrawable(R.drawable.vec_spectate);
+                Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
+                Server_P2P_ThreadManager.sm_Player_Ports = new HashMap<>();
+                Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
                 Server_Sync.PopulateFromServer(ctx);
             }
             else

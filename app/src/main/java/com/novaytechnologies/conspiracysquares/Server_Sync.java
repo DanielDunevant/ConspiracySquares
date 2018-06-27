@@ -25,10 +25,6 @@ public class Server_Sync
     */
     static void PopulateFromServer(final Context ctx)
     {
-        Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
-        Server_P2P_ThreadManager.sm_Player_Ports = new HashMap<>();
-        Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
-
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
         params.add("X");

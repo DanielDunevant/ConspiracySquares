@@ -135,7 +135,7 @@ public class Activity_Game extends AppCompatActivity {
                     if (!Game_Main.isStarted())
                     {
                         Log.e("Find_Exception", "Could not find or start server!");
-                        Dialog_Popup.Find_Error(ctx);
+                        Dialog_Popup.Find_Error(ctx.getApplicationContext());
                     }
                 }
             }, 4, TimeUnit.SECONDS);
