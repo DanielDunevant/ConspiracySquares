@@ -26,6 +26,7 @@ public class Server_Sync
     static void PopulateFromServer(final Context ctx)
     {
         Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
+        Server_P2P_ThreadManager.sm_Player_Ports = new HashMap<>();
         Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
 
         ArrayList<String> params = new ArrayList<>();
@@ -101,6 +102,28 @@ public class Server_Sync
         endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
     }
 
+    // Update Local Server's Port.
+    static void UpdatePort()
+    {
+        ArrayList<String> params = new ArrayList<>();
+        params.add("ReqPass");
+        params.add("X");
+        params.add("ServerName");
+        params.add(Game_Main.sm_strServerName);
+        params.add("ServerPassword");
+        params.add(Game_Main.sm_strServerPass);
+        params.add("ServerJoined");
+        params.add("PORT");
+        params.add("IP");
+        params.add(Game_Main.sm_strIP);
+        params.add("PORT");
+        params.add(Integer.toString(Game_Main.sm_nPort));
+        String ParemsString = Utility_Post.GetParemsString(params);
+
+        Utility_Post endPost = new Utility_Post();
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+    }
+
     /*
         DESCRIPTION:
             Performs synchronization tasks with the server.
@@ -130,26 +153,23 @@ public class Server_Sync
                 String LastResult = GetArgs()[0];
                 if (LastResult != null)
                 {
-                    String strGet;
-                    int nEndIndex;
-                    int nNextIndex = LastResult.indexOf('+', 0);
+                    String strGetIP;
+                    String strGetPort;
+                    int nNextIndex;
                     Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
-                    while (nNextIndex != -1)
+                    while (!LastResult.startsWith("+"))
                     {
-                        nEndIndex = LastResult.indexOf('+', 2);
-                        if (nEndIndex != -1)
-                        {
-                            strGet = LastResult.substring(nNextIndex + 1, nEndIndex);
-                            LastResult = LastResult.substring(nEndIndex);
-                            nNextIndex = LastResult.indexOf('+', 0);
-                        }
-                        else
-                        {
-                            strGet = LastResult.substring(nNextIndex + 1);
-                            nNextIndex = -1;
-                        }
-                        Server_P2P_ThreadManager.sm_PlayerIPs.add(strGet);
-                        Log.d("DEBUG", strGet);
+                        nNextIndex = LastResult.indexOf('+', 0);
+                        strGetIP = LastResult.substring(0, nNextIndex);
+                        LastResult = LastResult.substring(nNextIndex + 1);
+
+                        nNextIndex = LastResult.indexOf('+', 0);
+                        strGetPort = LastResult.substring(0, nNextIndex);
+                        LastResult = LastResult.substring(nNextIndex + 1);
+
+                        Server_P2P_ThreadManager.sm_PlayerIPs.add(strGetIP);
+                        Server_P2P_ThreadManager.sm_Player_Ports.put(strGetIP, Integer.parseInt(strGetPort));
+                        Log.d("DEBUG", strGetIP + " - " + strGetPort);
                     }
                     Server_P2P_ThreadManager.SpawnPlayerThreads();
                 }

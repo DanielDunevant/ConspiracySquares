@@ -6,20 +6,24 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 // Acts as the Client for all outgoing P2P connections
 public class Server_P2P_Send implements Runnable
 {
     private String m_strRequestIP;
+    private int m_nRequestPort;
 
+    public void setPort(int nPort) {m_nRequestPort = nPort;}
     public void setIP(String strIP) {m_strRequestIP = strIP;}
     public void run()
     {
         try
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
-            Socket socket = new Socket(serverAddress, Server_P2P_ThreadManager.nPORT);
+            Socket socket = new Socket(serverAddress, m_nRequestPort);
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try

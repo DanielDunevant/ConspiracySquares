@@ -21,6 +21,7 @@ class Game_Main
     static String sm_strServerName;
     static String sm_strServerPass;
     static String sm_strIP = "";
+    static int sm_nPort = -1;
 
     // A array containing all possible players, initialized to be spectators until filled by an actual player.
     static ArrayList<Game_Player> sm_PlayersArray = new ArrayList<>();

@@ -2,7 +2,6 @@ package com.novaytechnologies.conspiracysquares;
 
 import android.util.Log;
 
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,9 +9,9 @@ import java.util.HashMap;
 public class Server_P2P_ThreadManager
 {
     static String strSecretKey = "NVT-CS-K002fn658vmx04j58gj3h9"; // Used for weak client validation
-    static int nPORT = 6000;
 
     static ArrayList<String> sm_PlayerIPs;
+    static HashMap<String, Integer> sm_Player_Ports;
     static HashMap<String, Thread> sm_Player_Threads;
     static private Thread serverThread;
 
@@ -30,20 +29,25 @@ public class Server_P2P_ThreadManager
         {
             if (!strIP.equals(Game_Main.sm_strIP))
             {
-                if (!sm_Player_Threads.containsKey(strIP) || sm_Player_Threads.get(strIP) == null)
+                int nPort = sm_Player_Ports.get(strIP);
+                if (nPort != -1)
                 {
-                    Server_P2P_Send newSender = new Server_P2P_Send();
-                    newSender.setIP(strIP);
-                    Thread newThread = new Thread(newSender);
-                    newThread.start();
-                    sm_Player_Threads.put(strIP, newThread);
-                }
-                else
-                {
-                    Thread getThread = sm_Player_Threads.get(strIP);
-                    if (getThread.isInterrupted() || !getThread.isAlive())
+                    if (!sm_Player_Threads.containsKey(strIP) || sm_Player_Threads.get(strIP) == null)
                     {
-                        getThread.start();
+                        Server_P2P_Send newSender = new Server_P2P_Send();
+                        newSender.setIP(strIP);
+                        newSender.setPort(nPort);
+                        Thread newThread = new Thread(newSender);
+                        newThread.start();
+                        sm_Player_Threads.put(strIP, newThread);
+                    }
+                    else
+                    {
+                        Thread getThread = sm_Player_Threads.get(strIP);
+                        if (getThread.isInterrupted() || !getThread.isAlive())
+                        {
+                            getThread.start();
+                        }
                     }
                 }
             }

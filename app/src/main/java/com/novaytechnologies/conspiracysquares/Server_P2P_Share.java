@@ -32,7 +32,9 @@ public class Server_P2P_Share implements Runnable
     {
         try
         {
-            serverSocket = new ServerSocket(Server_P2P_ThreadManager.nPORT);
+            serverSocket = new ServerSocket(0);
+            Game_Main.sm_nPort = serverSocket.getLocalPort();
+            Server_Sync.UpdatePort();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 Socket clientSocket = serverSocket.accept();
