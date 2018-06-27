@@ -7,8 +7,11 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 // The Game Activity.
 public class Activity_Game extends AppCompatActivity {
@@ -117,13 +120,25 @@ public class Activity_Game extends AppCompatActivity {
             Intent LoadI = getIntent();
             boolean bFindServer = LoadI.getBooleanExtra(FIND_SERVER, true);
 
-            if (bFindServer)
-                FindServer(this);
+            if (bFindServer) FindServer(this);
             else {
                 Game_Main.sm_strServerName = LoadI.getStringExtra(SERVER);
                 Game_Main.sm_strServerPass = LoadI.getStringExtra(SERVER_PASS);
                 Game_Main.StartGame(this);
             }
+
+            final Context ctx = this;
+            final ScheduledThreadPoolExecutor TestJoined = new ScheduledThreadPoolExecutor(1);
+            TestJoined.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    if (!Game_Main.isStarted())
+                    {
+                        Log.e("Find_Exception", "Could not find or start server!");
+                        Dialog_Popup.Find_Error(ctx);
+                    }
+                }
+            }, 4, TimeUnit.SECONDS);
         }
     }
 

@@ -20,7 +20,7 @@ public class Server_P2P_Send implements Runnable
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, Server_P2P_ThreadManager.nPORT);
-            while (Game_Main.isStarted())
+            while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try
                 {

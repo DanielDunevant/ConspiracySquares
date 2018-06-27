@@ -10,7 +10,7 @@ import java.util.HashMap;
 public class Server_P2P_ThreadManager
 {
     static String strSecretKey = "NVT-CS-K002fn658vmx04j58gj3h9"; // Used for weak client validation
-    static int nPORT = 8080;
+    static int nPORT = 6000;
 
     static ArrayList<String> sm_PlayerIPs;
     static HashMap<String, Thread> sm_Player_Threads;
@@ -66,7 +66,6 @@ public class Server_P2P_ThreadManager
             if (serverThread != null)
             {
                 try {
-                    serverThread.join(100);
                     serverThread.interrupt();
                     Server_P2P_Share.closeServerSocket();
                     serverThread = null;

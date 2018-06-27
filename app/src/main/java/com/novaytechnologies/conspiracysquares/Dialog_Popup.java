@@ -38,6 +38,12 @@ public class Dialog_Popup
             dialog_join.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+    // Shows a simple no server found message popup
+    public static void Find_Error(Context ctx)
+    {
+        ShowPopupDialog(ctx, ctx.getResources().getString(R.string.toast_server_noauto));
+    }
+
     // Shows a simple connection error message popup
     public static void Connect_Error(Context ctx)
     {

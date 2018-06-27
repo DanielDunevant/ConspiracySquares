@@ -192,8 +192,7 @@ public class Server_Sync
                     String LastResult = GetArgs()[0];
                     if (LastResult != null && !LastResult.contains("PASSWORD_WRONG"))
                     {
-                        boolean bNewIPinfo = Boolean.getBoolean(LastResult);
-                        if (bNewIPinfo || bStart) DoSync();
+                        if (LastResult.equals("true") || bStart) DoSync();
                         else sm_bSyncInProgress = false;
                     }
                     else
