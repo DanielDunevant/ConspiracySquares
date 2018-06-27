@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 // Acts as the Server for all incoming P2P connections
 public class Server_P2P_Share implements Runnable
@@ -24,7 +25,7 @@ public class Server_P2P_Share implements Runnable
                 serverSocket = null;
             }
         }
-        catch(Exception ex) {Log.e("P2P_Exception", "P2P Could Not Close Server Socket", ex);}
+        catch(Exception ex) {Log.e("P2P_Exception", "Socket Closing Exception!", ex);}
     }
 
     public void run()
@@ -132,6 +133,7 @@ public class Server_P2P_Share implements Runnable
             }
             closeServerSocket();
         }
+        catch(SocketException ex) {Log.d("Socket", "Socket Closed");}
         catch (Exception ex)
         {
             Log.e("P2P_Exception", "P2P Server Connection Failed", ex);

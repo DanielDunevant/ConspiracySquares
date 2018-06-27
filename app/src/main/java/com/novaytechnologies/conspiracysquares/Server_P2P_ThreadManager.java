@@ -1,5 +1,8 @@
 package com.novaytechnologies.conspiracysquares;
 
+import android.util.Log;
+
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,9 +65,13 @@ public class Server_P2P_ThreadManager
             }
             if (serverThread != null)
             {
-                Server_P2P_Share.closeServerSocket();
-                serverThread.interrupt();
-                serverThread = null;
+                try {
+                    serverThread.join(100);
+                    serverThread.interrupt();
+                    Server_P2P_Share.closeServerSocket();
+                    serverThread = null;
+                }
+                catch (Exception ex) {Log.e("P2P_Exception", "P2P Could Not Close Server Thread", ex);}
             }
         }
         sm_Player_Threads.clear();
