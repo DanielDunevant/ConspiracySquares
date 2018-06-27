@@ -46,6 +46,7 @@ public class Server_P2P_Send implements Runnable
                     WriteRequest.print(Float.toString(Self.GetSpeedX()));
                     WriteRequest.print("+");
                     WriteRequest.print(Float.toString(Self.GetSpeedY()));
+                    WriteRequest.print("+");
 
                     // Other Relevant Updates
                     //TBD

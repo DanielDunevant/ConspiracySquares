@@ -33,6 +33,7 @@ class Game_Main
     {
         if (!sm_bStarted)
         {
+            sm_bStarted = true;
             sm_strIP = Utility_SharedPreferences.getIP();
             if (sm_strIP != null)
             {
@@ -44,10 +45,10 @@ class Game_Main
                 }
                 Game_Player.sm_SPECTATE = ctx.getResources().getDrawable(R.drawable.vec_spectate);
                 Server_Sync.PopulateFromServer(ctx);
-                sm_bStarted = true;
             }
             else
             {
+                sm_bStarted = false;
                 Dialog_Popup.Connect_Error(ctx);
             }
         }
