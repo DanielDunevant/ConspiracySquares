@@ -1,6 +1,7 @@
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -148,15 +149,18 @@ public class Server_Sync
                             nNextIndex = -1;
                         }
                         Server_P2P_ThreadManager.sm_PlayerIPs.add(strGet);
+                        Log.d("DEBUG", strGet);
                     }
                     Server_P2P_ThreadManager.SpawnPlayerThreads();
                 }
+                else Log.e("SYNC Error", "Could retrieve server sync info!");
                 sm_bSyncInProgress = false;
             }
         });
         sm_syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
+                Log.e("SYNC Error", "Could not sync with server!");
                 sm_bSyncInProgress = false;
             }
         });
@@ -166,7 +170,7 @@ public class Server_Sync
     }
 
     // Check for any new players before updating
-    static void SyncWithServer(final Context ctx, boolean bStart)
+    static void SyncWithServer(final Context ctx, final boolean bStart)
     {
         if (Game_Main.isStarted() && (!sm_bSyncInProgress || bStart))
         {
@@ -189,15 +193,20 @@ public class Server_Sync
                     if (LastResult != null && !LastResult.contains("PASSWORD_WRONG"))
                     {
                         boolean bNewIPinfo = Boolean.getBoolean(LastResult);
-                        if (bNewIPinfo) DoSync();
+                        if (bNewIPinfo || bStart) DoSync();
                         else sm_bSyncInProgress = false;
                     }
-                    else sm_bSyncInProgress = false;
+                    else
+                    {
+                        Log.e("SYNC Error", "Wrong Password at new player joined determination!");
+                        sm_bSyncInProgress = false;
+                    }
                 }
             });
             sm_syncPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
+                    Log.e("SYNC Error", "Could not determine if new player joined!");
                     sm_bSyncInProgress = false;
                 }
             });

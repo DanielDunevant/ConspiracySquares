@@ -62,9 +62,11 @@ public class Server_P2P_ThreadManager
             }
             if (serverThread != null)
             {
-                serverThread.interrupt();
                 Server_P2P_Share.closeServerSocket();
+                serverThread.interrupt();
+                serverThread = null;
             }
         }
+        sm_Player_Threads.clear();
     }
 }
