@@ -2,32 +2,26 @@
 
 package com.novaytechnologies.conspiracysquares;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 // The Initial Main Menu Activity.
 public class Activity_Main extends AppCompatActivity {
 
-    // Ends the game just in case it is still running for some unexpected reason.
+    ProgressBar progress;
+
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
-        Game_Main.EndGame();
-    }
-    @Override
-    protected void onDestroy()
-    {
-        Game_Main.EndGame();
-        super.onDestroy();
+        progress.setVisibility(View.GONE);
     }
 
     @Override
@@ -41,16 +35,9 @@ public class Activity_Main extends AppCompatActivity {
 
         final TextView txt_error = findViewById(R.id.ID_txt_error);
         final EditText input_name = findViewById(R.id.ID_input_name);
+        progress = findViewById(R.id.ID_progressBar);
 
-        // Save and Load player name to the Shared Preferences
-        input_name.setText(Utility_SharedPreferences.get().loadName(this));
-        input_name.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.length() > 1) Utility_SharedPreferences.get().saveName(charSequence.toString());
-            }
-            @Override public void afterTextChanged(Editable editable) {}
-        });
+        final Context ctx = this;
 
         final Button btn_play = findViewById(R.id.ID_btn_play);
         btn_play.setOnClickListener(
@@ -63,9 +50,8 @@ public class Activity_Main extends AppCompatActivity {
                             Utility_SharedPreferences.get().saveName(strGet);
                             txt_error.setVisibility(View.GONE);
 
-                            Intent newIntent = new Intent(Activity_Main.this, Activity_Game.class);
-                            newIntent.putExtra(Activity_Game.FIND_SERVER, true);
-                            startActivity(newIntent);
+                            progress.setVisibility(View.VISIBLE);
+                            Server_ServerList.get().FindOrCreateServer(ctx);
                         }
                         else txt_error.setVisibility(View.VISIBLE);
                     }

@@ -2,6 +2,7 @@
 
 package com.novaytechnologies.conspiracysquares;
 
+// Camera related code and functions
 public class Game_Camera
 {
     // The local to global coordinate scaling factor

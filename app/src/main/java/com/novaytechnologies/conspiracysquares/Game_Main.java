@@ -3,10 +3,12 @@
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
+import android.graphics.Canvas;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+// The primary functions for the game itself
 class Game_Main
 {
     // Whether the game information is initialized.
@@ -30,12 +32,15 @@ class Game_Main
     static boolean isStarted() {return sm_bStarted;}
     static boolean isRoundStarted() {return sm_bRoundStarted;}
 
-    // Game initialization
-    static void StartGame(final Context ctx)
+    // Joins the given server and starts the game
+    static void JoinServer(String strServer, String strPass, Context ctx)
     {
         if (!sm_bStarted)
         {
             sm_bStarted = true;
+            Game_Main.sm_strServerName = strServer;
+            Game_Main.sm_strServerPass = strPass;
+
             sm_strIP = Utility_SharedPreferences.getIP();
             if (sm_strIP != null)
             {
@@ -59,6 +64,27 @@ class Game_Main
         }
     }
 
+    /*
+        DESCRIPTION:
+            Called after ServerSync.PopulateFromServer, when the player ID is obtained but before other player IPs are received
+        POST-CONDITION:
+            The Player's color will be set to a random color.
+            The Player's name will be set to the name they chose.
+            The Player's ID was received from the server.
+            The Server synchronization process will then be started.
+    */
+    static void ServerJoinComplete(int nID, boolean bRoundStarted, Context ctx)
+    {
+        sm_bRoundStarted = bRoundStarted;
+
+        Game_Player.SetSelfID(nID);
+        Game_Player.GetNewSelfColor();
+        Game_Player.CreateSelf(ctx);
+
+        Server_P2P_ThreadManager.SpawnServerThread();
+        Server_Sync.SyncWithServer(true);
+    }
+
     // Game shutdown
     static void EndGame()
     {
@@ -74,22 +100,34 @@ class Game_Main
         }
     }
 
-    // Game synchronization loop
-    // Checks whether a new player joined every 4 seconds
-    static void GameLoop(Context ctx)
+    // Runs when the Layout size changes or is initialized.
+    static void GameSizeChanged()
     {
-        if (System.currentTimeMillis() > sm_lLastSync)
-        {
-            Server_Sync.SyncWithServer(ctx, false);
-            sm_lLastSync = System.currentTimeMillis() + 4000;
-        }
+        Game_Camera.sm_fScaleFactor = Layout_Game_Draw.sm_nMaxSide / 100f;
+        Game_Player.UpdateAllSizes(Layout_Game_Draw.sm_nMaxSide);
+        Game_Camera.UpdateCenter(Layout_Game_Draw.sm_nWidth_Center, Layout_Game_Draw.sm_nHeight_Center);
     }
 
-    // Runs when the Layout size changes.
-    static void GameSizeChanged(Layout_Game_Draw Draw)
+    // Called when Layout_Game_Draw is touched
+    static void TouchUpdated(float fX, float fY)
     {
-        Game_Camera.sm_fScaleFactor = Draw.m_nMaxSide / 100f;
-        Game_Player.UpdateAllSizes(Draw.m_nMaxSide);
-        Game_Camera.UpdateCenter(Draw.m_nWidth_Center, Draw.m_nHeight_Center);
+        Game_Player.MoveSelfToLocal(fX, fY);
+    }
+
+    // Game loop, called in Layout_Game_Draw
+    // Also checks whether a new player joined every few seconds
+    static void GameLoop(Context ctx, long lDrawDelta, Canvas canvas)
+    {
+        Layout_Game_Draw.DrawGrid(canvas);
+        for (Game_Player Player : Game_Main.sm_PlayersArray)
+        {
+            Player.DrawPlayer(canvas, lDrawDelta);
+        }
+
+        if (System.currentTimeMillis() > sm_lLastSync)
+        {
+            Server_Sync.SyncWithServer(false);
+            sm_lLastSync = System.currentTimeMillis() + 4000;
+        }
     }
 }

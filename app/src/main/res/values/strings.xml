@@ -11,7 +11,6 @@
     <string name="toast_wrong_password">Wrong Password!</string>
     <string name="toast_server_full">This Server is Full!</string>
     <string name="toast_connection_error">A Connection Error Has Occurred!</string>
-    <string name="toast_server_noauto">Server connection timed out! Try joining again.</string>
     <string name="button_play">Play</string>
     <string name="button_server">Find Server</string>
     <string name="button_host">Start Server</string>

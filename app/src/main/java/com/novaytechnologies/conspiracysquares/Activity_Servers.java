@@ -2,7 +2,6 @@
 
 package com.novaytechnologies.conspiracysquares;
 
-import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +28,9 @@ public class Activity_Servers extends AppCompatActivity {
     // The second Integer contains Indices for the related Server Info contained in Server_ServerList.
     private HashMap<Integer, Integer> m_ServerButtonMap;
 
+    // Variable to disable refreshing if a refresh is already in progress
+    private boolean bRefreshing = false;
+
     @Override
     public void onBackPressed() {
         this.finish();
@@ -37,6 +39,7 @@ public class Activity_Servers extends AppCompatActivity {
     // Refresh the Server List and populate it with available servers
     protected void Refresh()
     {
+        bRefreshing = true;
         final Activity_Servers ctx_servers = this;
 
         m_ServerButtonMap = new HashMap<>();
@@ -51,14 +54,15 @@ public class Activity_Servers extends AppCompatActivity {
 
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
-        params.add("X");
-        String ParemsString = Utility_Post.GetParemsString(params);
+        params.add(Server_Sync.ResolveEncryption());
+        String ParamsString = Utility_Post.GetParamsString(params);
 
         Utility_Post GetServers = new Utility_Post();
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
                 Dialog_Popup.Connect_Error(ctx_servers);
+                bRefreshing = false;
             }
         });
         GetServers.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -121,10 +125,11 @@ public class Activity_Servers extends AppCompatActivity {
 
                     nIndex++;
                 }
-                playerNums.invalidate(); // Refresh the server list
+                bRefreshing = false;
+                playerNums.invalidate(); // Refresh the server list layout
             }
         });
-        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", ParemsString);
+        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", ParamsString);
     }
 
     // Ends the game just in case it is still running for some unexpected reason.
@@ -163,15 +168,10 @@ public class Activity_Servers extends AppCompatActivity {
 
                     if (nPlayers < Utility_SharedPreferences.MAX_PLAYERS)
                     {
-                        if (bPrivate) Dialog_Server.Show_Dialog_Join(ctx_servers, strServer);
+                        if (bPrivate)
+                            Dialog_Server.Show_Dialog_Join(ctx_servers, strServer);
                         else
-                        {
-                            Intent newIntent = new Intent(Activity_Servers.this, Activity_Game.class);
-                            newIntent.putExtra(Activity_Game.FIND_SERVER, false);
-                            newIntent.putExtra(Activity_Game.SERVER, strServer);
-                            newIntent.putExtra(Activity_Game.SERVER_PASS, "");
-                            startActivity(newIntent);
-                        }
+                            Activity_Game.Start(strServer, "", ctx_servers);
                     }
                     else Dialog_Popup.Server_Full(ctx_servers);
                 }
@@ -190,7 +190,7 @@ public class Activity_Servers extends AppCompatActivity {
         btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Refresh();
+                if (!bRefreshing) Refresh();
             }
         });
     }

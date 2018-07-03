@@ -2,14 +2,12 @@ package com.novaytechnologies.conspiracysquares;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-
+// Dialogs for creating and joining servers
 public class Dialog_Server {
 
     /*
@@ -45,38 +43,8 @@ public class Dialog_Server {
                 final String strSVRname = input_name.getText().toString();
                 final String strSVRpassword = input_password.getText().toString();
 
-                if (!strSVRname.isEmpty()) {
-                    ArrayList<String> params = new ArrayList<>();
-                    params.add("ReqPass");
-                    params.add("X");
-                    params.add("ServerName");
-                    params.add(strSVRname);
-                    params.add("ServerPassword");
-                    params.add(strSVRpassword);
-                    String ParemsString = Utility_Post.GetParemsString(params);
-
-                    Utility_Post newPost = new Utility_Post();
-                    newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
-                        @Override
-                        public void run() {
-                            Dialog_Popup.Connect_Error(ctx);
-                        }
-                    });
-                    newPost.SetRunnable(new Utility_Post.RunnableArgs() {
-                        @Override
-                        public void run() {
-                            Intent newIntent = new Intent(ctx, Activity_Game.class);
-                            newIntent.putExtra(Activity_Game.FIND_SERVER, false);
-                            newIntent.putExtra(Activity_Game.SERVER, strSVRname);
-                            newIntent.putExtra(Activity_Game.SERVER_PASS, strSVRpassword);
-                            ctx.startActivity(newIntent);
-                        }
-                    });
-                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParemsString);
-
-                    ctx.Refresh();
-                    dialog_host.dismiss();
-                }
+                Server_ServerList.get().CreateAndJoinServer(strSVRname, strSVRpassword, ctx);
+                dialog_host.dismiss();
             }
         });
 
@@ -120,46 +88,8 @@ public class Dialog_Server {
             public void onClick(View v) {
                 final String strSVRpassword = input_password.getText().toString();
 
-                if (strSVRname != null && !strSVRname.isEmpty() && !strSVRpassword.isEmpty()) {
-                    ArrayList<String> params = new ArrayList<>();
-                    params.add("ReqPass");
-                    params.add("X");
-                    params.add("ServerName");
-                    params.add(strSVRname);
-                    params.add("ServerPassword");
-                    params.add(strSVRpassword);
-                    String ParemsString = Utility_Post.GetParemsString(params);
-
-                    Utility_Post newPost = new Utility_Post();
-                    newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
-                        @Override
-                        public void run() {
-                            Dialog_Popup.Connect_Error(ctx);
-                        }
-                    });
-                    newPost.SetRunnable(new Utility_Post.RunnableArgs() {
-                        @Override
-                        public void run() {
-                            String LastResult = GetArgs()[0];
-                            if (LastResult != null && !LastResult.isEmpty())
-                            {
-                                if (LastResult.contains("PASSWORD_CORRECT"))
-                                {
-                                    Intent newIntent = new Intent(ctx, Activity_Game.class);
-                                    newIntent.putExtra(Activity_Game.FIND_SERVER, false);
-                                    newIntent.putExtra(Activity_Game.SERVER, strSVRname);
-                                    newIntent.putExtra(Activity_Game.SERVER_PASS, strSVRpassword);
-                                    ctx.startActivity(newIntent);
-                                }
-                                else Dialog_Popup.Wrong_Password(ctx);
-                            }
-                        }
-                    });
-                    newPost.execute("https://conspiracy-squares.appspot.com/Servlet_JoinPrivateServer", ParemsString);
-
-                    ctx.Refresh();
-                    dialog_join.dismiss();
-                }
+                Server_ServerList.get().JoinPrivate(strSVRname, strSVRpassword, ctx);
+                dialog_join.dismiss();
             }
         });
 

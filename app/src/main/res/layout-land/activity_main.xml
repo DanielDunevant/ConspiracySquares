@@ -247,4 +247,12 @@
         </LinearLayout>
     </ScrollView>
 
+    <ProgressBar
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progressbar_size"
+        android:id="@+id/ID_progressBar"
+        android:indeterminate="true"
+        android:visibility="visible"/>
+
 </android.support.constraint.ConstraintLayout>

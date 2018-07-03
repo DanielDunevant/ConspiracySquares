@@ -8,40 +8,35 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+// Warning popup dialogs
 public class Dialog_Popup
 {
     // Shows a simple message popup
     private static void ShowPopupDialog(final Context ctx, final String strText)
     {
-        final Dialog dialog_join;
-        dialog_join = new Dialog(ctx);
-        dialog_join.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog_join.setContentView(R.layout.dialog_popup);
+        final Dialog dialog_popup;
+        dialog_popup = new Dialog(ctx);
+        dialog_popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog_popup.setContentView(R.layout.dialog_popup);
 
-        Button dialog_btn_back = dialog_join.findViewById(R.id.ID_dialog_button_back);
+        Button dialog_btn_back = dialog_popup.findViewById(R.id.ID_dialog_button_back);
         dialog_btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog_join.dismiss();
+                dialog_popup.dismiss();
             }
         });
 
-        final TextView WarningText = dialog_join.findViewById(R.id.ID_dialog_text);
+        final TextView WarningText = dialog_popup.findViewById(R.id.ID_dialog_text);
         WarningText.setText(strText);
 
-        dialog_join.setOnDismissListener(new Dialog.OnDismissListener() {
+        dialog_popup.setOnDismissListener(new Dialog.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface v) { }
         });
-        dialog_join.show();
-        if (dialog_join.getWindow() != null)
-            dialog_join.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-    }
-
-    // Shows a simple no server found message popup
-    public static void Find_Error(Context ctx)
-    {
-        ShowPopupDialog(ctx, ctx.getResources().getString(R.string.toast_server_noauto));
+        dialog_popup.show();
+        if (dialog_popup.getWindow() != null)
+            dialog_popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
     // Shows a simple connection error message popup

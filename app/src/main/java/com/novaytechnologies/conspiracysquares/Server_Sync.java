@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+// Synchronizes Connection (IP/PORT) Information between players from the cloud
 public class Server_Sync
 {
     static Utility_Post sm_newPost;
@@ -13,30 +13,28 @@ public class Server_Sync
 
     static boolean sm_bSyncInProgress = false;
 
+    static String ResolveEncryption()
+    {
+        return "X";
+    }
+
     /*
         DESCRIPTION:
             Performs initial join tasks when starting a game, then syncs with the server.
             Exits the server if there is an error when joining.
-        POST-CONDITION:
-            The Player's color will be set to a random color.
-            The Player's name will be set to the name they chose.
-            The Player's ID will be received from the server.
-            The Server synchronization process will then be started.
     */
     static void PopulateFromServer(final Context ctx)
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
-        params.add("X");
+        params.add(ResolveEncryption());
         params.add("ServerName");
         params.add(Game_Main.sm_strServerName);
         params.add("ServerPassword");
         params.add(Game_Main.sm_strServerPass);
-        params.add("ServerJoined");
-        params.add("TRUE");
         params.add("IP");
         params.add(Game_Main.sm_strIP);
-        String ParemsString = Utility_Post.GetParemsString(params);
+        String ParamsString = Utility_Post.GetParamsString(params);
 
         sm_newPost = new Utility_Post();
         sm_newPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -46,14 +44,13 @@ public class Server_Sync
                 if (LastResult != null)
                 {
                     int nGetIDindex = LastResult.indexOf('=', 0);
+                    int nGetBindex = LastResult.indexOf('+', 0);
+                    int nGetBindex2 = LastResult.indexOf('=', nGetBindex);
                     if (nGetIDindex != -1)
                     {
-                        String strGet = LastResult.substring(nGetIDindex + 1);
-                        Game_Player.SetSelfID(Integer.parseInt(strGet));
-                        Game_Player.GetNewSelfColor();
-                        Game_Player.CreateSelf(ctx);
-                        Server_P2P_ThreadManager.SpawnServerThread();
-                        SyncWithServer(ctx, true);
+                        String strGet = LastResult.substring(nGetIDindex + 1, nGetBindex);
+                        String strGet2 = LastResult.substring(nGetBindex2 + 1);
+                        Game_Main.ServerJoinComplete(Integer.parseInt(strGet), strGet2.contains("true"), ctx);
                     }
                     else {
                         Dialog_Popup.Connect_Error(ctx);
@@ -75,7 +72,7 @@ public class Server_Sync
         });
 
         sm_bSyncInProgress = true;
-        sm_newPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+        sm_newPost.execute("https://conspiracy-squares.appspot.com/Servlet_ServerJoin", ParamsString);
     }
 
     // Leaves the currently connected server.
@@ -83,19 +80,36 @@ public class Server_Sync
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
-        params.add("X");
+        params.add(ResolveEncryption());
         params.add("ServerName");
         params.add(Game_Main.sm_strServerName);
         params.add("ServerPassword");
         params.add(Game_Main.sm_strServerPass);
-        params.add("ServerJoined");
-        params.add("LEFT");
         params.add("IP");
         params.add(strIPtoDisconnect);
-        String ParemsString = Utility_Post.GetParemsString(params);
+        String ParamsString = Utility_Post.GetParamsString(params);
 
         Utility_Post endPost = new Utility_Post();
-        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_ServerLeave", ParamsString);
+    }
+
+    // Updates the server-side round started state
+    static void SetRoundStart(boolean bStartRound)
+    {
+        ArrayList<String> params = new ArrayList<>();
+        params.add("ReqPass");
+        params.add(ResolveEncryption());
+        params.add("ServerName");
+        params.add(Game_Main.sm_strServerName);
+        params.add("ServerPassword");
+        params.add(Game_Main.sm_strServerPass);
+        params.add("RoundStart");
+        if (bStartRound) params.add("true");
+        else params.add("false");
+        String ParamsString = Utility_Post.GetParamsString(params);
+
+        Utility_Post endPost = new Utility_Post();
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_ServerRound", ParamsString);
     }
 
     // Update Local Server's Port.
@@ -103,44 +117,40 @@ public class Server_Sync
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
-        params.add("X");
+        params.add(ResolveEncryption());
         params.add("ServerName");
         params.add(Game_Main.sm_strServerName);
         params.add("ServerPassword");
         params.add(Game_Main.sm_strServerPass);
-        params.add("ServerJoined");
-        params.add("PORT");
         params.add("IP");
         params.add(Game_Main.sm_strIP);
         params.add("PORT");
         params.add(Integer.toString(Game_Main.sm_nPort));
-        String ParemsString = Utility_Post.GetParemsString(params);
+        String ParamsString = Utility_Post.GetParamsString(params);
 
         Utility_Post endPost = new Utility_Post();
-        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+        endPost.execute("https://conspiracy-squares.appspot.com/Servlet_ServerPortUpdate", ParamsString);
     }
 
     /*
         DESCRIPTION:
-            Performs synchronization tasks with the server.
+            Performs IP and PORT synchronization tasks with the server.
         POST-CONDITION:
-            Updates all player IPs on success.
-            Retries synchronization on failure.
+            Updates all player IPs and PORTs on success.
+            Retries synchronization later on failure.
     */
     static private void DoSync()
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
-        params.add("X");
+        params.add(ResolveEncryption());
         params.add("ServerName");
         params.add(Game_Main.sm_strServerName);
         params.add("ServerPassword");
         params.add(Game_Main.sm_strServerPass);
-        params.add("ServerJoined");
-        params.add("SYNC");
         params.add("IP");
         params.add(Game_Main.sm_strIP);
-        String ParemsString = Utility_Post.GetParemsString(params);
+        String ParamsString = Utility_Post.GetParamsString(params);
 
         sm_syncPost = new Utility_Post();
         sm_syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -165,6 +175,7 @@ public class Server_Sync
 
                         Server_P2P_ThreadManager.sm_PlayerIPs.add(strGetIP);
                         Server_P2P_ThreadManager.sm_Player_Ports.put(strGetIP, Integer.parseInt(strGetPort));
+
                         Log.d("DEBUG", strGetIP + " - " + strGetPort);
                     }
                     Server_P2P_ThreadManager.SpawnPlayerThreads();
@@ -182,24 +193,24 @@ public class Server_Sync
         });
 
         sm_bSyncInProgress = true;
-        sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_GetServerInfo", ParemsString);
+        sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_ServerListIPs", ParamsString);
     }
 
     // Check for any new players before updating
-    static void SyncWithServer(final Context ctx, final boolean bStart)
+    static void SyncWithServer(final boolean bStart)
     {
         if (Game_Main.isStarted() && (!sm_bSyncInProgress || bStart))
         {
             ArrayList<String> params = new ArrayList<>();
             params.add("ReqPass");
-            params.add("X");
+            params.add(ResolveEncryption());
             params.add("ServerName");
             params.add(Game_Main.sm_strServerName);
             params.add("ServerPassword");
             params.add(Game_Main.sm_strServerPass);
             params.add("IP");
             params.add(Game_Main.sm_strIP);
-            String ParemsString = Utility_Post.GetParemsString(params);
+            String ParamsString = Utility_Post.GetParamsString(params);
 
             sm_syncPost = new Utility_Post();
             sm_syncPost.SetRunnable(new Utility_Post.RunnableArgs() {
@@ -227,7 +238,7 @@ public class Server_Sync
             });
 
             sm_bSyncInProgress = true;
-            sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_CheckJoined", ParemsString);
+            sm_syncPost.execute("https://conspiracy-squares.appspot.com/Servlet_CheckJoined", ParamsString);
         }
     }
 }

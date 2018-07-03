@@ -16,14 +16,14 @@ public class Layout_Game_Draw extends FrameLayout {
     static Paint sm_GridPaint = new Paint(R.color.colorLine);
 
     // Layout dimension information, in pixels.
-    int m_nWidth;
-    int m_nHeight;
-    int m_nWidth_Center;
-    int m_nHeight_Center;
+    static int sm_nWidth;
+    static int sm_nHeight;
+    static int sm_nWidth_Center;
+    static int sm_nHeight_Center;
 
     // The dimensions of the smaller and larger lengths of the screen, in pixels.
-    int m_nMinSide;
-    int m_nMaxSide;
+    static int sm_nMinSide;
+    static int sm_nMaxSide;
 
     // Timing information for drawing and touch input.
     long m_lMoveTick;   // Used to create a slight input delay.
@@ -49,29 +49,28 @@ public class Layout_Game_Draw extends FrameLayout {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        m_nWidth = MeasureSpec.getSize(widthMeasureSpec);
-        m_nHeight = MeasureSpec.getSize(heightMeasureSpec);
-        m_nWidth_Center = (int)Math.round(m_nWidth /2.0);
-        m_nHeight_Center = (int)Math.round(m_nHeight /2.0);
+        sm_nWidth = MeasureSpec.getSize(widthMeasureSpec);
+        sm_nHeight = MeasureSpec.getSize(heightMeasureSpec);
+        sm_nWidth_Center = (int)Math.round(sm_nWidth /2.0);
+        sm_nHeight_Center = (int)Math.round(sm_nHeight /2.0);
 
-        m_nMinSide = (m_nWidth < m_nHeight) ? m_nWidth : m_nHeight;
-        m_nMaxSide = (m_nWidth > m_nHeight) ? m_nWidth : m_nHeight;
+        sm_nMinSide = (sm_nWidth < sm_nHeight) ? sm_nWidth : sm_nHeight;
+        sm_nMaxSide = (sm_nWidth > sm_nHeight) ? sm_nWidth : sm_nHeight;
 
         m_lDrawLast = m_lMoveTick = System.currentTimeMillis();
 
-        setMeasuredDimension(m_nWidth, m_nHeight);
+        setMeasuredDimension(sm_nWidth, sm_nHeight);
 
-        Game_Main.GameSizeChanged(this);
+        Game_Main.GameSizeChanged();
     }
 
-    // Moves the player to the location that is touched.
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         if (Game_Main.isStarted() && (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_UP ||
                 (event.getAction() == MotionEvent.ACTION_MOVE && System.currentTimeMillis() - m_lMoveTick > 100L)))
         {
-            Game_Player.MoveSelfToLocal(event.getX(), event.getY());
+            Game_Main.TouchUpdated(event.getX(), event.getY());
             m_lDrawLast = m_lMoveTick = System.currentTimeMillis();
         }
         performClick();
@@ -85,7 +84,7 @@ public class Layout_Game_Draw extends FrameLayout {
     }
 
     // Draws the Grid using the location information given by Game_Camera
-    void DrawGrid(Canvas canvas)
+    static void DrawGrid(Canvas canvas)
     {
         // The screen-relative position of the next line
         float fPos;
@@ -104,7 +103,7 @@ public class Layout_Game_Draw extends FrameLayout {
             canvas.drawLine(fPos,
                     0,
                     fPos,
-                    m_nHeight,
+                    sm_nHeight,
                     sm_GridPaint);
         }
 
@@ -120,27 +119,20 @@ public class Layout_Game_Draw extends FrameLayout {
             fPos = Game_Camera.GetRelativeY(fGridLine);
             canvas.drawLine(0,
                     fPos,
-                    m_nWidth,
+                    sm_nWidth,
                     fPos,
                     sm_GridPaint);
         }
     }
 
-    // Runs the game loop, draws the grid, then draws all players while passing the change in time to them.
+    // Runs the game loop every draw cycle.
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);
-        canvas.drawColor(getResources().getColor(R.color.colorBackground));
+        canvas.drawColor(getResources().getColor(R.color.colorGameBackground));
 
         m_lDrawDelta = System.currentTimeMillis() - m_lDrawLast;
-
-        Game_Main.GameLoop(this.getContext());
-        DrawGrid(canvas);
-        for (Game_Player Player : Game_Main.sm_PlayersArray)
-        {
-            Player.DrawPlayer(canvas, m_lDrawDelta);
-        }
-
+        Game_Main.GameLoop(this.getContext(), m_lDrawDelta, canvas);
         m_lDrawLast = System.currentTimeMillis();
 
         this.invalidate();

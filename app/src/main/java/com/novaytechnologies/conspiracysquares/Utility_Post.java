@@ -42,18 +42,18 @@ class Utility_Post extends AsyncTask<String, String, String> {
         POST-CONDITION:
             A string formatted such that a webserver could easily parse it via POST.
     */
-    static String GetParemsString(ArrayList<String> strParems)
+    static String GetParamsString(ArrayList<String> strParems)
     {
         try {
             StringBuilder postSend = new StringBuilder();
             boolean bFirst = true;
-            for (int nParem = 0; nParem < strParems.size(); ) {
+            for (int nParam = 0; nParam < strParems.size(); ) {
                 if (bFirst) bFirst = false;
                 else postSend.append("&");
 
-                postSend.append(URLEncoder.encode(strParems.get(nParem++), "UTF-8"));
+                postSend.append(URLEncoder.encode(strParems.get(nParam++), "UTF-8"));
                 postSend.append("=");
-                postSend.append(URLEncoder.encode(strParems.get(nParem++), "UTF-8"));
+                postSend.append(URLEncoder.encode(strParems.get(nParam++), "UTF-8"));
             }
             return postSend.toString();
         } catch (Exception e) {
