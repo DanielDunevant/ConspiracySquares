@@ -119,6 +119,8 @@ public class Server_P2P_Share implements Runnable
 
                                     // Other Relevant Updates
                                     //TBD
+
+                                    Game_Main.GotPlayerInfo(nPlayerID);
                                 }
                                 catch (Exception ex)
                                 {

@@ -130,4 +130,16 @@ class Game_Main
             sm_lLastSync = System.currentTimeMillis() + 4000;
         }
     }
+
+    // Runs whenever new information is received from another player
+    static void GotPlayerInfo(int nPlayerID)
+    {
+        //
+    }
+
+    // Runs whenever local information is sent to another player
+    static void SentSelfInfo()
+    {
+        //
+    }
 }
