@@ -18,7 +18,7 @@ public class Server_P2P_ThreadManager
     // Create the Server Listener Thread
     static void SpawnServerThread()
     {
-        serverThread = new Thread(new Server_P2P_Share());
+        serverThread = new Thread(new Server_P2P_Receive());
         serverThread.start();
     }
 
@@ -72,7 +72,7 @@ public class Server_P2P_ThreadManager
         {
             try {
                 serverThread.interrupt();
-                Server_P2P_Share.closeServerSocket();
+                Server_P2P_Receive.closeServerSocket();
                 serverThread = null;
             }
             catch (Exception ex) {Log.e("P2P_Exception", "P2P Could Not Close Server Thread", ex);}

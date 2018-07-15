@@ -24,41 +24,40 @@ public class Server_P2P_Send implements Runnable
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, m_nRequestPort);
-            PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             Game_Player Self = Game_Player.GetSelf();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try
                 {
-                    if (Game_Main.isStarted())
-                    {
-                        // Send Self Player Data to the other Player specified with SetIP()
-                        WriteRequest.println(Server_P2P_ThreadManager.strSecretKey +
-                        "+" +
-                        Integer.toString(Self.GetID()) +
-                        "+" +
-                        Integer.toString(Self.GetFlags()) +
-                        "+" +
-                        Self.GetName() +
-                        "+" +
-                        Self.GetColor() +
-                        "+" +
-                        Float.toString(Self.GetX()) +
-                        "+" +
-                        Float.toString(Self.GetY()) +
-                        "+" +
-                        Self.GetSpeedX() +
-                        "+" +
-                        Float.toString(Self.GetSpeedY()) +
-                        "+");
+                    PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
 
-                        // Other Relevant Updates
-                        //TBD
+                    // Send Self Player Data to the other Player specified with SetIP()
+                    WriteRequest.println(Server_P2P_ThreadManager.strSecretKey +
+                    "+" +
+                    Integer.toString(Self.GetID()) +
+                    "+" +
+                    Integer.toString(Self.GetFlags()) +
+                    "+" +
+                    Self.GetName() +
+                    "+" +
+                    Self.GetColor() +
+                    "+" +
+                    Float.toString(Self.GetX()) +
+                    "+" +
+                    Float.toString(Self.GetY()) +
+                    "+" +
+                    Self.GetSpeedX() +
+                    "+" +
+                    Float.toString(Self.GetSpeedY()) +
+                    "+");
 
-                        WriteRequest.flush();
+                    // Other Relevant Updates
+                    //TBD
 
-                        Game_Main.SentSelfInfo();
-                    }
+                    WriteRequest.close();
+                    WriteRequest = null;
+
+                    Game_Main.SentSelfInfo();
                 }
                 catch (Exception ex)
                 {

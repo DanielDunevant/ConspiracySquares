@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 // Acts as the Server for all incoming P2P connections
-public class Server_P2P_Share implements Runnable
+public class Server_P2P_Receive implements Runnable
 {
     private static ServerSocket serverSocket;
     static void closeServerSocket()
@@ -29,7 +29,7 @@ public class Server_P2P_Share implements Runnable
     {
         try
         {
-            serverSocket = new ServerSocket(637);
+            serverSocket = new ServerSocket(0);
             Game_Main.sm_nPort = serverSocket.getLocalPort();
             Server_Sync.UpdatePort();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
@@ -117,6 +117,8 @@ public class Server_P2P_Share implements Runnable
                             Log.e("P2P_Exception", "P2P Server Message Processing Failed", ex);
                         }
                     }
+                    ReadRequest.close();
+                    ReadRequest = null;
                 }
                 catch (Exception ex)
                 {
