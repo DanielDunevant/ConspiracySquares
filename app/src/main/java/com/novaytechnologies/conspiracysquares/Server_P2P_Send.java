@@ -24,7 +24,7 @@ public class Server_P2P_Send implements Runnable
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, m_nRequestPort);
-            PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), false);
+            PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try
@@ -53,6 +53,8 @@ public class Server_P2P_Send implements Runnable
                         Float.toString(Self.GetSpeedY()) +
                         "+");
 
+                        Log.d("Socket-C", "Pushed");
+
                         // Other Relevant Updates
                         //TBD
 
@@ -66,7 +68,6 @@ public class Server_P2P_Send implements Runnable
                     Log.e("P2P_Exception", "P2P Client Message Failed", ex);
                 }
             }
-            WriteRequest.close();
             socket.close();
         }
         catch (Exception ex)

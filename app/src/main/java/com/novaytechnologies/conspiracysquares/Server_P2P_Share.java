@@ -54,6 +54,8 @@ public class Server_P2P_Share implements Runnable
                                     String strRead = strReadLine;
                                     String strGet;
 
+                                    Log.d("Socket-S", "Pulled");
+
                                     // Check for Invalid Secret Key
                                     int nIndex = strRead.indexOf('+', 0);
                                     strGet = strRead.substring(0, nIndex);
@@ -129,8 +131,6 @@ public class Server_P2P_Share implements Runnable
                             }
                         });
                     }
-                    ReadRequest.close();
-                    clientSocket.close();
                 }
                 catch (Exception ex)
                 {
