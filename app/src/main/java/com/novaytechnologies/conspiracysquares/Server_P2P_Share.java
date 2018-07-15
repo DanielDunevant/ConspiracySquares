@@ -135,6 +135,7 @@ public class Server_P2P_Share implements Runnable
                 {
                     Log.e("P2P_Exception", "P2P Server Messaging Failed", ex);
                 }
+                clientSocket.close();
             }
             closeServerSocket();
         }
