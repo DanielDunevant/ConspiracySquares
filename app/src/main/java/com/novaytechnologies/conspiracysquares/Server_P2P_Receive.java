@@ -1,6 +1,5 @@
 package com.novaytechnologies.conspiracysquares;
 
-import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -28,7 +27,6 @@ public class Server_P2P_Receive implements Runnable
 
     private static class ClientHandler extends Thread {
         private Socket clientSocket;
-        private Handler updateHandler;
 
         ClientHandler(Socket socket) {
             this.clientSocket = socket;
@@ -37,94 +35,85 @@ public class Server_P2P_Receive implements Runnable
         public void run() {
             try
             {
-                updateHandler = new Handler();
                 BufferedReader ReadRequest = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                String strGetNew;
-                while (Game_Main.isStarted() && (strGetNew = ReadRequest.readLine()) != null)
+                String strRead;
+                String strGet;
+                while (Game_Main.isStarted() && (strRead = ReadRequest.readLine()) != null)
                 {
-                    final  String strGetNewF = strGetNew;
-                    updateHandler.post(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            String strRead = strGetNewF;
-                            String strGet;
-                            try
-                            {
-                                // Check for Invalid Secret Key
-                                int nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                if (!strGet.equals(Server_P2P_ThreadManager.strSecretKey)) {
-                                    throw new Exception("Invalid Secret Key!");
-                                }
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Get Player ID
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                int nPlayerID = Integer.parseInt(strGet);
-                                Game_Player editPlayer = Game_Main.sm_PlayersArray.get(nPlayerID);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player Flags
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                int nFlags = Integer.parseInt(strGet);
-                                editPlayer.UpdateF(nFlags);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player Name
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                editPlayer.UpdateName(strGet);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player Color if Different
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                int nColor = Integer.parseInt(strGet);
-                                if (nColor != editPlayer.GetColor())
-                                    editPlayer.UpdateColor(nColor);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player X
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                float fX = Float.parseFloat(strGet);
-                                editPlayer.UpdateX(fX);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player Y
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                float fY = Float.parseFloat(strGet);
-                                editPlayer.UpdateY(fY);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player X Speed
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                float fXs = Float.parseFloat(strGet);
-                                editPlayer.UpdateSpdX(fXs);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Set Player Y Speed
-                                nIndex = strRead.indexOf('+', 0);
-                                strGet = strRead.substring(0, nIndex);
-                                float fYs = Float.parseFloat(strGet);
-                                editPlayer.UpdateSpdY(fYs);
-                                strRead = strRead.substring(nIndex + 1);
-
-                                // Other Relevant Updates
-                                //TBD
-
-                                Game_Main.GotPlayerInfo(nPlayerID);
-                            } catch (Exception ex) {
-                                Log.e("P2P_Exception", "P2P Server Message Processing Failed", ex);
-                            }
+                    try
+                    {
+                        // Check for Invalid Secret Key
+                        int nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        if (!strGet.equals(Server_P2P_ThreadManager.strSecretKey)) {
+                            throw new Exception("Invalid Secret Key!");
                         }
-                    });
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Get Player ID
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        int nPlayerID = Integer.parseInt(strGet);
+                        Game_Player editPlayer = Game_Main.sm_PlayersArray.get(nPlayerID);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player Flags
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        int nFlags = Integer.parseInt(strGet);
+                        editPlayer.UpdateF(nFlags);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player Name
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        editPlayer.UpdateName(strGet);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player Color if Different
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        int nColor = Integer.parseInt(strGet);
+                        if (nColor != editPlayer.GetColor())
+                            editPlayer.UpdateColor(nColor);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player X
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        float fX = Float.parseFloat(strGet);
+                        editPlayer.UpdateX(fX);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player Y
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        float fY = Float.parseFloat(strGet);
+                        editPlayer.UpdateY(fY);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player X Speed
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        float fXs = Float.parseFloat(strGet);
+                        editPlayer.UpdateSpdX(fXs);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Set Player Y Speed
+                        nIndex = strRead.indexOf('+', 0);
+                        strGet = strRead.substring(0, nIndex);
+                        float fYs = Float.parseFloat(strGet);
+                        editPlayer.UpdateSpdY(fYs);
+                        strRead = strRead.substring(nIndex + 1);
+
+                        // Other Relevant Updates
+                        //TBD
+
+                        Game_Main.GotPlayerInfo(nPlayerID);
+                    } catch (Exception ex) {
+                        Log.e("P2P_Exception", "P2P Server Message Processing Failed", ex);
+                    }
                 }
 
                 ReadRequest.close();
