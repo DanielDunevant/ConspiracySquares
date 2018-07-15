@@ -27,20 +27,22 @@ public class Server_P2P_Receive implements Runnable
 
     private static class ClientHandler extends Thread {
         private Socket clientSocket;
-        private BufferedReader ReadRequest;
 
-        public ClientHandler(Socket socket) {
+        ClientHandler(Socket socket) {
             this.clientSocket = socket;
         }
 
         public void run() {
-            try {
-                ReadRequest = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            try
+            {
+                BufferedReader ReadRequest = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 String strRead;
                 String strGet;
-                while ((strRead = ReadRequest.readLine()) != null) {
-                    try {
+                while ((strRead = ReadRequest.readLine()) != null)
+                {
+                    try
+                    {
                         // Check for Invalid Secret Key
                         int nIndex = strRead.indexOf('+', 0);
                         strGet = strRead.substring(0, nIndex);
