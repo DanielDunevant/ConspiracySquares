@@ -37,9 +37,9 @@ public class Server_P2P_Share implements Runnable
             Server_Sync.UpdatePort();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
-                Socket clientSocket = serverSocket.accept();
                 try
                 {
+                    Socket clientSocket = serverSocket.accept();
                     BufferedReader ReadRequest = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     final String strReadLine = ReadRequest.readLine();
                     if (strReadLine != null)
@@ -130,6 +130,7 @@ public class Server_P2P_Share implements Runnable
                         });
                     }
                     ReadRequest.close();
+                    clientSocket.close();
                 }
                 catch (Exception ex)
                 {

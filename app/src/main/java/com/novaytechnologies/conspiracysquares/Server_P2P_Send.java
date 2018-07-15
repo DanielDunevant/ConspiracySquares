@@ -24,14 +24,13 @@ public class Server_P2P_Send implements Runnable
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, m_nRequestPort);
+            PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), false);
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try
                 {
                     if (Game_Main.isStarted())
                     {
-                        PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), false);
-
                         Game_Player Self = Game_Player.GetSelf();
 
                         // Send Self Player Data to the other Player specified with SetIP()
@@ -67,6 +66,8 @@ public class Server_P2P_Send implements Runnable
                     Log.e("P2P_Exception", "P2P Client Message Failed", ex);
                 }
             }
+            WriteRequest.close();
+            socket.close();
         }
         catch (Exception ex)
         {
