@@ -178,8 +178,6 @@ public class Server_Sync
 
                         Server_P2P_ThreadManager.sm_PlayerIPs.add(strGetIP);
                         Server_P2P_ThreadManager.sm_Player_Ports.put(strGetIP, Integer.parseInt(strGetPort));
-
-                        Log.d("DEBUG", strGetIP + " - " + strGetPort);
                     }
                     Server_P2P_ThreadManager.SpawnPlayerThreads();
                 }

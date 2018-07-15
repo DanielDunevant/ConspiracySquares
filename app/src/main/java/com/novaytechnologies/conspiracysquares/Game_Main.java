@@ -82,13 +82,13 @@ class Game_Main
     {
         if (sm_bStarted)
         {
+            sm_bStarted = false;
             if (Server_Sync.sm_newPost != null) Server_Sync.sm_newPost.cancel(true);
             if (Server_Sync.sm_syncPost != null) Server_Sync.sm_syncPost.cancel(true);
             Server_Sync.LeaveServer(sm_strIP);
             Server_Sync.sm_bSyncInProgress = false;
             Server_P2P_ThreadManager.StopAllThreads();
             sm_PlayersArray.clear();
-            sm_bStarted = false;
         }
     }
 

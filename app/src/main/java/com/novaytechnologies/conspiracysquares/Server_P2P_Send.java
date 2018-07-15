@@ -55,6 +55,8 @@ public class Server_P2P_Send implements Runnable
                     // Other Relevant Updates
                     //TBD
 
+                    WriteRequest.close();
+
                     Game_Main.SentSelfInfo();
                 }
                 catch (Exception ex)

@@ -62,21 +62,20 @@ public class Server_P2P_ThreadManager
             if (sm_Player_Threads.containsKey(strIP))
             {
                 Thread getThread = sm_Player_Threads.get(strIP);
-                if (getThread != null)
-                {
+                if (getThread != null) {
                     getThread.interrupt();
                 }
             }
-            if (serverThread != null)
-            {
-                try {
-                    serverThread.interrupt();
-                    Server_P2P_Share.closeServerSocket();
-                    serverThread = null;
-                }
-                catch (Exception ex) {Log.e("P2P_Exception", "P2P Could Not Close Server Thread", ex);}
-            }
         }
         sm_Player_Threads.clear();
+        if (serverThread != null)
+        {
+            try {
+                serverThread.interrupt();
+                Server_P2P_Share.closeServerSocket();
+                serverThread = null;
+            }
+            catch (Exception ex) {Log.e("P2P_Exception", "P2P Could Not Close Server Thread", ex);}
+        }
     }
 }

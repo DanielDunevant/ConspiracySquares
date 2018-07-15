@@ -129,6 +129,7 @@ public class Server_P2P_Share implements Runnable
                             }
                         });
                     }
+                    ReadRequest.close();
                 }
                 catch (Exception ex)
                 {
