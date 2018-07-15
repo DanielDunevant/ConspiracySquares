@@ -22,27 +22,6 @@ public class Server_P2P_ThreadManager
         serverThread.start();
     }
 
-    // Restart downed threads in case of a crash
-    static void CheckThreads()
-    {
-        if (Game_Main.isStarted())
-        {
-            for (String strIP : sm_PlayerIPs) {
-                if (sm_Player_Threads.containsKey(strIP)) {
-                    Thread getThread = sm_Player_Threads.get(strIP);
-                    if (getThread == null) SpawnPlayerThreads();
-                    else if (!getThread.isAlive() || getThread.isInterrupted()) {
-                        getThread.run();
-                    }
-                }
-            }
-            if (serverThread == null) SpawnServerThread();
-            else if (!serverThread.isAlive() || serverThread.isInterrupted()) {
-                serverThread.run();
-            }
-        }
-    }
-
     // Create all down or uncreated Self Info Sending Threads
     static void SpawnPlayerThreads()
     {

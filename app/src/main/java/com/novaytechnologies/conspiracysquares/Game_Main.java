@@ -116,8 +116,6 @@ class Game_Main
             Player.DrawPlayer(canvas, lDrawDelta);
         }
 
-        Server_P2P_ThreadManager.CheckThreads();
-
         if (System.currentTimeMillis() > sm_lLastSync)
         {
             Server_Sync.SyncWithServer(false);
