@@ -117,8 +117,6 @@ public class Server_P2P_Receive implements Runnable
                             Log.e("P2P_Exception", "P2P Server Message Processing Failed", ex);
                         }
                     }
-                    ReadRequest.close();
-                    ReadRequest = null;
                 }
                 catch (Exception ex)
                 {
