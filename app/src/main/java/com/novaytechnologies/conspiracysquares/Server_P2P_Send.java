@@ -25,14 +25,13 @@ public class Server_P2P_Send implements Runnable
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, m_nRequestPort);
             PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+            Game_Player Self = Game_Player.GetSelf();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
             {
                 try
                 {
                     if (Game_Main.isStarted())
                     {
-                        Game_Player Self = Game_Player.GetSelf();
-
                         // Send Self Player Data to the other Player specified with SetIP()
                         WriteRequest.println(Server_P2P_ThreadManager.strSecretKey +
                         "+" +
@@ -52,8 +51,6 @@ public class Server_P2P_Send implements Runnable
                         "+" +
                         Float.toString(Self.GetSpeedY()) +
                         "+");
-
-                        Log.d("Socket-C", "Pushed");
 
                         // Other Relevant Updates
                         //TBD
