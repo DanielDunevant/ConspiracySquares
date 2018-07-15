@@ -41,26 +41,17 @@ class Game_Main
             Game_Main.sm_strServerName = strServer;
             Game_Main.sm_strServerPass = strPass;
 
-            sm_strIP = Utility_SharedPreferences.getIP();
-            if (sm_strIP != null)
+            for (int nPlayer = 0; nPlayer < Utility_SharedPreferences.MAX_PLAYERS; nPlayer++)
             {
-                for (int nPlayer = 0; nPlayer < Utility_SharedPreferences.MAX_PLAYERS; nPlayer++)
-                {
-                    Game_Player newPlayer = new Game_Player(nPlayer);
-                    newPlayer.m_ctx = ctx;
-                    sm_PlayersArray.add(newPlayer);
-                }
-                Game_Player.sm_SPECTATE = ctx.getResources().getDrawable(R.drawable.vec_spectate);
-                Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
-                Server_P2P_ThreadManager.sm_Player_Ports = new HashMap<>();
-                Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
-                Server_Sync.PopulateFromServer(ctx);
+                Game_Player newPlayer = new Game_Player(nPlayer);
+                newPlayer.m_ctx = ctx;
+                sm_PlayersArray.add(newPlayer);
             }
-            else
-            {
-                sm_bStarted = false;
-                Dialog_Popup.Connect_Error(ctx);
-            }
+            Game_Player.sm_SPECTATE = ctx.getResources().getDrawable(R.drawable.vec_spectate);
+            Server_P2P_ThreadManager.sm_PlayerIPs = new ArrayList<>();
+            Server_P2P_ThreadManager.sm_Player_Ports = new HashMap<>();
+            Server_P2P_ThreadManager.sm_Player_Threads = new HashMap<>();
+            Server_Sync.PopulateFromServer(ctx);
         }
     }
 
@@ -73,9 +64,10 @@ class Game_Main
             The Player's ID was received from the server.
             The Server synchronization process will then be started.
     */
-    static void ServerJoinComplete(int nID, boolean bRoundStarted, Context ctx)
+    static void ServerJoinComplete(int nID, boolean bRoundStarted, String strIP, Context ctx)
     {
         sm_bRoundStarted = bRoundStarted;
+        sm_strIP = strIP;
 
         Game_Player.SetSelfID(nID);
         Game_Player.GetNewSelfColor();

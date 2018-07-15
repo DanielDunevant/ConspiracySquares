@@ -40,27 +40,4 @@ public class Utility_SharedPreferences
     // Saves the player's name.
     void saveName(String strName)
     {sm_SH_Pref.edit().putString(conspiracysquares_SHPREF + conspiracysquares_SHPREF_NAME, strName).apply();}
-
-    static String getIP()
-    {
-        try
-        {
-            for (Enumeration<NetworkInterface> Interfaces = NetworkInterface.getNetworkInterfaces(); Interfaces.hasMoreElements();)
-            {
-                NetworkInterface NetInterface = Interfaces.nextElement();
-                for (Enumeration<InetAddress> enumIPaddress = NetInterface.getInetAddresses(); enumIPaddress.hasMoreElements();)
-                {
-                    InetAddress IPaddress = enumIPaddress.nextElement();
-                    if (!IPaddress.isLoopbackAddress() && !IPaddress.isMulticastAddress() && !IPaddress.isAnyLocalAddress()) {return IPaddress.getHostAddress();}
-                }
-            }
-            Log.e("IP_Exception", "No Valid IP Address Found!");
-            return null;
-        }
-        catch (Exception ex)
-        {
-            Log.e("IP_Exception", "IP Determination Failed", ex);
-            return null;
-        }
-    }
 }

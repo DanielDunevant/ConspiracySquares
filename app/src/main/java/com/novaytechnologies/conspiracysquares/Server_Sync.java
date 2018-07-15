@@ -46,11 +46,14 @@ public class Server_Sync
                     int nGetIDindex = LastResult.indexOf('=', 0);
                     int nGetBindex = LastResult.indexOf('+', 0);
                     int nGetBindex2 = LastResult.indexOf('=', nGetBindex);
+                    int nGetIindex = LastResult.indexOf('+', nGetBindex2);
+                    int nGetIindex2 = LastResult.indexOf('=', nGetIindex);
                     if (nGetIDindex != -1)
                     {
                         String strGet = LastResult.substring(nGetIDindex + 1, nGetBindex);
-                        String strGet2 = LastResult.substring(nGetBindex2 + 1);
-                        Game_Main.ServerJoinComplete(Integer.parseInt(strGet), strGet2.contains("true"), ctx);
+                        String strGet2 = LastResult.substring(nGetBindex2 + 1, nGetIindex);
+                        String strGet3 = LastResult.substring(nGetIindex2 + 1);
+                        Game_Main.ServerJoinComplete(Integer.parseInt(strGet), strGet2.contains("true"), strGet3, ctx);
                     }
                     else {
                         Dialog_Popup.Connect_Error(ctx);
