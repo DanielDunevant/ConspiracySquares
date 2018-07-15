@@ -28,9 +28,15 @@ public class Activity_Game extends AppCompatActivity {
     }
 
     @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        Game_Main.EndGame();
+    }
+
+    @Override
     public void onBackPressed()
     {
-        Game_Main.EndGame();
         this.finish();
     }
 

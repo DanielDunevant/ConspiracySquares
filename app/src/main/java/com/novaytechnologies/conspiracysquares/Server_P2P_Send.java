@@ -28,10 +28,10 @@ public class Server_P2P_Send implements Runnable
             {
                 try
                 {
-                    PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-
                     if (Game_Main.isStarted())
                     {
+                        PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+
                         Game_Player Self = Game_Player.GetSelf();
 
                         // Send Self Player Data to the other Player specified with SetIP()
@@ -57,7 +57,7 @@ public class Server_P2P_Send implements Runnable
                         // Other Relevant Updates
                         //TBD
 
-                        WriteRequest.flush();
+                        WriteRequest.close();
 
                         Game_Main.SentSelfInfo();
                     }
