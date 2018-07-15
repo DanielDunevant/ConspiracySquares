@@ -3,7 +3,10 @@ package com.novaytechnologies.conspiracysquares;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
@@ -36,6 +39,7 @@ public class Server_P2P_Receive implements Runnable
             try
             {
                 BufferedReader ReadRequest = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream())), true);
 
                 String strRead;
                 String strGet;
@@ -109,6 +113,9 @@ public class Server_P2P_Receive implements Runnable
 
                         // Other Relevant Updates
                         //TBD
+
+                        WriteRequest.println("Updated");
+                        WriteRequest.flush();
 
                         Game_Main.GotPlayerInfo(nPlayerID);
                     } catch (Exception ex) {

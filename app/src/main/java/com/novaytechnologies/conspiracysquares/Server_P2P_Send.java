@@ -2,7 +2,9 @@ package com.novaytechnologies.conspiracysquares;
 
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -24,6 +26,7 @@ public class Server_P2P_Send implements Runnable
         {
             InetAddress serverAddress = InetAddress.getByName(m_strRequestIP);
             Socket socket = new Socket(serverAddress, m_nRequestPort);
+            BufferedReader ReadRequest = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter WriteRequest = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             Game_Player Self = Game_Player.GetSelf();
             while (Game_Main.isStarted() && !Thread.currentThread().isInterrupted())
@@ -54,6 +57,8 @@ public class Server_P2P_Send implements Runnable
                     //TBD
 
                     WriteRequest.flush();
+
+                    ReadRequest.readLine();
 
                     Game_Main.SentSelfInfo();
                 }
