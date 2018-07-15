@@ -51,7 +51,7 @@ public class Utility_SharedPreferences
                 for (Enumeration<InetAddress> enumIPaddress = NetInterface.getInetAddresses(); enumIPaddress.hasMoreElements();)
                 {
                     InetAddress IPaddress = enumIPaddress.nextElement();
-                    if (!IPaddress.isLoopbackAddress()) {return IPaddress.getHostAddress();}
+                    if (!IPaddress.isLoopbackAddress() && !IPaddress.isMulticastAddress() && !IPaddress.isAnyLocalAddress()) {return IPaddress.getHostAddress();}
                 }
             }
             Log.e("IP_Exception", "No Valid IP Address Found!");
