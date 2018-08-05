@@ -132,7 +132,7 @@ public class Layout_Game_Draw extends FrameLayout {
         canvas.drawColor(getResources().getColor(R.color.colorGameBackground));
 
         m_lDrawDelta = System.currentTimeMillis() - m_lDrawLast;
-        Game_Main.GameLoop(this.getContext(), m_lDrawDelta, canvas);
+        Game_Main.GameLoop(m_lDrawDelta, canvas);
         m_lDrawLast = System.currentTimeMillis();
 
         this.invalidate();

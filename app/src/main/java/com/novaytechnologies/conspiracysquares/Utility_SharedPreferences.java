@@ -2,14 +2,9 @@
 
 package com.novaytechnologies.conspiracysquares;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Enumeration;
+        import android.content.Context;
+        import android.content.SharedPreferences;
+        import android.preference.PreferenceManager;
 
 public class Utility_SharedPreferences
 {

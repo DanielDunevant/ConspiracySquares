@@ -129,7 +129,7 @@ public class Activity_Servers extends AppCompatActivity {
                 playerNums.invalidate(); // Refresh the server list layout
             }
         });
-        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", ParamsString);
+        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ListServers", ParamsString);
     }
 
     // Ends the game just in case it is still running for some unexpected reason.

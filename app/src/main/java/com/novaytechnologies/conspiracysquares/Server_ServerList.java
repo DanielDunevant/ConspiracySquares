@@ -1,3 +1,5 @@
+//Copyright (c) 2018 Novay Technologies
+
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
@@ -114,7 +116,7 @@ public class Server_ServerList
                     Activity_Game.Start(strServer, strPass, ctx);
                 }
             });
-            newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CreateServer", ParamsString);
+            newPost.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_CreateServer", ParamsString);
         }
     }
 
@@ -152,7 +154,7 @@ public class Server_ServerList
                     }
                 }
             });
-            newPost.execute("https://conspiracy-squares.appspot.com/Servlet_CheckPassword", ParamsString);
+            newPost.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_CheckPassword", ParamsString);
         }
     }
 
@@ -200,7 +202,7 @@ public class Server_ServerList
                 }
             }
         });
-        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_ListServers", "");
+        GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ListServers", "");
     }
 
     // ServerList Server Information Accessor Functions.
