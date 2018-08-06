@@ -2,9 +2,7 @@
 
 package com.novaytechnologies.conspiracysquares;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -162,53 +160,68 @@ public class Server_Sync
                             strGet = LastResult.substring(1, nLastIndex);
                             nGetID = Integer.parseInt(strGet);
 
-                            Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
+                            if (nGetID != Game_Player.GetSelfID())
+                            {
+                                Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateX(Float.parseFloat(strGet));
+                                Player.UpdateX(Float.parseFloat(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateY(Float.parseFloat(strGet));
+                                Player.UpdateY(Float.parseFloat(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateSpdX(Float.parseFloat(strGet));
+                                Player.UpdateSpdX(Float.parseFloat(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateSpdY(Float.parseFloat(strGet));
+                                Player.UpdateSpdY(Float.parseFloat(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateF(Integer.parseInt(strGet));
+                                Player.UpdateF(Integer.parseInt(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('-', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('-', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateColor(Integer.parseInt(strGet));
+                                Player.UpdateColor(Integer.parseInt(strGet));
 
-                            LastResult = LastResult.substring(nLastIndex + 1);
-                            nLastIndex = LastResult.indexOf('+', 0);
-                            if (nLastIndex == -1) nLastIndex = LastResult.indexOf(';', 0);
-                            strGet = LastResult.substring(0, nLastIndex);
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('+', 0);
+                                if (nLastIndex == -1)
+                                {
+                                    nLastIndex = LastResult.indexOf(';', 0);
+                                    bNext = false;
+                                }
+                                strGet = LastResult.substring(0, nLastIndex);
 
-                            Player.UpdateName(strGet);
+                                Player.UpdateName(strGet);
+                            }
+                            else
+                            {
+                                nLastIndex = LastResult.indexOf('+', 1);
+                                if (nLastIndex == -1)
+                                {
+                                    nLastIndex = LastResult.indexOf(';', 1);
+                                    bNext = false;
+                                }
+                            }
 
                             LastResult = LastResult.substring(nLastIndex);
-                            bNext = LastResult.contains("+");
                         }
                     }
                     sm_bSyncInProgress = false;
