@@ -3,6 +3,7 @@
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -132,7 +133,7 @@ public class Server_Sync
     //Updates Game State and Players' States from the Cloud Server
     static void CheckAndUpdate()
     {
-        if ((!sm_bSyncInProgress || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)
+        if ((!sm_bSyncInProgress || sm_syncPost == null || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)
         {
             ArrayList<String> params = new ArrayList<>();
             params.add("ReqPass");
@@ -153,10 +154,10 @@ public class Server_Sync
                         String strGet;
                         int nGetID;
                         int nLastIndex;
-                        boolean bNext = LastResult.contains("+");
+                        boolean bNext = LastResult.contains(":");
                         while (bNext)
                         {
-                            nLastIndex = LastResult.indexOf('-', 1);
+                            nLastIndex = LastResult.indexOf('&', 1);
                             strGet = LastResult.substring(1, nLastIndex);
                             nGetID = Integer.parseInt(strGet);
 
@@ -165,43 +166,43 @@ public class Server_Sync
                                 Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateX(Float.parseFloat(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateY(Float.parseFloat(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateSpdX(Float.parseFloat(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateSpdY(Float.parseFloat(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateF(Integer.parseInt(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('-', 0);
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateColor(Integer.parseInt(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf('+', 0);
+                                nLastIndex = LastResult.indexOf(':', 0);
                                 if (nLastIndex == -1)
                                 {
                                     nLastIndex = LastResult.indexOf(';', 0);
@@ -213,7 +214,7 @@ public class Server_Sync
                             }
                             else
                             {
-                                nLastIndex = LastResult.indexOf('+', 1);
+                                nLastIndex = LastResult.indexOf(':', 1);
                                 if (nLastIndex == -1)
                                 {
                                     nLastIndex = LastResult.indexOf(';', 1);

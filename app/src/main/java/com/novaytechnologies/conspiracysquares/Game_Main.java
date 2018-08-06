@@ -39,7 +39,7 @@ class Game_Main
             Game_Main.sm_strServerName = strServer;
             Game_Main.sm_strServerPass = strPass;
 
-            for (int nPlayer = 0; nPlayer < Utility_SharedPreferences.MAX_PLAYERS; nPlayer++)
+            for (int nPlayer = 0; nPlayer < Utility_SharedPreferences.MAX_PLAYERS + 1; nPlayer++)
             {
                 Game_Player newPlayer = new Game_Player(nPlayer);
                 newPlayer.m_ctx = ctx;
