@@ -83,7 +83,7 @@ class Game_Player
         Self.m_bDrawableLoaded = true;
     }
 
-    static long sm_lMoveNum = 0;
+    static private long sm_lMoveNum = 0;
     // Sets the movement the player, SELF, using a local position on the screen to determine the global movement direction.
     static void MoveSelfToLocal(float fScreenX, float fScreenY)
     {
@@ -104,8 +104,6 @@ class Game_Player
             // These speed components are then converted from local to global coordinates via division
             Self.m_fSpeedX = (fPlayerXdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
             Self.m_fSpeedY = (fPlayerYdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
-
-            Server_Sync.SendMove(Self.m_sync_fPosX, Self.m_sync_fPosY, Self.m_fSpeedX, Self.m_fSpeedY, ++sm_lMoveNum);
         }
         else
         {
@@ -113,6 +111,8 @@ class Game_Player
             Self.m_fSpeedX = 0f;
             Self.m_fSpeedY = 0f;
         }
+
+        Server_Sync.SendMove(Self.m_sync_fPosX, Self.m_sync_fPosY, Self.m_fSpeedX, Self.m_fSpeedY, ++sm_lMoveNum);
     }
 
     // Sets the player drawable to the dead player drawable

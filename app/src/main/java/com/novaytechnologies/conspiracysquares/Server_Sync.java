@@ -142,6 +142,8 @@ public class Server_Sync
             params.add(Game_Main.sm_strServerName);
             params.add("ServerPassword");
             params.add(Game_Main.sm_strServerPass);
+            params.add("Self_ID");
+            params.add(Integer.toString(Game_Player.GetSelfID()));
             String ParamsString = Utility_Post.GetParamsString(params);
 
             sm_syncPost = new Utility_Post();
@@ -161,8 +163,6 @@ public class Server_Sync
                             strGet = LastResult.substring(1, nLastIndex);
                             nGetID = Integer.parseInt(strGet);
 
-                            if (nGetID != Game_Player.GetSelfID())
-                            {
                                 Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
@@ -211,16 +211,6 @@ public class Server_Sync
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateName(strGet);
-                            }
-                            else
-                            {
-                                nLastIndex = LastResult.indexOf(':', 1);
-                                if (nLastIndex == -1)
-                                {
-                                    nLastIndex = LastResult.indexOf(';', 1);
-                                    bNext = false;
-                                }
-                            }
 
                             LastResult = LastResult.substring(nLastIndex);
                         }
