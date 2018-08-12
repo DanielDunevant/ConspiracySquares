@@ -38,6 +38,10 @@ class Game_Player
     Context m_ctx;
     private Drawable m_SQUARE;
 
+    // Change Tracking
+    private long m_lMoveNum = 0L;
+    private long m_lChangeNum = 0L;
+
     // All synchronized player information
     private int m_nID;
     private String m_sync_strName = "";
@@ -45,6 +49,9 @@ class Game_Player
     private float m_sync_fPosX = 0f;
     private float m_sync_fPosY = 0f;
     private int m_sync_nFlags = -1;
+
+    long GetMoveNum() {return m_lMoveNum;}
+    long GetChangeNum() {return m_lChangeNum;}
 
     // The X and Y components of the player's movement direction vector in global coordinates
     private float m_fSpeedX = 0f;
@@ -68,6 +75,8 @@ class Game_Player
         Self.m_sync_nSelfColor = nColor;
         Self.m_ctx = ctx;
 
+        Self.m_lMoveNum = 1L;
+        Self.m_lChangeNum = 1L;
         Self.m_sync_nFlags = 0b1;
 
         Self.m_sync_strName = Utility_SharedPreferences.get().loadName(ctx);
@@ -83,7 +92,6 @@ class Game_Player
         Self.m_bDrawableLoaded = true;
     }
 
-    static private long sm_lMoveNum = 0;
     // Sets the movement the player, SELF, using a local position on the screen to determine the global movement direction.
     static void MoveSelfToLocal(float fScreenX, float fScreenY)
     {
@@ -112,7 +120,7 @@ class Game_Player
             Self.m_fSpeedY = 0f;
         }
 
-        Server_Sync.SendMove(Self.m_sync_fPosX, Self.m_sync_fPosY, Self.m_fSpeedX, Self.m_fSpeedY, ++sm_lMoveNum);
+        Server_Sync.SendMove(Self.m_sync_fPosX, Self.m_sync_fPosY, Self.m_fSpeedX, Self.m_fSpeedY, ++Self.m_lMoveNum, Self.m_lChangeNum);
     }
 
     // Sets the player drawable to the dead player drawable
@@ -125,7 +133,12 @@ class Game_Player
     }
 
     // Update synchronized player data
-    void UpdateName(String strName) {m_sync_strName = strName;}
+    void UpdateMoveNum(long lN) {m_lMoveNum = lN;}
+    void UpdateChangeNum(long lN) {m_lChangeNum = lN;}
+    void UpdateName(String strName)
+    {
+        m_sync_strName = strName;
+    }
     void UpdateX(float fX) {m_sync_fPosX = fX;}
     void UpdateY(float fY) {m_sync_fPosY = fY;}
     void UpdateSpdX(float fX) {m_fSpeedX = fX;}

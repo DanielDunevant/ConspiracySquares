@@ -102,7 +102,7 @@ public class Server_Sync
     }
 
     //Sends player movement information to the server
-    static void SendMove(float fX, float fY, float fDX, float fDY, long lMoveNum)
+    static void SendMove(float fX, float fY, float fDX, float fDY, long lMoveNum, long lChangeNum)
     {
         ArrayList<String> params = new ArrayList<>();
         params.add("ReqPass");
@@ -122,6 +122,7 @@ public class Server_Sync
         params.add(Float.toString(fDX));
         params.add("Self_dY");
         params.add(Float.toString(fDY));
+
         params.add("Self_MoveNum");
         params.add(Long.toString(lMoveNum));
         String ParamsString = Utility_Post.GetParamsString(params);
@@ -136,14 +137,23 @@ public class Server_Sync
         if ((!sm_bSyncInProgress || sm_syncPost == null || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)
         {
             ArrayList<String> params = new ArrayList<>();
-            params.add("ReqPass");
+            params.add("P");
             params.add(ResolveEncryption());
-            params.add("ServerName");
+            params.add("SN");
             params.add(Game_Main.sm_strServerName);
-            params.add("ServerPassword");
+            params.add("SP");
             params.add(Game_Main.sm_strServerPass);
-            params.add("Self_ID");
+            params.add("ID");
             params.add(Integer.toString(Game_Player.GetSelfID()));
+
+            for (int nPlayer = 0; nPlayer < Utility_SharedPreferences.MAX_PLAYERS + 1; nPlayer++)
+            {
+                Game_Player Player = Game_Main.sm_PlayersArray.get(nPlayer);
+                params.add("M" + Integer.toString(nPlayer));
+                params.add(Long.toString(Player.GetMoveNum()));
+                params.add("C" + Integer.toString(nPlayer));
+                params.add(Long.toString(Player.GetChangeNum()));
+            }
             String ParamsString = Utility_Post.GetParamsString(params);
 
             sm_syncPost = new Utility_Post();
@@ -151,21 +161,27 @@ public class Server_Sync
                 @Override
                 public void run() {
                     String LastResult = GetArgs()[0];
-                    if (LastResult != null && !LastResult.isEmpty() && LastResult.indexOf(';', 0) != -1)
+                    if (LastResult != null && !LastResult.isEmpty())
                     {
                         String strGet;
                         int nGetID;
-                        int nLastIndex;
-                        boolean bNext = LastResult.contains(":");
-                        while (bNext)
+                        int nLastIndex, nMoveIndex, nChangeIndex, nEndIndex;
+                        nLastIndex = LastResult.indexOf(':', 0);
+                        while (nLastIndex != -1)
                         {
-                            nLastIndex = LastResult.indexOf('&', 1);
-                            strGet = LastResult.substring(1, nLastIndex);
+                            LastResult = LastResult.substring(nLastIndex + 1);
+
+                            nLastIndex = LastResult.indexOf('&', 0);
+                            strGet = LastResult.substring(0, nLastIndex);
                             nGetID = Integer.parseInt(strGet);
 
-                                Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
+                            Game_Player Player = Game_Main.sm_PlayersArray.get(nGetID);
 
-                                LastResult = LastResult.substring(nLastIndex + 1);
+                            nMoveIndex = LastResult.indexOf('^', 0);
+                            nEndIndex = LastResult.indexOf(';', 0);
+                            if (nMoveIndex != -1 && nMoveIndex < nEndIndex)
+                            {
+                                LastResult = LastResult.substring(nMoveIndex + 1);
                                 nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
@@ -193,6 +209,17 @@ public class Server_Sync
                                 nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
+                                Player.UpdateMoveNum(Long.parseLong(strGet));
+                            }
+
+                            nChangeIndex = LastResult.indexOf('#', 0);
+                            nEndIndex = LastResult.indexOf(';', 0);
+                            if (nChangeIndex != -1 && nChangeIndex < nEndIndex)
+                            {
+                                LastResult = LastResult.substring(nChangeIndex + 1);
+                                nLastIndex = LastResult.indexOf('&', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
+
                                 Player.UpdateF(Integer.parseInt(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
@@ -202,17 +229,20 @@ public class Server_Sync
                                 Player.UpdateColor(Integer.parseInt(strGet));
 
                                 LastResult = LastResult.substring(nLastIndex + 1);
-                                nLastIndex = LastResult.indexOf(':', 0);
-                                if (nLastIndex == -1)
-                                {
-                                    nLastIndex = LastResult.indexOf(';', 0);
-                                    bNext = false;
-                                }
+                                nLastIndex = LastResult.indexOf('&', 0);
                                 strGet = LastResult.substring(0, nLastIndex);
 
                                 Player.UpdateName(strGet);
 
+                                LastResult = LastResult.substring(nLastIndex + 1);
+                                nLastIndex = LastResult.indexOf('&', 0);
+                                strGet = LastResult.substring(0, nLastIndex);
+
+                                Player.UpdateChangeNum(Long.parseLong(strGet));
+                            }
+
                             LastResult = LastResult.substring(nLastIndex);
+                            nLastIndex = LastResult.indexOf(':', 0);
                         }
                     }
                     sm_bSyncInProgress = false;
