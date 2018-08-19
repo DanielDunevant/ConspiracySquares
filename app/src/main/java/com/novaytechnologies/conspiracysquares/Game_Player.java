@@ -110,8 +110,8 @@ class Game_Player
 
             // Split the constant speed into 2 components of a constant-speed velocity vector, using the above calculations
             // These speed components are then converted from local to global coordinates via division
-            Self.m_fSpeedX = (fPlayerXdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
-            Self.m_fSpeedY = (fPlayerYdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
+            Self.m_fSpeedX = 5*(fPlayerXdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
+            Self.m_fSpeedY = 5*(fPlayerYdist / fPlayer_Time) / Game_Camera.sm_fScaleFactor;
         }
         else
         {
@@ -172,9 +172,18 @@ class Game_Player
 
         if (m_bDrawableLoaded && m_sync_nFlags >= 0)
         {
-            m_sync_fPosX += m_fSpeedX * lDelta;
-            m_sync_fPosY += m_fSpeedY * lDelta;
-
+            if(m_sync_fPosX<=Game_Main.mapSize&&m_sync_fPosX>=-Game_Main.mapSize)
+            {m_sync_fPosX += m_fSpeedX * lDelta; }
+            else{
+                if(m_sync_fPosX<=Game_Main.mapSize){m_sync_fPosX+=1;}
+                if(m_sync_fPosX>=Game_Main.mapSize){m_sync_fPosX-=1;}
+            }
+            if(m_sync_fPosY<=Game_Main.mapSize&&m_sync_fPosY>=-Game_Main.mapSize)
+            {m_sync_fPosY += m_fSpeedY * lDelta; }
+            else{
+                if(m_sync_fPosY<=Game_Main.mapSize){m_sync_fPosY+=1;}
+                if(m_sync_fPosY>=Game_Main.mapSize){m_sync_fPosY-=1;}
+            }
             if (isSelf() && isAlive())
             {
                 fDrawX = Game_Camera.GetDrawX();
