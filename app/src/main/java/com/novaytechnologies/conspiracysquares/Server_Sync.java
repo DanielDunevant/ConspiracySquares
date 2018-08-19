@@ -156,7 +156,7 @@ public class Server_Sync
     }
 
     //Updates Game State and Players' States from the Cloud Server
-    static void CheckAndUpdate()
+    static void CheckAndUpdate(final Context ctx)
     {
         if ((!sm_bSyncInProgress || sm_syncPost == null || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)
         {
@@ -187,6 +187,11 @@ public class Server_Sync
                     String LastResult = GetArgs()[0];
                     if (LastResult != null && !LastResult.isEmpty())
                     {
+                        if (LastResult.contains("ERROR_INACTIVE") && !LastResult.contains(";"))
+                        {
+                            Dialog_Popup.Connect_Error(ctx);
+                            Game_Main.EndGame();
+                        }
                         String strGet;
                         int nGetID;
                         int nLastIndex, nMoveIndex, nChangeIndex, nEndIndex;
