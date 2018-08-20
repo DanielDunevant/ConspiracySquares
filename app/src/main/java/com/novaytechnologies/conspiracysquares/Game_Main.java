@@ -11,6 +11,7 @@ import java.util.HashMap;
 // The primary functions for the game itself
 class Game_Main
 {
+    static public float mapSize = 500;
     // Whether the game information is initialized.
     static private boolean sm_bStarted = false;
 

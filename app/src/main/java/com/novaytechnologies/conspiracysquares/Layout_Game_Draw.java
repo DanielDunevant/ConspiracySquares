@@ -5,10 +5,14 @@ package com.novaytechnologies.conspiracysquares;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
+
+
 
 // The Game Drawing Layout.
 public class Layout_Game_Draw extends FrameLayout {
@@ -86,6 +90,8 @@ public class Layout_Game_Draw extends FrameLayout {
     // Draws the Grid using the location information given by Game_Camera
     static void DrawGrid(Canvas canvas)
     {
+
+
         // The screen-relative position of the next line
         float fPos;
 
@@ -93,12 +99,23 @@ public class Layout_Game_Draw extends FrameLayout {
         // Each line has a global position that is a multiple of 10
         // As in: ..., -20, -10, 0, 10, 20, 30, ...
         float fGridStartX = Game_Camera.GetGlobalX() - 70;
-        fGridStartX -= fGridStartX % 10;
-        float fGridEndX = Game_Camera.GetGlobalX() + 70;
-        fGridEndX -= fGridEndX % 10;
+        if(fGridStartX+70>=-Game_Main.mapSize)
+        {fGridStartX -= fGridStartX % 10;}
+        else{fGridStartX+=1;}
 
+        float fGridEndX = Game_Camera.GetGlobalX() + 70;
+        if(fGridEndX<=Game_Main.mapSize)
+        { fGridEndX += fGridEndX % 10;}
+        else{fGridStartX-=1;}
         for (float fGridLine = fGridStartX; fGridLine <= fGridEndX; fGridLine += 10f)
         {
+
+            fPos = Game_Camera.GetRelativeX(fGridLine);
+            canvas.drawLine(fPos,
+                    0,
+                    fPos,
+                    sm_nHeight,
+                    sm_GridPaint);
             fPos = Game_Camera.GetRelativeX(fGridLine);
             canvas.drawLine(fPos,
                     0,
@@ -110,10 +127,14 @@ public class Layout_Game_Draw extends FrameLayout {
         // The beginning and end positions of the horizontal grid lines
         // Calculated using the same method as the vertical lines.
         float fGridStartY = Game_Camera.GetGlobalY() - 70;
-        fGridStartY -= fGridStartY % 10;
-        float fGridEndY = Game_Camera.GetGlobalY() + 70;
-        fGridEndY -= fGridEndY % 10;
+        if(fGridStartY+70>=-Game_Main.mapSize)
+        {fGridStartY -= fGridStartY % 10;}
+        else{fGridStartY+=1;}
 
+        float fGridEndY = Game_Camera.GetGlobalY() + 70;
+        if(fGridEndY<=Game_Main.mapSize)
+        { fGridEndY += fGridEndY % 10;}
+        else{fGridStartY-=1;}
         for (float fGridLine = fGridStartY; fGridLine <= fGridEndY; fGridLine += 10f)
         {
             fPos = Game_Camera.GetRelativeY(fGridLine);
@@ -122,7 +143,25 @@ public class Layout_Game_Draw extends FrameLayout {
                     sm_nWidth,
                     fPos,
                     sm_GridPaint);
+            fPos = Game_Camera.GetRelativeY(fGridLine);
         }
+
+        //Draw map grid rectangle
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        paint.setStrokeWidth(0);
+        canvas.drawRect(30,30,230,230,paint);
+        paint.setColor(Color.BLACK);
+        //Game_Camera.GetGlobalX/Y() represents the player's actual position on the map
+        float xPos = Game_Camera.GetGlobalX();
+        float yPos = Game_Camera.GetGlobalY();
+        StringBuilder coordinates= new StringBuilder(25);
+        float x = (xPos/5)+130;
+        float y = (yPos/5)+130;
+        float radius = 5;
+        paint.setColor(Color.BLUE);
+        canvas.drawCircle(x,y,radius,paint);
+
     }
 
     // Runs the game loop every draw cycle.
