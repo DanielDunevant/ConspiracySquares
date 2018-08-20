@@ -102,9 +102,9 @@ class Game_Main
     }
 
     // Game loop, called in Layout_Game_Draw
-    static void GameLoop(long lDrawDelta, Canvas canvas)
+    static void GameLoop(long lDrawDelta, Canvas canvas, Context ctx)
     {
-        Server_Sync.CheckAndUpdate();
+        Server_Sync.CheckAndUpdate(ctx);
         Layout_Game_Draw.DrawGrid(canvas);
         for (Game_Player Player : Game_Main.sm_PlayersArray)
         {
