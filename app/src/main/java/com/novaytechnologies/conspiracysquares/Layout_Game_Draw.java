@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -33,6 +34,8 @@ public class Layout_Game_Draw extends FrameLayout {
     long m_lMoveTick;   // Used to create a slight input delay.
     long m_lDrawLast;   // Used to give the time of the last draw.
     long m_lDrawDelta;  // Used to give the time passed since the last draw.
+
+
 
     public Layout_Game_Draw(Context ctx) {
         this(ctx, null);
@@ -88,7 +91,7 @@ public class Layout_Game_Draw extends FrameLayout {
     }
 
     // Draws the Grid using the location information given by Game_Camera
-    static void DrawGrid(Canvas canvas)
+    static void DrawGrid(final Canvas canvas)
     {
 
 
@@ -143,7 +146,7 @@ public class Layout_Game_Draw extends FrameLayout {
                     sm_nWidth,
                     fPos,
                     sm_GridPaint);
-            fPos = Game_Camera.GetRelativeY(fGridLine);
+            //fPos = Game_Camera.GetRelativeY(fGridLine);
         }
 
         //Draw map grid rectangle
@@ -161,7 +164,9 @@ public class Layout_Game_Draw extends FrameLayout {
         float radius = 5;
         paint.setColor(Color.BLUE);
         canvas.drawCircle(x,y,radius,paint);
-
+        paint.setColor(Color.GREEN);
+        paint.setTextSize(50);
+        canvas.drawText(Long.toString((Game_Main.timeTillRoundStarts-Game_Main.timeElasped)/1000), 120, 240, paint);
     }
 
     // Runs the game loop every draw cycle.
@@ -169,7 +174,6 @@ public class Layout_Game_Draw extends FrameLayout {
     {
         super.onDraw(canvas);
         canvas.drawColor(getResources().getColor(R.color.colorGameBackground));
-
         m_lDrawDelta = System.currentTimeMillis() - m_lDrawLast;
         Game_Main.GameLoop(m_lDrawDelta, canvas);
         m_lDrawLast = System.currentTimeMillis();
