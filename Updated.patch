@@ -1,0 +1,151 @@
+Index: app/src/main/java/com/novaytechnologies/conspiracysquares/Game_Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/novaytechnologies/conspiracysquares/Game_Main.java	(revision 354a918ba89e2ef293a7d9b9e0e0ef13b26a6542)
++++ app/src/main/java/com/novaytechnologies/conspiracysquares/Game_Main.java	(date 1534730891030)
+@@ -8,6 +8,8 @@
+ import java.util.ArrayList;
+ import java.util.HashMap;
+ 
++import static com.novaytechnologies.conspiracysquares.Server_Sync.ResolveEncryption;
++
+ // The primary functions for the game itself
+ class Game_Main
+ {
+@@ -31,6 +33,11 @@
+     static boolean isStarted() {return sm_bStarted;}
+     static boolean isRoundStarted() {return sm_bRoundStarted;}
+ 
++    //Round start Time variable
++    public static long roundStartTimer= 0;
++    public static long timeTillRoundStarts = 120000;
++    public static long timeElasped;
++
+     // Joins the given server and starts the game
+     static void JoinServer(String strServer, String strPass, Context ctx)
+     {
+@@ -63,6 +70,7 @@
+     */
+     static void ServerJoinComplete(int nID, boolean bRoundStarted, int nColor, Context ctx)
+     {
++        roundStartTimer = System.currentTimeMillis();
+         sm_bRoundStarted = bRoundStarted;
+ 
+         Game_Player.SetSelfID(nID);
+@@ -111,5 +119,22 @@
+         {
+             Player.DrawPlayer(canvas, lDrawDelta);
+         }
++        if((timeTillRoundStarts-timeElasped)/1000==0)
++        {
++            Utility_Post gameStartPost= new Utility_Post();
++            ArrayList<String> params = new ArrayList<>();
++            params.add("ReqPass");
++            params.add(ResolveEncryption());
++            params.add("ServerName");
++            params.add(Game_Main.sm_strServerName);
++            params.add("ServerPassword");
++            params.add(Game_Main.sm_strServerPass);
++            params.add("Self_Name");
++            params.add(Utility_SharedPreferences.get().loadName(ctx));
++            String ParamsString = Utility_Post.GetParamsString(params);
++            timeElasped =0;
++            gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
++        }
++        else{ timeElasped = System.currentTimeMillis() - roundStartTimer;}
+     }
+ }
+Index: app/src/main/java/com/novaytechnologies/conspiracysquares/Layout_Game_Draw.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/novaytechnologies/conspiracysquares/Layout_Game_Draw.java	(revision 354a918ba89e2ef293a7d9b9e0e0ef13b26a6542)
++++ app/src/main/java/com/novaytechnologies/conspiracysquares/Layout_Game_Draw.java	(date 1534726874658)
+@@ -6,6 +6,7 @@
+ import android.graphics.Canvas;
+ import android.graphics.Paint;
+ import android.graphics.Color;
++import android.os.CountDownTimer;
+ import android.support.annotation.Nullable;
+ import android.util.AttributeSet;
+ import android.view.MotionEvent;
+@@ -34,6 +35,8 @@
+     long m_lDrawLast;   // Used to give the time of the last draw.
+     long m_lDrawDelta;  // Used to give the time passed since the last draw.
+ 
++
++
+     public Layout_Game_Draw(Context ctx) {
+         this(ctx, null);
+     }
+@@ -88,7 +91,7 @@
+     }
+ 
+     // Draws the Grid using the location information given by Game_Camera
+-    static void DrawGrid(Canvas canvas)
++    static void DrawGrid(final Canvas canvas)
+     {
+ 
+ 
+@@ -161,7 +164,9 @@
+         float radius = 5;
+         paint.setColor(Color.BLUE);
+         canvas.drawCircle(x,y,radius,paint);
+-
++        paint.setColor(Color.GREEN);
++        paint.setTextSize(50);
++        canvas.drawText(Long.toString((Game_Main.timeTillRoundStarts-Game_Main.timeElasped)/1000), 120, 240, paint);
+     }
+ 
+     // Runs the game loop every draw cycle.
+@@ -169,7 +174,6 @@
+     {
+         super.onDraw(canvas);
+         canvas.drawColor(getResources().getColor(R.color.colorGameBackground));
+-
+         m_lDrawDelta = System.currentTimeMillis() - m_lDrawLast;
+         Game_Main.GameLoop(m_lDrawDelta, canvas);
+         m_lDrawLast = System.currentTimeMillis();
+Index: app/src/main/java/com/novaytechnologies/conspiracysquares/Utility_Post.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/novaytechnologies/conspiracysquares/Utility_Post.java	(revision 354a918ba89e2ef293a7d9b9e0e0ef13b26a6542)
++++ app/src/main/java/com/novaytechnologies/conspiracysquares/Utility_Post.java	(date 1534729466485)
+@@ -101,12 +101,10 @@
+                 urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                 urlConnection.setDoInput(true);
+                 urlConnection.setDoOutput(true);
+-
+                 urlConnection.connect();
+ 
+                 out = urlConnection.getOutputStream();
+                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+-
+                 writer.write(data[1]);
+                 writer.flush();
+                 writer.close();
+@@ -119,19 +117,15 @@
+                 } else {
+                     in = urlConnection.getInputStream();
+                     BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+-
+                     String line;
+                     StringBuilder postGet = new StringBuilder();
+                     while ((line = reader.readLine()) != null) {
+                         postGet.append(line);
+                     }
+-
+                     strResult = postGet.toString();
+                     if (strResult.isEmpty()) strResult = OkayString;
+-
+                     in.close();
+                 }
+-
+                 urlConnection.disconnect();
+             }
+         } catch (Exception e) {

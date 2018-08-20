@@ -8,6 +8,8 @@ import android.graphics.Canvas;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.novaytechnologies.conspiracysquares.Server_Sync.ResolveEncryption;
+
 // The primary functions for the game itself
 class Game_Main
 {
@@ -30,6 +32,11 @@ class Game_Main
 
     static boolean isStarted() {return sm_bStarted;}
     static boolean isRoundStarted() {return sm_bRoundStarted;}
+
+    //Round start Time variable
+    private static long roundStartTimer= 0;
+    public static long timeTillRoundStarts = 120000;
+    public static long timeElasped;
 
     // Joins the given server and starts the game
     static void JoinServer(String strServer, String strPass, Context ctx)
@@ -63,6 +70,7 @@ class Game_Main
     */
     static void ServerJoinComplete(int nID, boolean bRoundStarted, int nColor, Context ctx)
     {
+        roundStartTimer = System.currentTimeMillis();
         sm_bRoundStarted = bRoundStarted;
 
         Game_Player.SetSelfID(nID);
@@ -111,5 +119,20 @@ class Game_Main
         {
             Player.DrawPlayer(canvas, lDrawDelta);
         }
+        if((timeTillRoundStarts-timeElasped)/1000==0)
+        {
+            Utility_Post gameStartPost= new Utility_Post();
+            ArrayList<String> params = new ArrayList<>();
+            params.add("ReqPass");
+            params.add(ResolveEncryption());
+            params.add("ServerName");
+            params.add(Game_Main.sm_strServerName);
+            params.add("ServerPassword");
+            params.add(Game_Main.sm_strServerPass);
+            String ParamsString = Utility_Post.GetParamsString(params);
+            timeElasped =0;
+            gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
+        }
+        else{ timeElasped = System.currentTimeMillis() - roundStartTimer;}
     }
 }
