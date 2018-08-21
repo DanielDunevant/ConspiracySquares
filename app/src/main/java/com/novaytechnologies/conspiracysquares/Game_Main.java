@@ -17,6 +17,9 @@ class Game_Main
     // Whether the game information is initialized.
     static private boolean sm_bStarted = false;
 
+    //Whether round is starting due to timer running out of time
+    static public boolean sm_brRoundStarting= false;
+
     // Whether the round has officially started
     static private boolean sm_bRoundStarted = false;
 
@@ -35,7 +38,9 @@ class Game_Main
 
     //Round start Time variable
     private static long roundStartTimer= 0;
-    public static long timeTillRoundStarts = 120000;
+    //public static long timeTillRoundStarts = 120000;
+    public static long timeTillRoundStarts = 12000;
+
     public static long timeElasped;
 
     // Joins the given server and starts the game
@@ -119,20 +124,23 @@ class Game_Main
         {
             Player.DrawPlayer(canvas, lDrawDelta);
         }
-        if((timeTillRoundStarts-timeElasped)/1000==0)
-        {
-            Utility_Post gameStartPost= new Utility_Post();
-            ArrayList<String> params = new ArrayList<>();
-            params.add("ReqPass");
-            params.add(ResolveEncryption());
-            params.add("ServerName");
-            params.add(Game_Main.sm_strServerName);
-            params.add("ServerPassword");
-            params.add(Game_Main.sm_strServerPass);
-            String ParamsString = Utility_Post.GetParamsString(params);
-            timeElasped =0;
-            gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
-        }
-        else{ timeElasped = System.currentTimeMillis() - roundStartTimer;}
+        if(timeElasped>=timeTillRoundStarts) {
+            if (Game_Main.sm_PlayersArray.size() >= 3) {
+                Utility_Post gameStartPost = new Utility_Post();
+                ArrayList<String> params = new ArrayList<>();
+                params.add("ReqPass");
+                params.add(ResolveEncryption());
+                params.add("ServerName");
+                params.add(Game_Main.sm_strServerName);
+                params.add("ServerPassword");
+                params.add(Game_Main.sm_strServerPass);
+                String ParamsString = Utility_Post.GetParamsString(params);
+                Game_Main.sm_brRoundStarting=true;
+                gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
+            } else {
+                timeElasped = 0;
+            }
+        } else{ timeElasped = System.currentTimeMillis() - roundStartTimer;}
     }
 }
+

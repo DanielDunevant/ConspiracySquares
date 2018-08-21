@@ -164,9 +164,12 @@ public class Layout_Game_Draw extends FrameLayout {
         float radius = 5;
         paint.setColor(Color.BLUE);
         canvas.drawCircle(x,y,radius,paint);
-        paint.setColor(Color.GREEN);
-        paint.setTextSize(50);
-        canvas.drawText(Long.toString((Game_Main.timeTillRoundStarts-Game_Main.timeElasped)/1000), 120, 240, paint);
+        if(Game_Main.sm_brRoundStarting) {
+            paint.setColor(Color.GREEN);
+            paint.setTextSize(50);
+            canvas.drawText(Long.toString((Game_Main.timeTillRoundStarts - Game_Main.timeElasped) / 1000), 120, 240, paint);
+        }
+
     }
 
     // Runs the game loop every draw cycle.
