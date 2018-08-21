@@ -12,7 +12,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 // The Game Drawing Layout.
@@ -164,9 +165,79 @@ public class Layout_Game_Draw extends FrameLayout {
         float radius = 5;
         paint.setColor(Color.BLUE);
         canvas.drawCircle(x,y,radius,paint);
-        paint.setColor(Color.GREEN);
-        paint.setTextSize(50);
-        canvas.drawText(Long.toString((Game_Main.timeTillRoundStarts-Game_Main.timeElasped)/1000), 120, 240, paint);
+    }
+
+    // Draws the Grid using the location information given by Game_Camera
+    static void DrawMinimap(final Canvas canvas)
+    {
+
+
+        // The screen-relative position of the next line
+        float fPos;
+
+        // The beginning and end positions of the vertical grid lines
+        // Each line has a global position that is a multiple of 10
+        // As in: ..., -20, -10, 0, 10, 20, 30, ...
+        float fGridStartX = Game_Camera.GetGlobalX() - 70;
+        if(fGridStartX+70>=-Game_Main.mapSize)
+        {fGridStartX -= fGridStartX % 10;}
+        else{fGridStartX+=1;}
+
+        float fGridEndX = Game_Camera.GetGlobalX() + 70;
+        if(fGridEndX<=Game_Main.mapSize)
+        { fGridEndX += fGridEndX % 10;}
+        else{fGridStartX-=1;}
+
+        // The beginning and end positions of the horizontal grid lines
+        // Calculated using the same method as the vertical lines.
+        float fGridStartY = Game_Camera.GetGlobalY() - 70;
+        if(fGridStartY+70>=-Game_Main.mapSize)
+        {fGridStartY -= fGridStartY % 10;}
+        else{fGridStartY+=1;}
+
+        float fGridEndY = Game_Camera.GetGlobalY() + 70;
+        if(fGridEndY<=Game_Main.mapSize)
+        { fGridEndY += fGridEndY % 10;}
+        else{fGridStartY-=1;}
+
+    }
+
+    // Draws the Grid using the location information given by Game_Camera
+    static void DrawPlayerNotifications(final Canvas canvas,Context ctx)
+    {
+        LinearLayout layout = new LinearLayout(ctx);
+        TextView textView = new TextView(ctx);
+        textView.setHorizontallyScrolling(false);
+        textView.setWidth(600);
+        textView.setHeight(100);
+        layout.addView(textView);
+        layout.measure(canvas.getWidth(), canvas.getHeight());
+        layout.layout(0, 0, 0, 0);
+
+
+
+        Paint paint = new Paint();
+
+        if(!Game_Main.startRoundTimer.timerComplete) {
+            paint.setColor(Color.BLACK);
+            paint.setTextSize(50);
+            canvas.drawText(Long.toString((Game_Main.startRoundTimer.countDown) / 1000), 120, 280, paint);
+            canvas.drawText(Boolean.toString(Game_Main.startRoundTimer.timerComplete), 120, 240, paint);
+        }else {
+            Timer notificationTimer = new Timer();
+            notificationTimer.setTimer(3000);
+            canvas.drawText(Boolean.toString(notificationTimer.timerComplete), 120, 240, paint);
+            canvas.drawText(Long.toString(notificationTimer.countDown/1000), 120, 270, paint);
+            canvas.drawText(Long.toString(notificationTimer.startTimer/1000), 120, 300, paint);
+            canvas.drawText(Long.toString(notificationTimer.timerLength/1000), 120, 330, paint);
+            if(!notificationTimer.timerComplete) {
+                textView.setText("Round is starting! Selecting player classes!");
+                textView.setVisibility(View.VISIBLE);
+                canvas.translate(280, 30);
+                layout.draw(canvas);
+            }
+        }
+
     }
 
     // Runs the game loop every draw cycle.
