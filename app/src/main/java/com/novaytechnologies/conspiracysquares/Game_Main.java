@@ -5,6 +5,7 @@ package com.novaytechnologies.conspiracysquares;
 import android.content.Context;
 import android.graphics.Canvas;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,10 +39,14 @@ class Game_Main
 
     //Round start Time variable
     private static long roundStartTimer= 0;
-    //public static long timeTillRoundStarts = 120000;
-    public static long timeTillRoundStarts = 12000;
 
-    public static long timeElasped;
+
+    // Timer function Vars
+    public static long timerLength;
+    public static boolean timerStarted=false;
+    public static boolean timerComplete=false;
+    public static long countDown=1;
+    public static Timer startRoundTimer = new Timer();
 
     // Joins the given server and starts the game
     static void JoinServer(String strServer, String strPass, Context ctx)
@@ -124,7 +129,11 @@ class Game_Main
         {
             Player.DrawPlayer(canvas, lDrawDelta);
         }
-        if(timeElasped>=timeTillRoundStarts) {
+        Layout_Game_Draw.DrawPlayerNotifications(canvas,ctx);
+        Layout_Game_Draw.DrawMinimap(canvas);
+        startRoundTimer.setTimer(12000);
+        if(timerComplete) {
+            sm_brRoundStarting =true;
             if (Game_Main.sm_PlayersArray.size() >= 3) {
                 Utility_Post gameStartPost = new Utility_Post();
                 ArrayList<String> params = new ArrayList<>();
@@ -137,10 +146,9 @@ class Game_Main
                 String ParamsString = Utility_Post.GetParamsString(params);
                 Game_Main.sm_brRoundStarting=true;
                 gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
-            } else {
-                timeElasped = 0;
             }
-        } else{ timeElasped = System.currentTimeMillis() - roundStartTimer;}
+
+        }
     }
 }
 
