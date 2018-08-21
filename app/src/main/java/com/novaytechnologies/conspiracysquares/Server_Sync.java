@@ -3,7 +3,6 @@
 package com.novaytechnologies.conspiracysquares;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -101,6 +100,9 @@ public class Server_Sync
         endPost.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ServerLeave", ParamsString);
     }
 
+    static private boolean sm_bMoveSyncInProgress = false;
+    static private Utility_Post sm_movePostA = null;
+    static private Utility_Post sm_movePostB = null;
     //Sends player movement information to the server
     static void SendMove(float fX, float fY, float fDX, float fDY, long lMoveNum, long lChangeNum)
     {
@@ -127,12 +129,34 @@ public class Server_Sync
         params.add(Long.toString(lMoveNum));
         String ParamsString = Utility_Post.GetParamsString(params);
 
-        Utility_Post movePost = new Utility_Post();
-        movePost.execute("https://conspiracy-squares.appspot.com/Servlet_Game_Move", ParamsString);
+        if (!sm_bMoveSyncInProgress || sm_movePostA == null || sm_movePostA.isCancelled())
+        {
+            sm_movePostA = new Utility_Post();
+            sm_movePostA.SetRunnable(new Utility_Post.RunnableArgs() {
+                @Override
+                public void run() {
+                    sm_bMoveSyncInProgress = false;
+                }
+            });
+            sm_movePostA.SetRunnableError(new Utility_Post.RunnableArgs() {
+                @Override
+                public void run() {
+                    sm_bMoveSyncInProgress = false;
+                }
+            });
+            sm_movePostA.execute("https://conspiracy-squares.appspot.com/Servlet_Game_Move", ParamsString);
+            sm_bMoveSyncInProgress = true;
+        }
+        else
+        {
+            if (sm_movePostB != null && !sm_movePostB.isCancelled()) sm_movePostB.cancel(true);
+            sm_movePostB = new Utility_Post();
+            sm_movePostB.execute("https://conspiracy-squares.appspot.com/Servlet_Game_Move", ParamsString);
+        }
     }
 
     //Updates Game State and Players' States from the Cloud Server
-    static void CheckAndUpdate()
+    static void CheckAndUpdate(final Context ctx)
     {
         if ((!sm_bSyncInProgress || sm_syncPost == null || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)
         {
@@ -163,6 +187,11 @@ public class Server_Sync
                     String LastResult = GetArgs()[0];
                     if (LastResult != null && !LastResult.isEmpty())
                     {
+                        if (LastResult.contains("ERROR_INACTIVE") && !LastResult.contains(";"))
+                        {
+                            Dialog_Popup.Connect_Error(ctx);
+                            Game_Main.EndGame();
+                        }
                         String strGet;
                         int nGetID;
                         int nLastIndex, nMoveIndex, nChangeIndex, nEndIndex;
