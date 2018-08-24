@@ -45,6 +45,7 @@ public class Server_Sync
                 String LastResult = GetArgs()[0];
                 if (LastResult != null && !LastResult.isEmpty())
                 {
+                    //Game_Player.getSelf().setF(String.getInt(LastResult));
                     int nGetIDindex = LastResult.indexOf('=', 0);
                     int nGetBindex = LastResult.indexOf('+', 0);
                     int nGetBindex2 = LastResult.indexOf('=', nGetBindex);

@@ -224,16 +224,15 @@ public class Layout_Game_Draw extends FrameLayout {
             canvas.drawText(Long.toString((Game_Main.startRoundTimer.countDown) / 1000), 120, 280, paint);
             canvas.drawText(Boolean.toString(Game_Main.startRoundTimer.timerComplete), 120, 240, paint);
         }else {
-            Timer notificationTimer = new Timer();
-            notificationTimer.setTimer(3000);
-            canvas.drawText(Boolean.toString(notificationTimer.timerComplete), 120, 240, paint);
-            canvas.drawText(Long.toString(notificationTimer.countDown/1000), 120, 270, paint);
-            canvas.drawText(Long.toString(notificationTimer.startTimer/1000), 120, 300, paint);
-            canvas.drawText(Long.toString(notificationTimer.timerLength/1000), 120, 330, paint);
-            if(!notificationTimer.timerComplete) {
+            Game_Main.notificationTimer.setTimer(3000);
+            canvas.drawText(Long.toString(Game_Main.notificationTimer.countDown/1000), 120, 270, paint);
+            if(!Game_Main.notificationTimer.timerComplete) {
                 textView.setText("Round is starting! Selecting player classes!");
                 textView.setVisibility(View.VISIBLE);
                 canvas.translate(280, 30);
+                layout.draw(canvas);
+            }else{
+                textView.setVisibility(View.INVISIBLE);
                 layout.draw(canvas);
             }
         }

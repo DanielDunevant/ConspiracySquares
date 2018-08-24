@@ -47,7 +47,7 @@ class Game_Main
     public static boolean timerComplete=false;
     public static long countDown=1;
     public static Timer startRoundTimer = new Timer();
-
+    public static Timer notificationTimer = new Timer();
     // Joins the given server and starts the game
     static void JoinServer(String strServer, String strPass, Context ctx)
     {
@@ -131,7 +131,7 @@ class Game_Main
         }
         Layout_Game_Draw.DrawPlayerNotifications(canvas,ctx);
         Layout_Game_Draw.DrawMinimap(canvas);
-        startRoundTimer.setTimer(12000);
+        startRoundTimer.setTimer(3000);
         if(timerComplete) {
             sm_brRoundStarting =true;
             if (Game_Main.sm_PlayersArray.size() >= 3) {
