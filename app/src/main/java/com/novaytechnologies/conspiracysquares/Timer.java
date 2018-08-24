@@ -1,26 +1,30 @@
 package com.novaytechnologies.conspiracysquares;
 
+import android.content.Context;
+import android.graphics.Canvas;
+
 public class Timer {
-    public static long timerLength;
-    public static boolean timerStarted=false;
-    public static boolean timerComplete=false;
-    public static long countDown=1;
-    public static long startTimer;
+    public long timerLength;
+    public boolean timerStarted=false;
+    public boolean timerComplete=false;
+    public long countDown=0;
+    public long startTimer;
 
 
-    static void setTimer(long timeBeforeAction)
+    void setTimer(long timeBeforeAction)
     {
         if(!timerComplete) {
             if (!timerStarted) {
-                timerComplete = false;
-                timerStarted = true;
-                timerLength = timeBeforeAction;
-                startTimer = System.currentTimeMillis();
+                timerComplete     = false;
+                timerStarted      = true;
+                timerLength       = timeBeforeAction;
+                startTimer        = System.currentTimeMillis();
+
             } else {
-                countDown = startTimer + timerLength - System.currentTimeMillis();
-                if (countDown <= 0) {
+                countDown         = startTimer + timerLength - System.currentTimeMillis();
+                if (countDown    <= 0) {
                     timerComplete = true;
-                    timerStarted = false;
+                    timerStarted  = false;
                 }
             }
         }
