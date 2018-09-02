@@ -101,12 +101,10 @@ class Utility_Post extends AsyncTask<String, String, String> {
                 urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 urlConnection.setDoInput(true);
                 urlConnection.setDoOutput(true);
-
                 urlConnection.connect();
 
                 out = urlConnection.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-
                 writer.write(data[1]);
                 writer.flush();
                 writer.close();
@@ -119,19 +117,15 @@ class Utility_Post extends AsyncTask<String, String, String> {
                 } else {
                     in = urlConnection.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-
                     String line;
                     StringBuilder postGet = new StringBuilder();
                     while ((line = reader.readLine()) != null) {
                         postGet.append(line);
                     }
-
                     strResult = postGet.toString();
                     if (strResult.isEmpty()) strResult = OkayString;
-
                     in.close();
                 }
-
                 urlConnection.disconnect();
             }
         } catch (Exception e) {
