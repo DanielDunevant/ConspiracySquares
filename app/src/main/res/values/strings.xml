@@ -32,4 +32,5 @@
     <string name="credits_music">Soundtrack Composer:</string>
     <string name="credits_music_dev">Nicaris Daniels-Porter</string>
     <string name="blank" />
+    <string name="RoundStarting">Round is starting! Selecting player classes!</string>
 </resources>

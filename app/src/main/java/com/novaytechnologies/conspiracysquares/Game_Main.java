@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.novaytechnologies.conspiracysquares.Server_Sync.ResolveEncryption;
 
@@ -18,11 +17,9 @@ import static com.novaytechnologies.conspiracysquares.Server_Sync.ResolveEncrypt
 class Game_Main
 {
     static public float mapSize = 500;
+
     // Whether the game information is initialized.
     static private boolean sm_bStarted = false;
-
-    //Whether round is starting due to timer running out of time
-    static public boolean sm_brRoundStarting= false;
 
     // Whether the round has officially started
     static private boolean sm_bRoundStarted = false;
@@ -39,17 +36,6 @@ class Game_Main
 
     static boolean isStarted() {return sm_bStarted;}
     static boolean isRoundStarted() {return sm_bRoundStarted;}
-
-    //Round start Time variable
-    private static long roundStartTimer= 0;
-
-    // Timer function Vars
-    public static long timerLength;
-    public static boolean timerStarted=false;
-    public static boolean timerComplete=false;
-    public static long countDown=1;
-    public static Timer startRoundTimer = new Timer();
-    public static Timer notificationTimer = new Timer();
 
     /**
      * Joins the given server and starts the game.
@@ -94,7 +80,8 @@ class Game_Main
     */
     static void ServerJoinComplete(int nID, boolean bRoundStarted, int nColor, Context ctx)
     {
-        roundStartTimer = System.currentTimeMillis();
+        Game_Timer.init();
+
         sm_bRoundStarted = bRoundStarted;
 
         Game_Player.SetSelfID(nID);
@@ -162,23 +149,6 @@ class Game_Main
         }
         Layout_Game_Draw.DrawPlayerNotifications(canvas,ctx);
         Layout_Game_Draw.DrawMinimap(canvas);
-        startRoundTimer.setTimer(3000);
-        if(timerComplete) {
-            sm_brRoundStarting =true;
-            if (Game_Main.sm_PlayersArray.size() >= 3) {
-                Utility_Post gameStartPost = new Utility_Post();
-                ArrayList<String> params = new ArrayList<>();
-                params.add("ReqPass");
-                params.add(ResolveEncryption());
-                params.add("ServerName");
-                params.add(Game_Main.sm_strServerName);
-                params.add("ServerPassword");
-                params.add(Game_Main.sm_strServerPass);
-                String ParamsString = Utility_Post.GetParamsString(params);
-                Game_Main.sm_brRoundStarting=true;
-                gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
-            }
-
-        }
+        Game_Timer.runTimer();
     }
 }

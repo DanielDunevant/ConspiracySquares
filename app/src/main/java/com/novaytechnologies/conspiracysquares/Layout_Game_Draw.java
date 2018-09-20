@@ -133,12 +133,6 @@ public class Layout_Game_Draw extends FrameLayout {
                     fPos,
                     sm_nHeight,
                     sm_GridPaint);
-            fPos = Game_Camera.GetRelativeX(fGridLine);
-            canvas.drawLine(fPos,
-                    0,
-                    fPos,
-                    sm_nHeight,
-                    sm_GridPaint);
         }
 
         // The beginning and end positions of the horizontal grid lines.
@@ -160,9 +154,15 @@ public class Layout_Game_Draw extends FrameLayout {
                     sm_nWidth,
                     fPos,
                     sm_GridPaint);
-            //fPos = Game_Camera.GetRelativeY(fGridLine);
         }
+    }
 
+    /** Draws the Minimap using the location information given by Game_Camera.
+     * @author Daniel Dunevant
+     * @param canvas The canvas used by the layout
+     */
+    static void DrawMinimap(final Canvas canvas)
+    {
         //Draw map grid rectangle
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
@@ -172,48 +172,11 @@ public class Layout_Game_Draw extends FrameLayout {
         //Game_Camera.GetGlobalX/Y() represents the player's actual position on the map
         float xPos = Game_Camera.GetGlobalX();
         float yPos = Game_Camera.GetGlobalY();
-        StringBuilder coordinates= new StringBuilder(25);
         float x = (xPos/5)+130;
         float y = (yPos/5)+130;
         float radius = 5;
         paint.setColor(Color.BLUE);
         canvas.drawCircle(x,y,radius,paint);
-    }
-
-    /** Draws the Minimap using the location information given by Game_Camera.
-     * @author Daniel Dunevant
-     * @param canvas The canvas used by the layout
-     */
-    static void DrawMinimap(final Canvas canvas)
-    {
-        // The screen-relative position of the next line
-        float fPos;
-
-        // The beginning and end positions of the vertical grid lines
-        // Each line has a global position that is a multiple of 10
-        // As in: ..., -20, -10, 0, 10, 20, 30, ...
-        float fGridStartX = Game_Camera.GetGlobalX() - 70;
-        if(fGridStartX+70>=-Game_Main.mapSize)
-        {fGridStartX -= fGridStartX % 10;}
-        else{fGridStartX+=1;}
-
-        float fGridEndX = Game_Camera.GetGlobalX() + 70;
-        if(fGridEndX<=Game_Main.mapSize)
-        { fGridEndX += fGridEndX % 10;}
-        else{fGridStartX-=1;}
-
-        // The beginning and end positions of the horizontal grid lines
-        // Calculated using the same method as the vertical lines.
-        float fGridStartY = Game_Camera.GetGlobalY() - 70;
-        if(fGridStartY+70>=-Game_Main.mapSize)
-        {fGridStartY -= fGridStartY % 10;}
-        else{fGridStartY+=1;}
-
-        float fGridEndY = Game_Camera.GetGlobalY() + 70;
-        if(fGridEndY<=Game_Main.mapSize)
-        { fGridEndY += fGridEndY % 10;}
-        else{fGridStartY-=1;}
-
     }
 
     /**
@@ -222,7 +185,7 @@ public class Layout_Game_Draw extends FrameLayout {
      * param@ canvas The canvas used by the layout
      * @param ctx The application context handler
      */
-    static void DrawPlayerNotifications(final Canvas canvas,Context ctx)
+    static void DrawPlayerNotifications(final Canvas canvas, Context ctx)
     {
         LinearLayout layout = new LinearLayout(ctx);
         TextView textView = new TextView(ctx);
@@ -235,16 +198,16 @@ public class Layout_Game_Draw extends FrameLayout {
 
         Paint paint = new Paint();
 
-        if(!Game_Main.startRoundTimer.timerComplete) {
+        if(!Game_Timer.startRoundTimer.timerComplete) {
             paint.setColor(Color.BLACK);
             paint.setTextSize(50);
-            canvas.drawText(Long.toString((Game_Main.startRoundTimer.countDown) / 1000), 120, 280, paint);
-            canvas.drawText(Boolean.toString(Game_Main.startRoundTimer.timerComplete), 120, 240, paint);
+            canvas.drawText(Long.toString((Game_Timer.startRoundTimer.countDown) / 1000), 120, 280, paint);
+            canvas.drawText(Boolean.toString(Game_Timer.startRoundTimer.timerComplete), 120, 240, paint);
         }else {
-            Game_Main.notificationTimer.setTimer(3000);
-            canvas.drawText(Long.toString(Game_Main.notificationTimer.countDown/1000), 120, 270, paint);
-            if(!Game_Main.notificationTimer.timerComplete) {
-                textView.setText("Round is starting! Selecting player classes!");
+            Game_Timer.notificationTimer.setTimer(3000);
+            canvas.drawText(Long.toString(Game_Timer.notificationTimer.countDown/1000), 120, 270, paint);
+            if(!Game_Timer.notificationTimer.timerComplete) {
+                textView.setText(R.string.RoundStarting);
                 textView.setVisibility(View.VISIBLE);
                 canvas.translate(280, 30);
                 layout.draw(canvas);
@@ -253,7 +216,6 @@ public class Layout_Game_Draw extends FrameLayout {
                 layout.draw(canvas);
             }
         }
-
     }
 
     /** Runs the game loop every draw cycle.
