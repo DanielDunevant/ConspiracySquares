@@ -18,7 +18,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-// The Server Search Activity.
+/**
+ * The Server Search Activity. Used to manually find and choose a server to join.
+ * @author Jesse Primiani
+ */
 public class Activity_Servers extends AppCompatActivity {
 
     // The RadioGroup containing the selectable list of Servers to join.
@@ -36,7 +39,10 @@ public class Activity_Servers extends AppCompatActivity {
         this.finish();
     }
 
-    // Refresh the Server List and populate it with available servers
+    /**
+     * Refresh the Server List and populate it with available servers.
+     * @author Jesse Primiani
+     */
     protected void Refresh()
     {
         bRefreshing = true;
@@ -132,7 +138,10 @@ public class Activity_Servers extends AppCompatActivity {
         GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ListServers", ParamsString);
     }
 
-    // Ends the game just in case it is still running for some unexpected reason.
+    /**
+     * Ends the game just in case it is still running for some unexpected reason.
+     * @author Jesse Primiani
+     */
     @Override
     protected void onResume()
     {
@@ -140,6 +149,11 @@ public class Activity_Servers extends AppCompatActivity {
         Game_Main.EndGame();
     }
 
+    /**
+     * Creates and manages the server list.
+     * @author Jesse Primiani
+     * @param savedInstanceState Used to restore the instance state on app restart or phone rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

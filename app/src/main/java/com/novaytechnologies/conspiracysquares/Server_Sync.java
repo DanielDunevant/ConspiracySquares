@@ -6,7 +6,10 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-// Synchronizes Information between players from the cloud server
+/**
+ * Synchronizes Information between players from the cloud server
+ * @author Jesse Primiani
+ */
 public class Server_Sync
 {
     static Utility_Post sm_newPost;
@@ -15,15 +18,22 @@ public class Server_Sync
     static boolean sm_bInitialJoinDone = false;
     static boolean sm_bSyncInProgress = false;
 
+    /**
+     * Todo implement server and client encryption system.
+     * @author Jesse Primiani
+     * @return the required encryption key
+     */
     static String ResolveEncryption()
     {
         return "X";
     }
 
-    /*
+    /**
         DESCRIPTION:
             Performs initial join tasks when starting a game.
             Exits the server if there is an error when joining.
+     @author Jesse Primiani
+     @param ctx The application context handler
     */
     static void PopulateFromServer(final Context ctx)
     {
@@ -83,7 +93,10 @@ public class Server_Sync
         sm_newPost.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ServerJoin", ParamsString);
     }
 
-    // Leaves the currently connected server.
+    /**
+     * Leaves the currently connected server.
+     * @author Jesse Primiani
+     */
     static void LeaveServer()
     {
         ArrayList<String> params = new ArrayList<>();
@@ -104,7 +117,17 @@ public class Server_Sync
     static private boolean sm_bMoveSyncInProgress = false;
     static private Utility_Post sm_movePostA = null;
     static private Utility_Post sm_movePostB = null;
-    //Sends player movement information to the server
+
+    /**
+     * Sends player movement information to the server
+     * @author Jesse Primiani
+     * @param fX Your player's X position
+     * @param fY Your player's Y position
+     * @param fDX Your player's X velocity
+     * @param fDY Your player's Y velocity
+     * @param lMoveNum The current movement count
+     * @param lChangeNum To be implemented
+     */
     static void SendMove(float fX, float fY, float fDX, float fDY, long lMoveNum, long lChangeNum)
     {
         ArrayList<String> params = new ArrayList<>();
@@ -156,7 +179,11 @@ public class Server_Sync
         }
     }
 
-    //Updates Game State and Players' States from the Cloud Server
+    /**
+     * Updates Game State and Players' States from the Cloud Server
+     * @author Jesse Primiani
+     * @param ctx The application context handler
+     */
     static void CheckAndUpdate(final Context ctx)
     {
         if ((!sm_bSyncInProgress || sm_syncPost == null || sm_syncPost.isCancelled()) && sm_bInitialJoinDone)

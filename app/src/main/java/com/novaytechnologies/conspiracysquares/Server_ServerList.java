@@ -6,7 +6,10 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-// Gets and Adds information about all available servers on the cloud
+/**
+ * Gets and Adds information about all available servers on the cloud.
+ * @author Jesse Primiani
+ */
 public class Server_ServerList
 {
     // ServerList Server Information, accessed via index.
@@ -23,7 +26,7 @@ public class Server_ServerList
         return ServerListSingleton;
     }
 
-    /*
+    /**
         DESCRIPTION:
             Populates Server Information by parsing the contents of the given string.
         PRE-CONDITION:
@@ -32,6 +35,8 @@ public class Server_ServerList
             The ServerList will be populated with all active servers if no errors occur during execution.
             This function returns an ArrayList of formatted strings containing the number of players.
             You should Loop through the returned ArrayList to indirectly get index information.
+     @author Jesse Primiani
+     @param strParseString The formatted string containing the names and player counts of all the available servers
     */
     ArrayList<String> populateList(String strParseString)
     {
@@ -79,7 +84,12 @@ public class Server_ServerList
         return ServerPlayersString;
     }
 
-    // Creates a non-existent server name
+    /**
+     * Creates a non-existent server name.
+     * @author Jesse Primiani
+     * @param nStartNum the initial number to attempt to append to the name
+     * @return The new generated server name
+     */
     private String CreateNewName(int nStartNum)
     {
         String strMakeServer = "Server_" + Integer.toString(nStartNum);
@@ -90,7 +100,13 @@ public class Server_ServerList
         return strMakeServer;
     }
 
-    // Creates a new Server
+    /**
+     * Creates a new Server, then joins it.
+     * @author Jesse Primiani
+     * @param strServer The new server's name
+     * @param strPass The new server's password
+     * @param ctx The application context handler
+     */
     void CreateAndJoinServer(final String strServer, final String strPass, final Context ctx)
     {
         if (!strServer.isEmpty()) {
@@ -120,7 +136,13 @@ public class Server_ServerList
         }
     }
 
-    // Checks if the given password is correct, then joins the given server if it is
+    /**
+     * Checks if the given password is correct, then joins the given server if it is
+     * @author Jesse Primiani
+     * @param strServer The name of the server to join
+     * @param strPass The password of the server to join
+     * @param ctx The application's context handler
+     */
     void JoinPrivate(final String strServer, final String strPass, final Context ctx)
     {
         if (strServer != null && !strServer.isEmpty() && !strPass.isEmpty())
@@ -158,11 +180,13 @@ public class Server_ServerList
         }
     }
 
-    /*
+    /**
         DESCRIPTION:
             Finds a non-full public server, or creates a new one if none exist, then joins said server.
         POST-CONDITION:
             The found or created server will be joined.
+     @author Jesse Primiani
+     @param ctx The application's context handler
     */
     void FindOrCreateServer(final Context ctx)
     {
@@ -205,17 +229,39 @@ public class Server_ServerList
         GetServers.execute("https://conspiracy-squares.appspot.com/Servlet_SVR_ListServers", "");
     }
 
-    // ServerList Server Information Accessor Functions.
+    /**
+     * ServerList Server Information, name Accessor Function.
+     * @author Jesse Primiani
+     * @param nIndex the index to use
+     * @return the server name
+     */
     String getServerString(int nIndex) {
         return ServerNames.get(nIndex);
     }
+    /**
+     * ServerList Server Information, password-protected Accessor Function.
+     * @author Jesse Primiani
+     * @param nIndex the index to use
+     * @return the server password-protected boolean
+     */
     boolean getServerPrivate(int nIndex) {
         return ServerPrivates.get(nIndex);
     }
+    /**
+     * ServerList Server Information, player count Accessor Function.
+     * @author Jesse Primiani
+     * @param nIndex the index to use
+     * @return the server player count
+     */
     int getServerPlayers(int nIndex) {
         return ServerPlayers.get(nIndex);
     }
-
+    /**
+     * ServerList Server Information, name existence Checking Function.
+     * @author Jesse Primiani
+     * @param strServer the server name to find
+     * @return whether the server name exists
+     */
     private boolean contains(String strServer)
     {
         return ServerNames.contains(strServer);

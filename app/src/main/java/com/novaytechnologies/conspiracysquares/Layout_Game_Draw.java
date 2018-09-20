@@ -15,8 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
-// The Game Drawing Layout.
+/**
+ * The Game Drawing Layout.
+ * @author Jesse Primiani
+ */
 public class Layout_Game_Draw extends FrameLayout {
     // The grid's paint object.
     static Paint sm_GridPaint = new Paint(R.color.colorLine);
@@ -36,8 +38,6 @@ public class Layout_Game_Draw extends FrameLayout {
     long m_lDrawLast;   // Used to give the time of the last draw.
     long m_lDrawDelta;  // Used to give the time passed since the last draw.
 
-
-
     public Layout_Game_Draw(Context ctx) {
         this(ctx, null);
     }
@@ -52,7 +52,12 @@ public class Layout_Game_Draw extends FrameLayout {
         setWillNotDraw(false);
     }
 
-    // Sets all relevant size variables whenever the layout size changes.
+    /**
+     * Sets all relevant size variables whenever the layout size changes.
+     * @author Jesse Primiani
+     * @param widthMeasureSpec The device's internal screen width
+     * @param heightMeasureSpec The device's internal screen height
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -72,6 +77,12 @@ public class Layout_Game_Draw extends FrameLayout {
         Game_Main.GameSizeChanged();
     }
 
+    /**
+     * Used to signal to the appropriate place whenever the screen is touched.
+     * @author Jesse Primiani
+     * @param event The touch event
+     * @return true
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
@@ -91,11 +102,13 @@ public class Layout_Game_Draw extends FrameLayout {
         return true;
     }
 
-    // Draws the Grid using the location information given by Game_Camera
+    /**
+     * Draws the Grid using the location information given by Game_Camera.
+     * @author Jesse Primiani
+     * @param canvas The canvas used by the layout
+     */
     static void DrawGrid(final Canvas canvas)
     {
-
-
         // The screen-relative position of the next line
         float fPos;
 
@@ -128,7 +141,7 @@ public class Layout_Game_Draw extends FrameLayout {
                     sm_GridPaint);
         }
 
-        // The beginning and end positions of the horizontal grid lines
+        // The beginning and end positions of the horizontal grid lines.
         // Calculated using the same method as the vertical lines.
         float fGridStartY = Game_Camera.GetGlobalY() - 70;
         if(fGridStartY+70>=-Game_Main.mapSize)
@@ -167,11 +180,12 @@ public class Layout_Game_Draw extends FrameLayout {
         canvas.drawCircle(x,y,radius,paint);
     }
 
-    // Draws the Grid using the location information given by Game_Camera
+    /** Draws the Minimap using the location information given by Game_Camera.
+     * @author Daniel Dunevant
+     * @param canvas The canvas used by the layout
+     */
     static void DrawMinimap(final Canvas canvas)
     {
-
-
         // The screen-relative position of the next line
         float fPos;
 
@@ -202,7 +216,12 @@ public class Layout_Game_Draw extends FrameLayout {
 
     }
 
-    // Draws the Grid using the location information given by Game_Camera
+    /**
+     * Draws the Timer and any notifications.
+     * @author Daniel Dunevant
+     * param@ canvas The canvas used by the layout
+     * @param ctx The application context handler
+     */
     static void DrawPlayerNotifications(final Canvas canvas,Context ctx)
     {
         LinearLayout layout = new LinearLayout(ctx);
@@ -213,8 +232,6 @@ public class Layout_Game_Draw extends FrameLayout {
         layout.addView(textView);
         layout.measure(canvas.getWidth(), canvas.getHeight());
         layout.layout(0, 0, 0, 0);
-
-
 
         Paint paint = new Paint();
 
@@ -239,7 +256,10 @@ public class Layout_Game_Draw extends FrameLayout {
 
     }
 
-    // Runs the game loop every draw cycle.
+    /** Runs the game loop every draw cycle.
+     * @author Jesse Primiani
+     * @param canvas The canvas used by the layout
+     */
     public void onDraw(Canvas canvas)
     {
         super.onDraw(canvas);

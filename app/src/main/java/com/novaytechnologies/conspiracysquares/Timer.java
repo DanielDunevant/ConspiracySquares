@@ -1,8 +1,9 @@
 package com.novaytechnologies.conspiracysquares;
 
-import android.content.Context;
-import android.graphics.Canvas;
-
+/**
+ * A timer class to determine when the round should start.
+ * @author Daniel Dunevant
+ */
 public class Timer {
     public long timerLength;
     public boolean timerStarted=false;

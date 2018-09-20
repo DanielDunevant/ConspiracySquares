@@ -9,10 +9,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-// Dialogs for creating and joining servers
+/** Dialogs for creating and joining servers.
+ * @author Jesse Primiani
+ */
 public class Dialog_Server {
 
-    /*
+    /**
         DESCRIPTION:
             Shows and sets up a dialog to allow a user to start a public or private cloud server.
         POST-CONDITION:
@@ -20,6 +22,8 @@ public class Dialog_Server {
             If host was pressed, and all fields were empty, nothing happens.
             If host was pressed, and the password field was empty, a public server is started and joined.
             If host was pressed, and the password field was not empty, a private server is started and joined.
+     @author Jesse Primiani
+     @param ctx The application's context handler
     */
     static void Show_Dialog_Host(final Activity_Servers ctx) {
         final Dialog dialog_host;
@@ -59,7 +63,7 @@ public class Dialog_Server {
             dialog_host.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
-    /*
+    /**
         DESCRIPTION:
             Shows and sets up a dialog to allow a user to join a private cloud server.
         POST-CONDITION:
@@ -67,6 +71,9 @@ public class Dialog_Server {
             If join was pressed, and the password field was empty, nothing happens.
             If join was pressed, and the password field did not match, the user is notified.
             If join was pressed, and the password field did match, the server is joined.
+     @author Jesse Primiani
+     @param ctx The application's context handler
+     @param strSVRname The name of the server to attempt to join
     */
     static void Show_Dialog_Join(final Activity_Servers ctx, final String strSVRname) {
         final Dialog dialog_join;

@@ -9,7 +9,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 
-// A Player
+/**
+ * All the code for a Player
+ * @author Jesse Primiani
+ */
 class Game_Player
 {
     static private final float fSIZE_FRACTION = 0.04f; // The size of the player, given in the fraction of the game layout's max size
@@ -25,6 +28,12 @@ class Game_Player
     static private Paint sm_txtPaint;
     static private float sm_fBoxSize = 2f;
     static private float sm_fPlayer_Speed = 0f;
+
+    /**
+     * Updates the scaling factors.
+     * @author Jesse Primiani
+     * @param fScreenMaxSize The new screen size to reference in scaling
+     */
     static void UpdateAllSizes(float fScreenMaxSize)
     {
         sm_fBoxSize = fScreenMaxSize * fSIZE_FRACTION;
@@ -50,7 +59,16 @@ class Game_Player
     private float m_sync_fPosY = 0f;
     private int m_sync_nFlags = -1;
 
+    /**
+     * @author Jesse Primiani
+     * @return The number of moves made since the round started
+     */
     long GetMoveNum() {return m_lMoveNum;}
+
+    /**
+     * @author Jesse Primiani
+     * @return The number of changes made since the round started
+     */
     long GetChangeNum() {return m_lChangeNum;}
 
     // The X and Y components of the player's movement direction vector in global coordinates
@@ -59,16 +77,50 @@ class Game_Player
 
     // Stores and Gets the index of the SELF player object, stored in Game_Main.sm_PlayersArray
     static private int sm_nID = 0;
+
+    /**
+     * Sets your ID, used by the server.
+     * @author Jesse Primiani
+     * @param nID Your new ID
+     */
     static void SetSelfID(int nID) {sm_nID = nID;}
+
+    /**
+     * Returns your current player ID.
+     * @author Jesse Primiani
+     * @return Your current player ID
+     */
     static int GetSelfID() {return sm_nID;}
+
+    /**
+     * Returns your current player instance.
+     * @author Jesse Primiani
+     * @return Your current player instance
+     */
     static Game_Player GetSelf() {return Game_Main.sm_PlayersArray.get(sm_nID);}
 
     // Player state information
     private boolean m_bDrawableLoaded = false;
+
+    /**
+     * Determines if the given player is you.
+     * @author Jesse Primiani
+     * @return True if the player object is controlled by the local device
+     */
     private boolean isSelf() {return m_nID == sm_nID;}
+
+    /**
+     * @author Jesse Primiani
+     * @return Whether the player is currently alive
+     */
     private boolean isAlive() {return (m_sync_nFlags & FLAG_ALIVE) > 0;}
 
-    // The function to create the locally controlled player, SELF.
+    /**
+     * The function to create the locally controlled player, SELF.
+     * @author Jesse Primiani
+     * @param ctx The application context handler
+     * @param nColor the Color of your player
+     */
     static void CreateSelf(Context ctx, int nColor)
     {
         Game_Player Self = GetSelf();
@@ -92,7 +144,12 @@ class Game_Player
         Self.m_bDrawableLoaded = true;
     }
 
-    // Sets the movement the player, SELF, using a local position on the screen to determine the global movement direction.
+    /**
+     * Sets the movement the player, SELF, using a local position on the screen to determine the global movement direction.
+     * @author Jesse Primiani
+     * @param fScreenX The X position of the screen tap
+     * @param fScreenY The Y position of the screen tap
+     */
     static void MoveSelfToLocal(float fScreenX, float fScreenY)
     {
         Game_Player Self = GetSelf();
@@ -123,7 +180,10 @@ class Game_Player
         Server_Sync.SendMove(Self.m_sync_fPosX, Self.m_sync_fPosY, Self.m_fSpeedX, Self.m_fSpeedY, ++Self.m_lMoveNum, Self.m_lChangeNum);
     }
 
-    // Sets the player drawable to the dead player drawable
+    /**
+     * Sets the player drawable to the dead player drawable.
+     * @author Jesse Primiani
+     */
     private void Kill()
     {
         m_fSpeedX = 0f;
@@ -132,17 +192,56 @@ class Game_Player
         m_SQUARE = m_ctx.getResources().getDrawable(R.drawable.player_dead);
     }
 
-    // Update synchronized player data
+    /**
+     * Update synchronized player data, movement count.
+     * @author Jesse Primiani
+     * @param lN the new movement count
+     */
     void UpdateMoveNum(long lN) {m_lMoveNum = lN;}
+    /**
+     * Update synchronized player data, change count.
+     * @author Jesse Primiani
+     * @param lN the new change count
+     */
     void UpdateChangeNum(long lN) {m_lChangeNum = lN;}
+    /**
+     * Update synchronized player data, name.
+     * @author Jesse Primiani
+     * @param strName the new name
+     */
     void UpdateName(String strName)
     {
         m_sync_strName = strName;
     }
+    /**
+     * Update synchronized player data, X-pos.
+     * @author Jesse Primiani
+     * @param fX the new X pos
+     */
     void UpdateX(float fX) {m_sync_fPosX = fX;}
+    /**
+     * Update synchronized player data, Y-pos.
+     * @author Jesse Primiani
+     * @param fY the new Y pos
+     */
     void UpdateY(float fY) {m_sync_fPosY = fY;}
+    /**
+     * Update synchronized player data, X velocity.
+     * @author Jesse Primiani
+     * @param fX the new X velocity
+     */
     void UpdateSpdX(float fX) {m_fSpeedX = fX;}
+    /**
+     * Update synchronized player data, Y velocity.
+     * @author Jesse Primiani
+     * @param fY the new Y velocity
+     */
     void UpdateSpdY(float fY) {m_fSpeedY = fY;}
+    /**
+     * Update synchronized player data, color.
+     * @author Jesse Primiani
+     * @param nColor the new color
+     */
     void UpdateColor(int nColor)
     {
         if (isAlive())
@@ -153,7 +252,11 @@ class Game_Player
         }
     }
 
-    // Updates the player's flag information, and run the relevant functions when any flag changes
+    /**
+     * Updates the player's flag information, and run the relevant functions when any flag changes.
+     * @author Jesse Primiani
+     * @param nFlags The updated flags
+     */
     void UpdateF(int nFlags)
     {
         int nPrevFlags = m_sync_nFlags;
@@ -164,8 +267,13 @@ class Game_Player
         }
     }
 
-    // Draws the player if the player isn't a spectator, then moves the player if said player is SELF.
-    // If said player is SELF and is either dead or a spectator, this simply moves the camera and draws a centered square.
+    /**
+     * Draws the player if the player isn't a spectator, then moves the player if said player is SELF.
+     * If said player is SELF and is either dead or a spectator, this simply moves the camera and draws a centered square.
+     * @author Jesse Primiani
+     * @param canvas The canvas used by the layout
+     * @param lDelta The time since the last movement
+     */
     void DrawPlayer(Canvas canvas, long lDelta) {
         float fDrawX;
         float fDrawY;

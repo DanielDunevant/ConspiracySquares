@@ -16,11 +16,16 @@ package com.novaytechnologies.conspiracysquares;
 
         import javax.net.ssl.HttpsURLConnection;
 
-
-// Manages tasks related to sending information to a webserver via POST.
+/**
+ * Manages tasks related to sending information to a webserver via POST.
+ * @author Jesse Primiani
+ */
 class Utility_Post extends AsyncTask<String, String, String> {
 
-    // A subclass that allows arguments to be sent to the POST result function.
+    /**
+     * A subclass that allows arguments to be sent to the POST result function.
+     * @author Jesse Primiani
+     */
     abstract static class RunnableArgs implements Runnable {
         private String[] Args;
         void SetArgs(String[] ArgArray) {Args = ArgArray;}
@@ -32,7 +37,7 @@ class Utility_Post extends AsyncTask<String, String, String> {
     private RunnableArgs PostFunc = null;
     private RunnableArgs PostFuncErr = null;
 
-    /*
+    /**
         DESCRIPTION:
             Turns an ArrayList of key-value string pairs into a parameter string that can be sent
             to a webserver via the POST method.
@@ -41,6 +46,8 @@ class Utility_Post extends AsyncTask<String, String, String> {
             set to the parameter name, and every string inserted next set to the previous parameter's value.
         POST-CONDITION:
             A string formatted such that a webserver could easily parse it via POST.
+     @author Jesse Primiani
+     @param strParems An array of strings of parameters to send to the server, [i]=parameter, [i+1]=value.
     */
     static String GetParamsString(ArrayList<String> strParems)
     {
@@ -62,7 +69,7 @@ class Utility_Post extends AsyncTask<String, String, String> {
         }
     }
 
-    /*
+    /**
         DESCRIPTION:
             Contacts the given webserver, sends it a parameter string, then has a function process the result.
         PRE-CONDITION:
@@ -73,6 +80,7 @@ class Utility_Post extends AsyncTask<String, String, String> {
             The webserver is contacted with the given parameters via POST.
             If the transaction succeeds, then the function given in SetRunnable() will be run
             to process the result. Otherwise, function given in SetRunnableError() will be run.
+     @author Jesse Primiani
     */
     protected String doInBackground(String... data)
     {
@@ -136,7 +144,10 @@ class Utility_Post extends AsyncTask<String, String, String> {
         return strResult;
     }
 
-    // Chooses which result function to run based on the success or failure of the POST.
+    /** Chooses which result function to run based on the success or failure of the POST.
+     * @author Jesse Primiani
+     * @param result Used to check whether the server responded
+     */
     protected void onPostExecute(String result) {
         if (result != null && !result.isEmpty())
         {
@@ -162,11 +173,18 @@ class Utility_Post extends AsyncTask<String, String, String> {
         else Log.e("Post_Exception", "Post Failed!");
     }
 
-    /*
-        SetRunnable sets the function to run after a normal result is returned from the webserver via POST.
-        SetRunnableError sets the function to run after an error is returned from the webserver via POST.
-        Both require a new Utility_Post.RunnableArgs(); as the parameter with the run() function Overrided.
+    /**
+     SetRunnable sets the function to run after a normal result is returned from the webserver via POST.
+     Requires a new Utility_Post.RunnableArgs(); as the parameter with the run() function Overrided.
+     @author Jesse Primiani
+     @param func The function to run
     */
     void SetRunnable(RunnableArgs func) {PostFunc = func;}
+    /**
+     SetRunnableError sets the function to run after an error is returned from the webserver via POST.
+     Requires a new Utility_Post.RunnableArgs(); as the parameter with the run() function Overrided.
+     @author Jesse Primiani
+     @param func The function to run
+     */
     void SetRunnableError(RunnableArgs func) {PostFuncErr = func;}
 }

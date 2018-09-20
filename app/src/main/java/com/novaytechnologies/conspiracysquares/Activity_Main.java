@@ -13,7 +13,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-// The Initial Main Menu Activity.
+/**
+ * The Initial Main Menu Activity.
+ * @author Jesse Primiani
+ */
 public class Activity_Main extends AppCompatActivity {
 
     ProgressBar progress;
@@ -24,6 +27,11 @@ public class Activity_Main extends AppCompatActivity {
         progress.setVisibility(View.GONE);
     }
 
+    /**
+     * Creates listeners for the main menu's play and find server buttons, as well as initialize the shared preferences.
+     * @author Jesse Primiani
+     * @param savedInstanceState Used to restore the instance state on app restart or phone rotation
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

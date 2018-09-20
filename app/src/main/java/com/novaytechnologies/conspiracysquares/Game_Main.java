@@ -11,7 +11,10 @@ import java.util.HashMap;
 
 import static com.novaytechnologies.conspiracysquares.Server_Sync.ResolveEncryption;
 
-// The primary functions for the game itself
+/**
+ * The primary functions for the game itself
+ * @author Jesse Primiani
+ */
 class Game_Main
 {
     static public float mapSize = 500;
@@ -40,7 +43,6 @@ class Game_Main
     //Round start Time variable
     private static long roundStartTimer= 0;
 
-
     // Timer function Vars
     public static long timerLength;
     public static boolean timerStarted=false;
@@ -48,7 +50,14 @@ class Game_Main
     public static long countDown=1;
     public static Timer startRoundTimer = new Timer();
     public static Timer notificationTimer = new Timer();
-    // Joins the given server and starts the game
+
+    /**
+     * Joins the given server and starts the game.
+     * @author Jesse Primiani
+     * @param strServer The server to join
+     * @param strPass The server's password
+     * @param ctx The application context handler
+     */
     static void JoinServer(String strServer, String strPass, Context ctx)
     {
         if (!sm_bStarted)
@@ -68,7 +77,7 @@ class Game_Main
         }
     }
 
-    /*
+    /**
         DESCRIPTION:
             Called after ServerSync.PopulateFromServer, when the player ID is obtained but before other player IPs are received
         POST-CONDITION:
@@ -77,6 +86,11 @@ class Game_Main
             The Player's ID will be received from the server.
             The Server synchronization process will then be started.
             The player will spectate if the round already started.
+     @author Jesse Primiani
+     @param nID Your player's ID
+     @param bRoundStarted Whether the round has started when you joined
+     @param nColor Your player's color
+     @param  ctx The application context handler
     */
     static void ServerJoinComplete(int nID, boolean bRoundStarted, int nColor, Context ctx)
     {
@@ -91,7 +105,10 @@ class Game_Main
         Server_Sync.sm_bInitialJoinDone = true;
     }
 
-    // Game shutdown
+    /**
+     * Game shutdown
+     * @author Jesse Primiani
+     */
     static void EndGame()
     {
         if (sm_bStarted)
@@ -106,7 +123,10 @@ class Game_Main
         }
     }
 
-    // Runs when the Layout size changes or is initialized.
+    /**
+     * Runs when the Layout size changes or is initialized.
+     * @author Jesse Primiani
+     */
     static void GameSizeChanged()
     {
         Game_Camera.sm_fScaleFactor = Layout_Game_Draw.sm_nMaxSide / 100f;
@@ -114,13 +134,24 @@ class Game_Main
         Game_Camera.UpdateCenter(Layout_Game_Draw.sm_nWidth_Center, Layout_Game_Draw.sm_nHeight_Center);
     }
 
-    // Called when Layout_Game_Draw is touched
+    /**
+     * Called when Layout_Game_Draw is touched.
+     * @author Jesse Primiani
+     * @param fX The X position that was touched
+     * @param fY The Y position that was touched
+     */
     static void TouchUpdated(float fX, float fY)
     {
         Game_Player.MoveSelfToLocal(fX, fY);
     }
 
-    // Game loop, called in Layout_Game_Draw
+    /**
+     * Game loop, called in Layout_Game_Draw.
+     * @author Jesse Primiani
+     * @param lDrawDelta The time since the last loop iteration
+     * @param canvas The layout's canvas
+     * @param ctx The application's context handler
+     */
     static void GameLoop(long lDrawDelta, Canvas canvas, Context ctx)
     {
         Server_Sync.CheckAndUpdate(ctx);
@@ -151,4 +182,3 @@ class Game_Main
         }
     }
 }
-
