@@ -67,20 +67,22 @@ public class Game_Timer {
      */
     static void runTimer()
     {
-        startRoundTimer.setTimer(3000);
-        if(startRoundTimer.timerComplete && !sm_brRoundStarting) {
-            if (Game_Main.sm_PlayersArray.size() >= 3) {
-                Utility_Post gameStartPost = new Utility_Post();
-                ArrayList<String> params = new ArrayList<>();
-                params.add("ReqPass");
-                params.add(ResolveEncryption());
-                params.add("ServerName");
-                params.add(Game_Main.sm_strServerName);
-                params.add("ServerPassword");
-                params.add(Game_Main.sm_strServerPass);
-                String ParamsString = Utility_Post.GetParamsString(params);
-                sm_brRoundStarting=true;
-                gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
+        if (startRoundTimer != null) {
+            startRoundTimer.setTimer(3000);
+            if (startRoundTimer.timerComplete && !sm_brRoundStarting) {
+                if (Game_Main.sm_PlayersArray.size() >= 3) {
+                    Utility_Post gameStartPost = new Utility_Post();
+                    ArrayList<String> params = new ArrayList<>();
+                    params.add("ReqPass");
+                    params.add(ResolveEncryption());
+                    params.add("ServerName");
+                    params.add(Game_Main.sm_strServerName);
+                    params.add("ServerPassword");
+                    params.add(Game_Main.sm_strServerPass);
+                    String ParamsString = Utility_Post.GetParamsString(params);
+                    sm_brRoundStarting = true;
+                    gameStartPost.execute("https://conspiracy-squares.appspot.com/Servlet_StartRound", ParamsString);
+                }
             }
         }
     }

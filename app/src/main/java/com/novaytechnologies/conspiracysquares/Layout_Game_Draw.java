@@ -198,22 +198,24 @@ public class Layout_Game_Draw extends FrameLayout {
 
         Paint paint = new Paint();
 
-        if(!Game_Timer.startRoundTimer.timerComplete) {
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(50);
-            canvas.drawText(Long.toString((Game_Timer.startRoundTimer.countDown) / 1000), 120, 280, paint);
-            canvas.drawText(Boolean.toString(Game_Timer.startRoundTimer.timerComplete), 120, 240, paint);
-        }else {
-            Game_Timer.notificationTimer.setTimer(3000);
-            canvas.drawText(Long.toString(Game_Timer.notificationTimer.countDown/1000), 120, 270, paint);
-            if(!Game_Timer.notificationTimer.timerComplete) {
-                textView.setText(R.string.RoundStarting);
-                textView.setVisibility(View.VISIBLE);
-                canvas.translate(280, 30);
-                layout.draw(canvas);
-            }else{
-                textView.setVisibility(View.INVISIBLE);
-                layout.draw(canvas);
+        if (Game_Timer.startRoundTimer != null && Game_Timer.notificationTimer != null) {
+            if (!Game_Timer.startRoundTimer.timerComplete) {
+                paint.setColor(Color.BLACK);
+                paint.setTextSize(50);
+                canvas.drawText(Long.toString((Game_Timer.startRoundTimer.countDown) / 1000), 120, 280, paint);
+                canvas.drawText(Boolean.toString(Game_Timer.startRoundTimer.timerComplete), 120, 240, paint);
+            } else {
+                Game_Timer.notificationTimer.setTimer(3000);
+                canvas.drawText(Long.toString(Game_Timer.notificationTimer.countDown / 1000), 120, 270, paint);
+                if (!Game_Timer.notificationTimer.timerComplete) {
+                    textView.setText(R.string.RoundStarting);
+                    textView.setVisibility(View.VISIBLE);
+                    canvas.translate(280, 30);
+                    layout.draw(canvas);
+                } else {
+                    textView.setVisibility(View.INVISIBLE);
+                    layout.draw(canvas);
+                }
             }
         }
     }
