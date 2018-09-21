@@ -69,6 +69,14 @@ class Utility_Post extends AsyncTask<String, String, String> {
         }
     }
 
+    private boolean bCheckConnected = false;
+
+    /**
+     * Make the Post check for connection issues before connecting.
+     * @author Jesse Primiani
+     */
+    void SetConnectionCheck() {bCheckConnected = true;}
+
     /**
         DESCRIPTION:
             Contacts the given webserver, sends it a parameter string, then has a function process the result.
@@ -90,10 +98,13 @@ class Utility_Post extends AsyncTask<String, String, String> {
             OutputStream out;
             InputStream in;
 
-            URL urlTest = new URL("http://connectivitycheck.gstatic.com/generate_204");
-            HttpURLConnection urlConnectionTest = (HttpURLConnection) urlTest.openConnection();
-            int nStatusReach = urlConnectionTest.getResponseCode();
-            if (nStatusReach != 204)
+            int nStatusReach = 204;
+            if (bCheckConnected) {
+                URL urlTest = new URL("http://connectivitycheck.gstatic.com/generate_204");
+                HttpURLConnection urlConnectionTest = (HttpURLConnection) urlTest.openConnection();
+                nStatusReach = urlConnectionTest.getResponseCode();
+            }
+            if (bCheckConnected && nStatusReach != 204)
             {
                 Log.e("HTTP Reach Exception", "http response code is: " + nStatusReach);
                 strResult = ErrorString;

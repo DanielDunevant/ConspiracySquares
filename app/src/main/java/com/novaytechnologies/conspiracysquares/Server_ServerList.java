@@ -120,6 +120,7 @@ public class Server_ServerList
             String ParamsString = Utility_Post.GetParamsString(params);
 
             Utility_Post newPost = new Utility_Post();
+            newPost.SetConnectionCheck();
             newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
@@ -157,6 +158,7 @@ public class Server_ServerList
             String ParamsString = Utility_Post.GetParamsString(params);
 
             Utility_Post newPost = new Utility_Post();
+            newPost.SetConnectionCheck();
             newPost.SetRunnableError(new Utility_Post.RunnableArgs() {
                 @Override
                 public void run() {
@@ -191,6 +193,7 @@ public class Server_ServerList
     void FindOrCreateServer(final Context ctx)
     {
         Utility_Post GetServers = new Utility_Post();
+        GetServers.SetConnectionCheck();
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {

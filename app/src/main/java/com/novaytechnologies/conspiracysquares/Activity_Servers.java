@@ -64,6 +64,7 @@ public class Activity_Servers extends AppCompatActivity {
         String ParamsString = Utility_Post.GetParamsString(params);
 
         Utility_Post GetServers = new Utility_Post();
+        GetServers.SetConnectionCheck();
         GetServers.SetRunnableError(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {

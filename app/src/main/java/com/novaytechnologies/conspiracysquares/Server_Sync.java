@@ -49,6 +49,7 @@ public class Server_Sync
         String ParamsString = Utility_Post.GetParamsString(params);
 
         sm_newPost = new Utility_Post();
+        sm_newPost.SetConnectionCheck();
         sm_newPost.SetRunnable(new Utility_Post.RunnableArgs() {
             @Override
             public void run() {
